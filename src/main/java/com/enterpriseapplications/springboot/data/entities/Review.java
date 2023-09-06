@@ -33,6 +33,10 @@ public class Review
     @Column(name = "WRITER")
     private User writer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "RECEIVER")
+    private User receiver;
+
     @CreatedDate
     @Column(name = "CREATED_DATE")
     private LocalDate createdDate;
