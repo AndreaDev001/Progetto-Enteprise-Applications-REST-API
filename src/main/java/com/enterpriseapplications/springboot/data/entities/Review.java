@@ -30,11 +30,11 @@ public class Review
     private Integer rating;
 
     @ManyToOne(fetch =  FetchType.LAZY)
-    @Column(name = "WRITER")
+    @JoinColumn(name = "WRITER")
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "RECEIVER")
+    @JoinColumn(name = "RECEIVER")
     private User receiver;
 
     @CreatedDate

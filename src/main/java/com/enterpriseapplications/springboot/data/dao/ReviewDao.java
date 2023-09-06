@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ReviewDao extends JpaRepository<Long, Review> {
+public interface ReviewDao extends JpaRepository<Review,Long> {
 
     @Query("select r from Review r where r.writer.id = :requiredID")
     Page<Review> findAllWrittenReviews(@Param("requiredID") Long writerID, Pageable pageable);
