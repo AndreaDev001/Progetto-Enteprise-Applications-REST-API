@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class Review
     private Long id;
 
     @Column(name = "TEXT",unique = false)
+    @Convert(converter = TrimConverter.class)
     private String text;
 
     @Column(name = "RATING",unique = false)

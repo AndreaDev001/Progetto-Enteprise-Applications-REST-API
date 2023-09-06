@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,15 +27,19 @@ public class User
     private Long id;
 
     @Column(name = "USERNAME",unique = true)
+    @Convert(converter = TrimConverter.class)
     private String username;
 
     @Column(name = "NAME",unique = false)
+    @Convert(converter = TrimConverter.class)
     private String name;
 
     @Column(name = "SURNAME",unique = false)
+    @Convert(converter = TrimConverter.class)
     private String surname;
 
     @Column(name = "DESCRIPTION",unique = false)
+    @Convert(converter = TrimConverter.class)
     private String description;
 
     @CreatedDate
