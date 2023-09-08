@@ -1,6 +1,6 @@
 package com.enterpriseapplications.springboot.data.entities;
 
-
+import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,32 +10,34 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Table(name = "FOLLOWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FOLLOWED_ID", "FOLLOWER_ID"})})
+@Table(name = "MESSAGES")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(value = {AuditingEntityListener.class})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Follow {
-
+public class Message
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOLLOWED_ID")
-    private User followed;
+    @Convert(converter = TrimConverter.class)
+    @Column(name = "TEXT",unique = false)
+    private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOLLOWER_ID")
-    private User follower;
+    @JoinColumn(name = "SENDER")
+    private User sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RECEIVER")
+    private User receiver;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE")
-    private LocalDate createdDate;
-
-    @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE")
-    private LocalDate lastModifiedDate;
+    @Column(name = "CREATED_DATE",unique = false)
+    private LocalDateTime createdDate;
 }

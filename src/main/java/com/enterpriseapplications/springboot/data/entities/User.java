@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,6 +51,9 @@ public class User
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Product> products = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "writer",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> writtenReviews = new HashSet<>();
 
@@ -61,4 +65,16 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "follower",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Follow> follows;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "sender",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Message> sentMessages = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "receiver",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Message> receivedMessages = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "reporter",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Report> createdReports = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "reported",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Report> receivedReports = new HashSet<>();
 }

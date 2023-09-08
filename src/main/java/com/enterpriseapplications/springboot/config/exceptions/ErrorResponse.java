@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ErrorResponse {
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
     private Date date;
     private String url;
     private String code;
