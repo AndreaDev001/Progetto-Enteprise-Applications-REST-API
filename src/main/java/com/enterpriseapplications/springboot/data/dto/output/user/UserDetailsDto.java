@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 
+
 @EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDetailsDto extends RepresentationModel<UserDetailsDto> {
+
+    private Long id;
     private String username;
     private String name;
     private String surname;
