@@ -1,4 +1,8 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
-public interface UserService {
+import com.enterpriseapplications.springboot.data.dto.output.user.UserDetailsDto;
+
+public interface UserService
+{
+    UserDetailsDto getUserDetails(Long userID);
 }

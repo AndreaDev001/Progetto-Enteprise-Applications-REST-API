@@ -36,7 +36,7 @@ public class Report
     protected ReportReason reason;
 
     @Column(name = "TYPE",unique = false)
-    protected ReportType reportType;
+    protected ReportType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REPORTER")
