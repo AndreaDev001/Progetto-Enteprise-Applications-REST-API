@@ -5,4 +5,5 @@ import com.enterpriseapplications.springboot.data.dto.output.user.UserDetailsDto
 public interface UserService
 {
     UserDetailsDto getUserDetails(Long userID);
+    void deleteUser(Long userID);
 }

@@ -42,6 +42,7 @@ public class FollowServiceImp implements FollowService {
     @Override
     @Transactional
     public void deleteFollows(Long followId) {
+        this.followDao.findById(followId);
         this.followDao.deleteById(followId);
     }
 }

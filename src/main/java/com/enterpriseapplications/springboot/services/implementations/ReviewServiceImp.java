@@ -43,6 +43,7 @@ public class ReviewServiceImp implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long reviewID) {
+        this.reviewDao.findById(reviewID).orElseThrow();
         this.reviewDao.deleteById(reviewID);
     }
 }

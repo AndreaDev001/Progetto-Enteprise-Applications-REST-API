@@ -11,5 +11,5 @@ public interface FollowService {
     Page<FollowDto> findAllFollowers(Long userID, Pageable pageable);
     Page<FollowDto> findAllFollowed(Long userID,Pageable pageable);
     FollowDto findFollow(Long followerID,Long followedID);
-    void deleteFollows(Long followId);
+    void deleteFollows(Long followID);
 }

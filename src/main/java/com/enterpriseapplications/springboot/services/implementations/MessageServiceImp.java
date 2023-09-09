@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -39,5 +40,12 @@ public class MessageServiceImp implements MessageService
     public Page<MessageDto> getMessagesBetween(Long senderID, Long receiverID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getMessagesBetween(senderID,receiverID,pageable);
         return new PageImpl<>(messages.stream().map(review -> this.modelMapper.map(review,MessageDto.class)).collect(Collectors.toList()),pageable,messages.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public void deleteMessage(Long messageID) {
+        this.messageDao.findById(messageID).orElseThrow();
+        this.messageDao.deleteById(messageID);
     }
 }

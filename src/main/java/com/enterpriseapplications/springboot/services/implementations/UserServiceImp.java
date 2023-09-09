@@ -8,13 +8,13 @@ import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
+
     private final UserDao userDao;
     private final ModelMapper modelMapper;
 
@@ -22,5 +22,12 @@ public class UserServiceImp implements UserService {
     public UserDetailsDto getUserDetails(Long userID) {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
         return this.modelMapper.map(requiredUser,UserDetailsDto.class);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userID) {
+        this.userDao.findById(userID).orElseThrow();
+        this.userDao.deleteById(userID);
     }
 }

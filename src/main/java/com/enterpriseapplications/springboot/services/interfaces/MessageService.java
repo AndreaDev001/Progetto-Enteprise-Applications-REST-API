@@ -8,4 +8,5 @@ public interface MessageService {
     Page<MessageDto> getSentMessages(Long userID, Pageable pageable);
     Page<MessageDto> getReceivedMessages(Long userID,Pageable pageable);
     Page<MessageDto> getMessagesBetween(Long senderID,Long receiverID,Pageable pageable);
+    void deleteMessage(Long messageID);
 }
