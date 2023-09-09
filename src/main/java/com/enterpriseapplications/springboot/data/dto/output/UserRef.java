@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.controllers.UserController;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -12,13 +13,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserRef extends GenericOutput<UserRef>
 {
     private Long id;
     private String username;
 
     @Override
-    void addLinks() {
+    public void addLinks() {
         this.add(linkTo(methodOn(UserController.class).getUserDetails(id)).withSelfRel());
     }
 }
