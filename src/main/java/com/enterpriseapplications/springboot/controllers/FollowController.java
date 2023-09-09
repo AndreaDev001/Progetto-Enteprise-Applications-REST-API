@@ -37,4 +37,10 @@ public class FollowController {
     public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") Long followerID,@RequestParam("followedID") Long followedID) {
         return ResponseEntity.ok(this.followService.findFollow(followerID,followedID));
     }
+
+    @DeleteMapping("{followID}")
+    public ResponseEntity<Void> deleteFollow(@PathVariable("followID") Long followID) {
+        this.followService.deleteFollows(followID);
+        return ResponseEntity.noContent().build();
+    }
 }

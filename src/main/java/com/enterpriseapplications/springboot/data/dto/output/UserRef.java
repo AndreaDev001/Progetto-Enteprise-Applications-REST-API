@@ -20,7 +20,7 @@ public class UserRef extends GenericOutput<UserRef>
     private String username;
 
     @Override
-    public void addLinks() {
-        this.add(linkTo(methodOn(UserController.class).getUserDetails(id)).withSelfRel());
+    public void addLinks(Object... params) {
+        this.add(linkTo(methodOn(UserController.class).getUserDetails(id)).withRel("details"));
     }
 }
