@@ -44,6 +44,9 @@ public class Product {
     @Column(name = "CONDITION",unique = false)
     private ProductCondition condition;
 
+    @OneToOne(mappedBy = "product")
+    private Order order;
+
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private User seller;
 

@@ -81,4 +81,7 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "reported",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Report> receivedReports = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "buyer",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Order> orders = new HashSet<>();
 }
