@@ -27,6 +27,10 @@ public class User
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "EMAIL",unique = true)
+    @Convert(converter = TrimConverter.class)
+    private String email;
+
     @Column(name = "USERNAME",unique = true)
     @Convert(converter = TrimConverter.class)
     private String username;

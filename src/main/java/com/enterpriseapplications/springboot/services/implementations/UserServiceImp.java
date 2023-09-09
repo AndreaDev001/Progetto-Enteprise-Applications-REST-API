@@ -21,7 +21,12 @@ public class UserServiceImp implements UserService {
     @Override
     public UserDetailsDto getUserDetails(Long userID) {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
-        return this.modelMapper.map(requiredUser,UserDetailsDto.class);
+        UserDetailsDto userDetails = this.modelMapper.map(requiredUser,UserDetailsDto.class);
+        userDetails.setAmountOfFollowers(requiredUser.getFollowers().size());
+        userDetails.setAmountOfFollowed(requiredUser.getFollows().size());
+        userDetails.setAmountOfProducts(requiredUser.getProducts().size());
+        userDetails.addLinks();
+        return userDetails;
     }
 
     @Override

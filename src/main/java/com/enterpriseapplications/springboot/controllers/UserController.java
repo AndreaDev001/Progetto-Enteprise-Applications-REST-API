@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController
 {
     private final UserService userService;
 
-    @GetMapping("{id}/details")
+    @GetMapping("{userID}/details")
     public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("id") Long id) {
         return ResponseEntity.ok(this.userService.getUserDetails(id));
 
