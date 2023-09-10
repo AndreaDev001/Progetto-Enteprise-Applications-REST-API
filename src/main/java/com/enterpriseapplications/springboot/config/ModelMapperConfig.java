@@ -1,20 +1,15 @@
 package com.enterpriseapplications.springboot.config;
 
 
-import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
-import com.enterpriseapplications.springboot.data.dto.output.UserRef;
+import com.enterpriseapplications.springboot.data.dto.output.refs.ProductRef;
+import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
+import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Configuration
 public class ModelMapperConfig
@@ -31,11 +26,25 @@ public class ModelMapperConfig
         }
     };
 
+    public Converter<Product, ProductRef> productRefConverter = new AbstractConverter<Product, ProductRef>() {
+        @Override
+        protected ProductRef convert(Product product) {
+            ProductRef productRef = new ProductRef();
+            productRef.setId(product.getId());
+            productRef.setName(product.getName());
+            productRef.setBrand(product.getBrand());
+            productRef.setPrice(product.getPrice());
+            productRef.addLinks();
+            return productRef;
+        }
+    };
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
         modelMapper.addConverter(userRefConverter);
+        modelMapper.addConverter(productRefConverter);
         return modelMapper;
     }
 }

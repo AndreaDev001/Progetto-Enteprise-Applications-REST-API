@@ -1,7 +1,8 @@
-package com.enterpriseapplications.springboot.data.dto.output;
+package com.enterpriseapplications.springboot.data.dto.output.refs;
 
 
 import com.enterpriseapplications.springboot.controllers.UserController;
+import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

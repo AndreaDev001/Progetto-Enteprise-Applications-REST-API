@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.output.reports;
 
 
-import com.enterpriseapplications.springboot.data.dto.output.UserRef;
+import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import lombok.AllArgsConstructor;

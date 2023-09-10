@@ -12,10 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/messages")
@@ -39,5 +36,11 @@ public class MessageController {
     public ResponseEntity<PaginationResponse<MessageDto>> getMessagesBetween(@PathVariable("senderID") Long senderID,@PathVariable("receiverID") Long receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<MessageDto> messages = this.messageService.getMessagesBetween(senderID,receiverID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(messages.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),messages.getTotalPages(),messages.getTotalElements()));
+    }
+
+    @DeleteMapping("{messageID}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable("messageID") Long messageID) {
+        this.messageService.deleteMessage(messageID);
+        return ResponseEntity.noContent().build();
     }
 }

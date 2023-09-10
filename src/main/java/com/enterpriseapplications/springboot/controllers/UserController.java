@@ -15,8 +15,8 @@ public class UserController
     private final UserService userService;
 
     @GetMapping("{userID}/details")
-    public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(this.userService.getUserDetails(id));
+    public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("userID") Long userID) {
+        return ResponseEntity.ok(this.userService.getUserDetails(userID));
 
     }
     @DeleteMapping("{userID}")

@@ -1,39 +1,39 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Table(name = "ORDERS")
+@Table(name = "BANS")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Order
+public class Ban
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BUYER")
-    private User buyer;
+    @JoinColumn(name = "BANNER",unique = false)
+    private User banner;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id",referencedColumnName = "ID")
-    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BANNED",unique = false)
+    private User banned;
 
-    @Column(name = "PRICE",unique = false)
-    private BigDecimal price;
+    @Column(name = "REASON",unique = false)
+    private ReportReason reason;
+
+    @Column(name = "EXPIRATION_DATE",unique = false)
+    private LocalDate expirationDate;
+
+    @Column(name = "EXPIRED",unique = false)
+    private boolean expired;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

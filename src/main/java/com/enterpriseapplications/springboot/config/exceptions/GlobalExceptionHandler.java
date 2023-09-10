@@ -21,11 +21,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> missingItemException(NoSuchElementException exception, HttpServletRequest request) {
         return errorResponse(HttpStatus.NOT_FOUND,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
     }
+
     @ExceptionHandler({HttpMessageNotReadableException.class, InvalidFormat.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> badRequestException(HttpMessageNotReadableException exception,HttpServletRequest request) {
         return errorResponse(HttpStatus.BAD_REQUEST,Date.from(Instant.now()),exception.getLocalizedMessage(), request.getRequestURI());
     }
+
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String message, String url) {
         ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),message);
         return ResponseEntity.status(httpStatus).body(errorResponse);

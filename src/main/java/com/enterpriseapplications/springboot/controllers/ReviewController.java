@@ -38,4 +38,10 @@ public class ReviewController {
     public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") Long writerID,@RequestParam("receiverID") Long receiverID) {
         return ResponseEntity.ok(this.reviewService.findReview(writerID,receiverID));
     }
+
+    @DeleteMapping("{reviewID}")
+    public ResponseEntity<Void> deleteReview(@PathVariable("reviewID") Long reviewID) {
+        this.reviewService.deleteReview(reviewID);
+        return ResponseEntity.noContent().build();
+    }
 }

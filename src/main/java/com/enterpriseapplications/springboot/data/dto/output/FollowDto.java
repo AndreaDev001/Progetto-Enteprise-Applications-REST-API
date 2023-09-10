@@ -1,5 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
+import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
+
 import java.time.LocalDate;
 
 public class FollowDto
