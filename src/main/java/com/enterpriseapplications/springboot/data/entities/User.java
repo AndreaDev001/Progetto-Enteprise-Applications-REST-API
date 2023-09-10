@@ -97,4 +97,10 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "banned",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Ban> receivedBans = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "buyer",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Offer> createdOffers = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<PaymentMethod> paymentMethods = new HashSet<>();
 }
