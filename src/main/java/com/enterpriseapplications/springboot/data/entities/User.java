@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,12 @@ public class User
     @Column(name = "DESCRIPTION",unique = false)
     @Convert(converter = TrimConverter.class)
     private String description;
+
+    @Column(name = "VISIBILITY",unique = false)
+    private UserVisibility userVisibility;
+
+    @Column(name = "RATING",unique = false)
+    private Integer rating;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

@@ -19,10 +19,17 @@ import java.util.stream.Collectors;
 public class CategoryServiceImp implements CategoryService {
 
     private final CategoryDao categoryDao;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<String> getCategories() {
-        return this.categoryDao.getCategories();
+    public List<CategoryDto> getCategories() {
+        List<Category> categories = this.categoryDao.findAll();
+        return categories.stream().map(category -> this.modelMapper.map(category,CategoryDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getPrimaryCategories() {
+        return this.categoryDao.getPrimaryCategories();
     }
 
     @Override

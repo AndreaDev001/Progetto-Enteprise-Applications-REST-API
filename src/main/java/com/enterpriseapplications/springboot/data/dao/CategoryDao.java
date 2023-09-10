@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface CategoryDao extends JpaRepository<Category,Long>
 {
-    @Query("select c.primary from Category c")
-    List<String> getCategories();
-    @Query("select c.secondary from Category c where c.primary = :requiredPrimary")
+    @Query("select c.primaryCat from Category c")
+    List<String> getPrimaryCategories();
+    @Query("select c.secondaryCat from Category c where c.primaryCat = :requiredPrimary")
     List<String> getCategoriesByPrimary(@Param("requiredPrimary") String primary);
-    @Query("select c.tertiary from Category c where c.primary = :requiredPrimary and c.secondary = :requiredSecondary")
+    @Query("select c.tertiaryCat from Category c where c.primaryCat = :requiredPrimary and c.secondaryCat = :requiredSecondary")
     List<String> getCategoriesBySecondary(@Param("requiredPrimary") String primary,@Param("requiredSecondary") String secondary);
 }

@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
-import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,36 +10,43 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
+@Table(name = "OFFERS")
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
-@Table(name = "CATEGORIES")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category
+public class Offer
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "PRIMARY_CAT",unique = false)
-    @Convert(converter = TrimConverter.class)
-    private String primaryCat;
+    @Column(name = "DESCRIPTION",unique = false)
+    private String description;
 
-    @Column(name = "SECONDARY_CAT",unique = false)
-    @Convert(converter = TrimConverter.class)
-    private String secondaryCat;
+    @Column(name = "PRICE",unique = false)
+    private BigDecimal price;
 
-    @Column(name = "TERTIARY_CAT",unique = false)
-    @Convert(converter = TrimConverter.class)
-    private String tertiaryCat;
+    @Column(name = "STATUS",unique = false)
+    private OfferStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "category")
-    private Set<Product> products = new HashSet<>();
+    @Column(name = "EXPIRATION_DATE",unique = false)
+    private LocalDate expirationDate;
+
+    @Column(name = "expired",unique = false)
+    private boolean expired;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BUYER_ID")
+    private User buyer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID")
+    private Product product;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

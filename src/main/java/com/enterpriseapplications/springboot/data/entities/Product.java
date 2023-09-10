@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,8 +45,14 @@ public class Product {
     @Column(name = "CONDITION",unique = false)
     private ProductCondition condition;
 
+    @Column(name = "VISIBILITY",unique = false)
+    private ProductVisibility visibility;
+
     @OneToOne(mappedBy = "product")
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private User seller;
