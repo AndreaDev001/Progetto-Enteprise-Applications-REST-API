@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.user.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.handlers.CustomerHandler;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImp implements UserService {
 
     private final UserDao userDao;
+    private final CustomerHandler customerHandler;
     private final ModelMapper modelMapper;
 
     @Override

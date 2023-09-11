@@ -14,6 +14,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table
 @Entity(name = "PRODUCTS")
@@ -48,6 +50,9 @@ public class Product {
     @Column(name = "VISIBILITY",unique = false)
     private ProductVisibility visibility;
 
+    @ManyToMany
+    private Set<User> likes = new HashSet<>();
+
     @OneToOne(mappedBy = "product")
     private Order order;
 
@@ -56,6 +61,9 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private User seller;
+
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<Image> productImages = new HashSet<>();
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

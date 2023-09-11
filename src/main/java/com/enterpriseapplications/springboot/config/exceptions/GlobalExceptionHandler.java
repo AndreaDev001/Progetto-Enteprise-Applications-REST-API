@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.Instant;
 import java.util.Date;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> badRequestException(HttpMessageNotReadableException exception,HttpServletRequest request) {
         return errorResponse(HttpStatus.BAD_REQUEST,Date.from(Instant.now()),exception.getLocalizedMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler({HttpClientErrorException.TooManyRequests.class})
+    @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<ErrorResponse> tooManyRequestException(HttpClientErrorException.TooManyRequests exception,HttpServletRequest request) {
+        return errorResponse(HttpStatus.TOO_MANY_REQUESTS,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
     }
 
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String message, String url) {

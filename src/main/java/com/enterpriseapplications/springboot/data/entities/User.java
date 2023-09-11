@@ -54,6 +54,9 @@ public class User
     @Column(name = "RATING",unique = false)
     private Integer rating;
 
+    @Column(name = "STRIPE_ID",unique = false)
+    private String stripeID;
+
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
     private LocalDate createdDate;
@@ -61,6 +64,10 @@ public class User
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
+
+    @ManyToMany
+    @JoinTable(name = "LIKED_PRODUCTS")
+    private Set<Product> likedProducts = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
