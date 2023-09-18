@@ -6,11 +6,15 @@ public class TrimConverter implements AttributeConverter<String,String>
 {
     @Override
     public String convertToDatabaseColumn(String s) {
-        return s.trim();
+        if(s != null)
+            return s.trim();
+        return null;
     }
 
     @Override
     public String convertToEntityAttribute(String s) {
-        return s.trim();
+        if(s != null)
+            return s.trim();
+        return null;
     }
 }

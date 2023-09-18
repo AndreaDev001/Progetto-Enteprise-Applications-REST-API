@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.naming.AuthenticationException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -35,8 +36,16 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.TOO_MANY_REQUESTS,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
     }
 
+    @ExceptionHandler({AuthenticationException.class})
+    @ResponseStatus(value= HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> authenticationException(AuthenticationException authenticationException,HttpServletRequest request) {
+        return errorResponse(HttpStatus.UNAUTHORIZED,Date.from(Instant.now()),authenticationException.getLocalizedMessage(),request.getRequestURI());
+    }
+
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String message, String url) {
         ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),message);
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
+
+
 }

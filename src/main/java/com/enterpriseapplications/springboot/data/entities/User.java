@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
@@ -43,6 +44,10 @@ public class User
     @Column(name = "SURNAME",unique = false)
     @Convert(converter = TrimConverter.class)
     private String surname;
+
+    @Column(name = "GENDER",unique = false)
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 
     @Column(name = "DESCRIPTION",unique = false)
     @Convert(converter = TrimConverter.class)
