@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
@@ -36,6 +37,11 @@ public class BanController
     @GetMapping("/banned/{userID}/active")
     public ResponseEntity<BanDto> findBan(@PathVariable("userID") Long userID) {
         return ResponseEntity.ok(this.banService.getCurrentBan(userID));
+    }
+
+    @PostMapping
+    public ResponseEntity<BanDto> createBan(@RequestBody @Valid CreateBanDto createBanDto) {
+        return ResponseEntity.ok(this.banService.createBan(createBanDto));
     }
 
     @DeleteMapping("{banID}")

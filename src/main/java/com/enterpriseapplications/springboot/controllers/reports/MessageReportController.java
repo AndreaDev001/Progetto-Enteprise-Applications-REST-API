@@ -1,11 +1,13 @@
 package com.enterpriseapplications.springboot.controllers.reports;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,11 @@ public class MessageReportController {
     public ResponseEntity<PaginationResponse<MessageReportDto>> getMessageReports(@PathVariable("messageID") Long messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(reports.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),reports.getTotalPages(),reports.getTotalElements()));
+    }
+
+    @PostMapping("{messageID}")
+    public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero Long messageID) {
+        return ResponseEntity.ok(this.messageReportService.createMessageReport(createReportDto,messageID));
     }
 
     @DeleteMapping("{messageReportID}")

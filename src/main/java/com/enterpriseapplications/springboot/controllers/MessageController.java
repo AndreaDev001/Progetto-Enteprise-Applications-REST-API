@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
@@ -36,6 +37,11 @@ public class MessageController {
     public ResponseEntity<PaginationResponse<MessageDto>> getMessagesBetween(@PathVariable("senderID") Long senderID,@PathVariable("receiverID") Long receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<MessageDto> messages = this.messageService.getMessagesBetween(senderID,receiverID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(messages.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),messages.getTotalPages(),messages.getTotalElements()));
+    }
+
+    @PostMapping
+    public ResponseEntity<MessageDto> createMessage(@RequestBody @Valid CreateMessageDto createMessageDto) {
+        return ResponseEntity.ok(this.messageService.createMessage(createMessageDto));
     }
 
     @DeleteMapping("{messageID}")

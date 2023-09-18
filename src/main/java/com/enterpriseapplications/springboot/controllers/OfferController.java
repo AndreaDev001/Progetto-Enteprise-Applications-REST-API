@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
@@ -42,6 +43,12 @@ public class OfferController
         Page<OfferDto> offers = this.offerService.getOffersByProductID(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(offers.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),offers.getTotalPages(),offers.getTotalElements()));
     }
+
+    @PostMapping
+    public ResponseEntity<OfferDto> createOffer(@RequestBody @Valid CreateOfferDto createOfferDto) {
+        return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
+    }
+
     @GetMapping("/product/{productID}/status/{status}")
     public ResponseEntity<PaginationResponse<OfferDto>> getOffersByProductIDAndStatus(@PathVariable("productID") Long productID,@PathVariable("status") OfferStatus status,@ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<OfferDto> offers = this.offerService.getOffersByProductIDAndStatus(productID,status,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

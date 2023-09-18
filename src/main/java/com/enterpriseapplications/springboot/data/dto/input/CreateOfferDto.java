@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.data.dto;
+package com.enterpriseapplications.springboot.data.dto.input;
 
 
 import lombok.AllArgsConstructor;

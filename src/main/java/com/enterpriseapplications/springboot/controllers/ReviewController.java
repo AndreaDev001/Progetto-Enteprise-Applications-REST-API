@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
@@ -37,6 +38,11 @@ public class ReviewController {
     @GetMapping("/review")
     public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") Long writerID,@RequestParam("receiverID") Long receiverID) {
         return ResponseEntity.ok(this.reviewService.findReview(writerID,receiverID));
+    }
+
+    @PostMapping
+    public ResponseEntity<ReviewDto> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) {
+        return ResponseEntity.ok(this.reviewService.createReview(createReviewDto));
     }
 
     @DeleteMapping("{reviewID}")

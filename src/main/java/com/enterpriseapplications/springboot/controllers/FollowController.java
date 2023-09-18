@@ -7,6 +7,8 @@ import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.entities.Follow;
 import com.enterpriseapplications.springboot.services.interfaces.FollowService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,11 @@ public class FollowController {
     @GetMapping("/follow")
     public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") Long followerID,@RequestParam("followedID") Long followedID) {
         return ResponseEntity.ok(this.followService.findFollow(followerID,followedID));
+    }
+
+    @PostMapping
+    public ResponseEntity<FollowDto> createFollow(@PositiveOrZero Long followedID) {
+        return ResponseEntity.ok(this.followService.createFollow(followedID));
     }
 
     @DeleteMapping("{followID}")
