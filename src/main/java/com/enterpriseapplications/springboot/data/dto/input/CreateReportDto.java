@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class CreateReportDto
 {
     @NotNull
-    @PositiveOrZero
-    protected Long reportedID;
+    @NotBlank
+    private String description;
 
     @NotNull
     @NotBlank

@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MessageReportDao extends JpaRepository<Message,Long> {
+public interface MessageReportDao extends JpaRepository<MessageReport,Long> {
 
     @Query("select m from MessageReport m where m.message.id = :requiredID")
     Page<MessageReport> getMessageReports(@Param("requiredID") Long requiredID, Pageable pageable);

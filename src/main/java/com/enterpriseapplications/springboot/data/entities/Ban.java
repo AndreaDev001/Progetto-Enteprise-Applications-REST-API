@@ -3,6 +3,9 @@ package com.enterpriseapplications.springboot.data.entities;
 
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,6 +15,9 @@ import java.time.LocalDate;
 @Table(name = "BANS")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ban
 {
     @Id

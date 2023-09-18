@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ public class AuthenticationHandler
 {
     private final UserDao userDao;
 
+
+    @Transactional
     public void handleSuccess(JwtAuthenticationToken jwtAuthenticationToken) {
         Long userID = Long.valueOf((String)jwtAuthenticationToken.getTokenAttributes().get("sub"));
         Optional<User> userOptional = this.userDao.findById(userID);

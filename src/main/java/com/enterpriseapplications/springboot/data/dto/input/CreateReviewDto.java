@@ -23,5 +23,5 @@ public class CreateReviewDto {
 
     @NotNull
     @PositiveOrZero
-    private Long rating;
+    private Integer rating;
 }

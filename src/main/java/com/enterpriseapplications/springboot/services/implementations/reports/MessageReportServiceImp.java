@@ -1,7 +1,14 @@
 package com.enterpriseapplications.springboot.services.implementations.reports;
 
+import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
+import com.enterpriseapplications.springboot.data.dao.MessageDao;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.MessageReportDao;
+import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
+import com.enterpriseapplications.springboot.data.entities.Message;
+import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.MessageReport;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +28,32 @@ import java.util.stream.Collectors;
 public class MessageReportServiceImp implements MessageReportService {
 
     private final MessageReportDao messageReportDao;
+    private final UserDao userDao;
+    private final MessageDao messageDao;
     private final ModelMapper modelMapper;
 
     @Override
     public Page<MessageReportDto> getMessageReports(Long messageID, Pageable pageable) {
         Page<MessageReport> messageReports = this.messageReportDao.getMessageReports(messageID,pageable);
         return new PageImpl<>(messageReports.stream().map(messageReport -> this.modelMapper.map(MessageReport.class,MessageReportDto.class)).collect(Collectors.toList()),pageable,messageReports.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public MessageReportDto createMessageReport(CreateReportDto createReportDto, Long messageID) {
+        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        Message requiredMessage = this.messageDao.findById(messageID).orElseThrow();
+        if(requiredMessage.getSender().getId().equals(requiredUser.getId()))
+            throw new InvalidFormat(("errors.messageReport.invalidReporter"));
+        MessageReport messageReport = new MessageReport();
+        messageReport.setReporter(requiredUser);
+        messageReport.setReported(requiredMessage.getSender());
+        messageReport.setMessage(requiredMessage);
+        messageReport.setDescription(createReportDto.getDescription());
+        messageReport.setReason(createReportDto.getReason());
+        messageReport.setType(ReportType.MESSAGE);
+        this.messageReportDao.save(messageReport);
+        return this.modelMapper.map(messageReport,MessageReportDto.class);
     }
 
     @Override

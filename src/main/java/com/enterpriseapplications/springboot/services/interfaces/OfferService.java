@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
+import com.enterpriseapplications.springboot.data.dto.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
@@ -13,5 +14,6 @@ public interface OfferService
     Page<OfferDto> getOffersByBuyerID(Long buyerID,Pageable pageable);
     Page<OfferDto> getOffersByProductID(Long productID,Pageable pageable);
     Page<OfferDto> getOffersByProductIDAndStatus(Long productID,OfferStatus status,Pageable pageable);
+    OfferDto createOffer(CreateOfferDto createOfferDto);
     void deleteOffer(Long offerID);
 }

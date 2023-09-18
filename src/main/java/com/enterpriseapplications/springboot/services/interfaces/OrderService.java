@@ -9,5 +9,6 @@ public interface OrderService
 {
     Page<OrderDto> getOrders(Long userID, Pageable pageable);
     OrderDto getOrder(Long productID);
+    OrderDto createOrder(Long productID);
     void deleteOrder(Long orderID);
 }

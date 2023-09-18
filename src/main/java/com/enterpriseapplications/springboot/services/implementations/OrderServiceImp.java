@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -31,6 +32,12 @@ public class OrderServiceImp implements OrderService {
     public OrderDto getOrder(Long productID) {
         Order order = this.orderDao.findOrder(productID).orElseThrow();
         return this.modelMapper.map(order,OrderDto.class);
+    }
+
+    @Override
+    @Transactional
+    public OrderDto createOrder(Long productID) {
+        return null;
     }
 
     @Override

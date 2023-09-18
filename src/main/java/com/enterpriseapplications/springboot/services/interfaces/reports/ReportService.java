@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces.reports;
 
+import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
@@ -13,5 +14,6 @@ public interface ReportService {
     Page<ReportDto> getReceivedReports(Long userID,Pageable pageable);
     Page<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable);
     Page<ReportDto> getReportsByType(ReportType type,Pageable pageable);
+    ReportDto createReport(CreateReportDto createReportDto,Long reportedID);
     void deleteReport(Long reportID);
 }

@@ -1,15 +1,19 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
+import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.CreateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.data.entities.Review;
+import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.services.interfaces.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 public class ReviewServiceImp implements ReviewService {
 
     private final ReviewDao reviewDao;
+    private final UserDao userDao;
     private final ModelMapper modelMapper;
 
     @Override
@@ -38,6 +43,22 @@ public class ReviewServiceImp implements ReviewService {
     @Override
     public ReviewDto findReview(Long writerID, Long receiverID) {
         return this.modelMapper.map(this.reviewDao.findReview(writerID,receiverID).orElseThrow(),ReviewDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ReviewDto createReview(CreateReviewDto createReviewDto) {
+        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User reviewed = this.userDao.findById(createReviewDto.getReviewedID()).orElseThrow();
+        if(requiredUser.getId().equals(reviewed.getId()))
+            throw new InvalidFormat("errors.reviews.invalidReviewer");
+        Review review = new Review();
+        review.setWriter(requiredUser);
+        review.setReceiver(reviewed);
+        review.setText(createReviewDto.getText());
+        review.setRating(createReviewDto.getRating());
+        this.reviewDao.save(review);
+        return this.modelMapper.map(review,ReviewDto.class);
     }
 
     @Override
