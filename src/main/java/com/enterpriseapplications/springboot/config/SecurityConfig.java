@@ -16,7 +16,18 @@ public class SecurityConfig
     @Bean
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated())
+                authorize.requestMatchers("/documentation/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/orders/**").permitAll()
+                        .requestMatchers("/reviews/**").permitAll()
+                        .requestMatchers("/reports/**").permitAll()
+                        .requestMatchers("/productReports/**").permitAll()
+                        .requestMatchers("/messageReports/**").permitAll()
+                        .requestMatchers("/messages/**").permitAll()
+                        .requestMatchers("/bans/**").permitAll()
+                        .requestMatchers("/offers/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

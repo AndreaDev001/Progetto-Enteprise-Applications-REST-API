@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController {
 
     private final FollowService followService;
-    private final AccessManager accessManager;
 
     @GetMapping("{userID}/followers")
     public ResponseEntity<PaginationResponse<FollowDto>> getFollowers(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
