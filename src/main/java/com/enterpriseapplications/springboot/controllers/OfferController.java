@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OfferService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("offers")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class OfferController
 {
     private final OfferService offerService;

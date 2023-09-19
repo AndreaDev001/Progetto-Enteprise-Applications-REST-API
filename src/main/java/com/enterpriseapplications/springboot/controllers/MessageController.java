@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.services.interfaces.MessageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -16,8 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("messages")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class MessageController {
     private final MessageService messageService;
 

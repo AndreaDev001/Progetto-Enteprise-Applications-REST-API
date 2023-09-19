@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.services.interfaces.PaymentMethodService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("paymentMethods")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class PaymentMethodController
 {
     private final PaymentMethodService paymentMethodService;
-
 
     @GetMapping("/owner/{userID}")
     public ResponseEntity<PaginationResponse<PaymentMethodDto>> getPaymentMethods(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
