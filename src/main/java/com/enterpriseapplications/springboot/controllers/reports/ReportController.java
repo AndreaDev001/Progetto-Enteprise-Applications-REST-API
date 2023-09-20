@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers.reports;
 
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
@@ -52,6 +53,11 @@ public class ReportController {
     @PostMapping("/{userID}")
     public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") @PositiveOrZero Long userID) {
         return ResponseEntity.ok(this.reportService.createReport(createReportDto,userID));
+    }
+
+    @PutMapping
+    public ResponseEntity<ReportDto> updateReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
+        return ResponseEntity.ok(this.reportService.updateReport(updateReportDto));
     }
 
     @DeleteMapping("{reportID}")

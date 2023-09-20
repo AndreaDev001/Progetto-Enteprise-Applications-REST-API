@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.controllers;
 
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
@@ -32,6 +33,11 @@ public class ProductController
     public ResponseEntity<PaginationResponse<ProductDto>> getProducts(@PathVariable("sellerID") Long sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<ProductDto> products = this.productService.getProductsBySeller(sellerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(products.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),products.getTotalPages(),products.getTotalElements()));
+    }
+
+    @PutMapping
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid UpdateProductDto updateProductDto) {
+        return ResponseEntity.ok(this.productService.updateProduct(updateProductDto));
     }
 
     @DeleteMapping("{productID}")

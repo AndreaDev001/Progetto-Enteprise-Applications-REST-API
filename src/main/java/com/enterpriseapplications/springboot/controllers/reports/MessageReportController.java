@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers.reports;
 
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
@@ -32,6 +33,11 @@ public class MessageReportController {
     @PostMapping("{messageID}")
     public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero Long messageID) {
         return ResponseEntity.ok(this.messageReportService.createMessageReport(createReportDto,messageID));
+    }
+
+    @PutMapping
+    public ResponseEntity<MessageReportDto> updateMessageReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
+        return ResponseEntity.ok(this.messageReportService.updateMessageReport(updateReportDto));
     }
 
     @DeleteMapping("{messageReportID}")

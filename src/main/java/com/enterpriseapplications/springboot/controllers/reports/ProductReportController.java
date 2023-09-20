@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers.reports;
 
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ProductReportService;
@@ -31,6 +32,11 @@ public class ProductReportController {
     @PostMapping("{productID}")
     public ResponseEntity<ProductReportDto> createProductReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("productID") @PositiveOrZero Long productID) {
         return ResponseEntity.ok(this.productReportService.createProductReport(createReportDto,productID));
+    }
+
+    @PutMapping
+    public ResponseEntity<ProductReportDto> updateProductReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
+        return ResponseEntity.ok(this.productReportService.updateProductReport(updateReportDto));
     }
 
     @DeleteMapping("{productReportID}")

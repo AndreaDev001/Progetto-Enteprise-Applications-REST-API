@@ -1,9 +1,11 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.user.UserDetailsDto;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,12 @@ public class UserController
         return ResponseEntity.ok(this.userService.getUserDetails(userID));
 
     }
+
+    @PutMapping
+    public ResponseEntity<UserDetailsDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto) {
+        return ResponseEntity.ok(this.userService.updateUser(updateUserDto));
+    }
+
     @DeleteMapping("{userID}")
     public ResponseEntity<Void> deleteUser(@PathVariable("userID") Long userID) {
         this.userService.deleteUser(userID);

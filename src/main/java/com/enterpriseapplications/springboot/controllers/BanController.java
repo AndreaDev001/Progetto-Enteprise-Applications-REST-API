@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers;
 
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.services.interfaces.BanService;
@@ -44,6 +45,11 @@ public class BanController
     @PostMapping
     public ResponseEntity<BanDto> createBan(@RequestBody @Valid CreateBanDto createBanDto) {
         return ResponseEntity.ok(this.banService.createBan(createBanDto));
+    }
+
+    @PutMapping
+    public ResponseEntity<BanDto> updateBan(@RequestBody @Valid UpdateBanDto updateBanDto) {
+        return ResponseEntity.ok(this.banService.updateBan(updateBanDto));
     }
 
     @DeleteMapping("{banID}")
