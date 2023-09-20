@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.data.dto.input;
+package com.enterpriseapplications.springboot.data.dto.input.create;
 
 
 import jakarta.validation.constraints.NotBlank;
@@ -11,13 +11,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateMessageDto
-{
+public class CreateReviewDto {
+    
     @NotNull
     @PositiveOrZero
-    private Long receiverID;
+    private Long reviewedID;
 
     @NotNull
     @NotBlank
     private String text;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer rating;
 }

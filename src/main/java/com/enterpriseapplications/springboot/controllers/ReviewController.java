@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateReviewDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;

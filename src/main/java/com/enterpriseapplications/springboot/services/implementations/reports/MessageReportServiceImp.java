@@ -4,7 +4,8 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.MessageReportDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -54,6 +55,22 @@ public class MessageReportServiceImp implements MessageReportService {
         messageReport.setType(ReportType.MESSAGE);
         this.messageReportDao.save(messageReport);
         return this.modelMapper.map(messageReport,MessageReportDto.class);
+    }
+
+    @Override
+    @Transactional
+    public MessageReportDto updateMessageReport(UpdateReportDto updateReportDto) {
+        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        MessageReport messageReport = this.messageReportDao.findById(updateReportDto.getReportID()).orElseThrow();
+        if(messageReport.getMessage().getSender().getId().equals(requiredUser.getId()))
+            throw new InvalidFormat("errors.messageReport.invalidUpdater");
+        if(updateReportDto.getDescription() != null)
+            messageReport.setDescription(updateReportDto.getDescription());
+        if(updateReportDto.getReason() != null)
+            messageReport.setReason(updateReportDto.getReason());
+        this.messageReportDao.save(messageReport);
+        return this.modelMapper.map(messageReport,MessageReportDto.class);
+
     }
 
     @Override

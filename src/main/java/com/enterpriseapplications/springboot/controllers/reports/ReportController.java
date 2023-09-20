@@ -1,13 +1,12 @@
 package com.enterpriseapplications.springboot.controllers.reports;
 
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
-import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ReportService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;

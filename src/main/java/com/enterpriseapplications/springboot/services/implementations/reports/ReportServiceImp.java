@@ -3,8 +3,8 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
-import com.enterpriseapplications.springboot.data.dto.output.FollowDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
@@ -70,6 +70,18 @@ public class ReportServiceImp implements ReportService {
         report.setType(ReportType.USER);
         this.reportDao.save(report);
         return this.modelMapper.map(report,ReportDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ReportDto updateReport(UpdateReportDto updateReportDto) {
+        Report requiredReport = this.reportDao.findById(updateReportDto.getReportID()).orElseThrow();
+        if(updateReportDto.getDescription() != null)
+            requiredReport.setDescription(updateReportDto.getDescription());
+        if(updateReportDto.getReason() != null)
+            requiredReport.setReason(updateReportDto.getReason());
+        this.reportDao.save(requiredReport);
+        return this.modelMapper.map(requiredReport,ReportDto.class);
     }
 
     @Override

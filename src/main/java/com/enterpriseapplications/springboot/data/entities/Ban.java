@@ -32,6 +32,9 @@ public class Ban
     @JoinColumn(name = "BANNED",unique = false)
     private User banned;
 
+    @Column(name = "DESCRIPTION",unique = false)
+    private String description;
+
     @Column(name = "REASON",unique = false)
     private ReportReason reason;
 

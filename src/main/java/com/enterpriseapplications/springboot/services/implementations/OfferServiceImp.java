@@ -5,7 +5,7 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.Product;

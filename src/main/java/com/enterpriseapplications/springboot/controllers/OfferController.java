@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

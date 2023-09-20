@@ -4,7 +4,8 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateBanDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +65,20 @@ public class BanServiceImp implements BanService {
         ban.setExpirationDate(createBanDto.getExpirationDate());
         this.banDao.save(ban);
         return this.modelMapper.map(ban,BanDto.class);
+    }
+
+    @Override
+    @Transactional
+    public BanDto updateBan(UpdateBanDto updateBanDto) {
+        Ban requiredBan = this.banDao.findBan(updateBanDto.getBannedID()).orElseThrow();
+        if(updateBanDto.getReason() != null)
+            requiredBan.setReason(updateBanDto.getReason());
+        if(updateBanDto.getDescription() != null)
+            requiredBan.setDescription(updateBanDto.getDescription());
+        if(updateBanDto.getExpirationDate() != null)
+            requiredBan.setExpirationDate(updateBanDto.getExpirationDate());
+        this.banDao.save(requiredBan);
+        return this.modelMapper.map(requiredBan,BanDto.class);
     }
 
     @Override

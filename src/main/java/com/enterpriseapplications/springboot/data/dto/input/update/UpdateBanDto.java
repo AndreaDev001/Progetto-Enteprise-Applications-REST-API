@@ -1,8 +1,8 @@
-package com.enterpriseapplications.springboot.data.dto.input;
+package com.enterpriseapplications.springboot.data.dto.input.update;
 
 
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
-import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -10,20 +10,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateReportDto
+public class UpdateBanDto
 {
     @NotNull
+    @PositiveOrZero
+    private Long bannedID;
+
     @NotBlank
     private String description;
 
-    @NotNull
-    @NotBlank
-    protected ReportReason reason;
+    private ReportReason reason;
 
-    @NotNull
-    @NotBlank
-    protected ReportType type;
+    @FutureOrPresent
+    private LocalDate expirationDate;
 }

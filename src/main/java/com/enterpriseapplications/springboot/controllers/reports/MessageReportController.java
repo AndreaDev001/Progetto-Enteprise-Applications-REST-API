@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.controllers.reports;
 
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;

@@ -1,6 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import org.springframework.data.domain.Page;

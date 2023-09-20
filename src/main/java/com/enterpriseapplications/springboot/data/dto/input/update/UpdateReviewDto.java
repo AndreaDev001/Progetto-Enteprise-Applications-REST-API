@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.data.dto.input;
+package com.enterpriseapplications.springboot.data.dto.input.update;
 
 
 import jakarta.validation.constraints.NotBlank;
@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateReviewDto {
-    
+public class UpdateReviewDto
+{
     @NotNull
     @PositiveOrZero
-    private Long reviewedID;
+    private Long reviewID;
 
     @NotNull
     @NotBlank

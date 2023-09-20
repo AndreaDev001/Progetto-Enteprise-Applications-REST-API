@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
-import com.enterpriseapplications.springboot.data.dto.input.CreateBanDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;

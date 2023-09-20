@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -32,6 +34,22 @@ public class ProductServiceImp implements ProductService
     public ProductDto getProductDetails(Long productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         return this.modelMapper.map(product,ProductDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ProductDto updateProduct(UpdateProductDto updateProductDto) {
+        Product requiredProduct =  this.productDao.findById(updateProductDto.getProductID()).orElseThrow();
+        if(updateProductDto.getDescription() != null)
+            requiredProduct.setDescription(updateProductDto.getDescription());
+        if(updateProductDto.getBrand() != null)
+            requiredProduct.setBrand(updateProductDto.getBrand());
+        if(updateProductDto.getCondition() != null)
+            requiredProduct.setCondition(updateProductDto.getCondition());
+        if(updateProductDto.getVisibility() != null)
+            requiredProduct.setVisibility(updateProductDto.getVisibility());
+        this.productDao.save(requiredProduct);
+        return this.modelMapper.map(requiredProduct,ProductDto.class);
     }
 
     @Override

@@ -3,8 +3,10 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateReviewDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReviewDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
+import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.Review;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.services.interfaces.ReviewService;
@@ -17,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -59,6 +60,18 @@ public class ReviewServiceImp implements ReviewService {
         review.setRating(createReviewDto.getRating());
         this.reviewDao.save(review);
         return this.modelMapper.map(review,ReviewDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ReviewDto updateReview(UpdateReviewDto updateReviewDto) {
+        Review requiredReview = this.reviewDao.findById(updateReviewDto.getReviewID()).orElseThrow();
+        if(updateReviewDto.getRating() != null)
+            requiredReview.setRating(updateReviewDto.getRating());
+        if(updateReviewDto.getText() != null)
+            requiredReview.setText(updateReviewDto.getText());
+        this.reviewDao.save(requiredReview);
+        return this.modelMapper.map(requiredReview,ReviewDto.class);
     }
 
     @Override

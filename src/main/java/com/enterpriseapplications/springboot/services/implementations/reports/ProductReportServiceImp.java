@@ -4,7 +4,8 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ProductReportDao;
-import com.enterpriseapplications.springboot.data.dto.input.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -51,6 +52,21 @@ public class ProductReportServiceImp implements ProductReportService {
         productReport.setDescription(createReportDto.getDescription());
         productReport.setReason(createReportDto.getReason());
         productReport.setType(ReportType.PRODUCT);
+        this.productReportDao.save(productReport);
+        return this.modelMapper.map(productReport,ProductReportDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ProductReportDto updateProductReport(UpdateReportDto updateReportDto) {
+        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        ProductReport productReport = this.productReportDao.findById(updateReportDto.getReportID()).orElseThrow();
+        if(requiredUser.getId().equals(productReport.getProduct().getSeller().getId()))
+            throw new InvalidFormat("error.productReport.invalidUpdater");
+        if(updateReportDto.getReason() != null)
+            productReport.setReason(updateReportDto.getReason());
+        if(updateReportDto.getDescription() != null)
+            productReport.setDescription(updateReportDto.getDescription());
         this.productReportDao.save(productReport);
         return this.modelMapper.map(productReport,ProductReportDto.class);
     }
