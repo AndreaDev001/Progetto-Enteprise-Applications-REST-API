@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.config;
+package com.enterpriseapplications.springboot.config.interceptors;
 
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import io.github.bucket4j.Bandwidth;

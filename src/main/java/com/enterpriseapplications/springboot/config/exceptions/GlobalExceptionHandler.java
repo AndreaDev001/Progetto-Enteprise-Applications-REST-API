@@ -46,6 +46,4 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),message);
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
-
-
 }
