@@ -5,6 +5,8 @@ import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -56,5 +58,15 @@ public class ProductServiceImp implements ProductService
     public void deleteProduct(Long productID) {
         this.productDao.findById(productID);
         this.productDao.deleteById(productID);
+    }
+
+    @Override
+    public ProductCondition[] getConditions() {
+        return ProductCondition.values();
+    }
+
+    @Override
+    public ProductVisibility[] getVisibilities() {
+        return ProductVisibility.values();
     }
 }

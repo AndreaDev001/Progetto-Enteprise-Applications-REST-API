@@ -5,6 +5,8 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -33,6 +35,16 @@ public class ProductController
     public ResponseEntity<PaginationResponse<ProductDto>> getProducts(@PathVariable("sellerID") Long sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         Page<ProductDto> products = this.productService.getProductsBySeller(sellerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(new PaginationResponse<>(products.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),products.getTotalPages(),products.getTotalElements()));
+    }
+
+    @GetMapping("conditions")
+    public ResponseEntity<ProductCondition[]> getConditions() {
+        return ResponseEntity.ok(this.productService.getConditions());
+    }
+
+    @GetMapping("visibilities")
+    public ResponseEntity<ProductVisibility[]> getVisibilities() {
+        return ResponseEntity.ok(this.productService.getVisibilities());
     }
 
     @PutMapping

@@ -49,6 +49,15 @@ public class ReportController {
         return ResponseEntity.ok(new PaginationResponse<>(reports.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),reports.getTotalPages(),reports.getTotalElements()));
     }
 
+    @GetMapping("reasons")
+    public ResponseEntity<ReportReason[]> getReasons() {
+        return ResponseEntity.ok(this.reportService.getReasons());
+    }
+
+    @GetMapping("types")
+    public ResponseEntity<ReportType[]> getTypes() {
+        return ResponseEntity.ok(this.reportService.getTypes());
+    }
 
     @PostMapping("/{userID}")
     public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") @PositiveOrZero Long userID) {

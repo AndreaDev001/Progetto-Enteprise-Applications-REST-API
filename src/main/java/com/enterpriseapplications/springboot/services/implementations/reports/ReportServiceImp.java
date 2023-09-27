@@ -85,6 +85,16 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    public ReportReason[] getReasons() {
+        return ReportReason.values();
+    }
+
+    @Override
+    public ReportType[] getTypes() {
+        return ReportType.values();
+    }
+
+    @Override
     @Transactional
     public void deleteReport(Long reportID) {
         this.reportDao.findById(reportID).orElseThrow();

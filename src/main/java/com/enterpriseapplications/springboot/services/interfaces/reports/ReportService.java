@@ -16,5 +16,7 @@ public interface ReportService {
     Page<ReportDto> getReportsByType(ReportType type,Pageable pageable);
     ReportDto createReport(CreateReportDto createReportDto,Long reportedID);
     ReportDto updateReport(UpdateReportDto updateReportDto);
+    ReportReason[] getReasons();
+    ReportType[] getTypes();
     void deleteReport(Long reportID);
 }

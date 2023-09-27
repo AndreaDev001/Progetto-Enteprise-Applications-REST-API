@@ -1,7 +1,9 @@
 package com.enterpriseapplications.springboot.config.exceptions;
 
 
+import com.enterpriseapplications.springboot.config.internalization.MessageGetter;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,12 +18,15 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageGetter messageGetter;
 
     @ExceptionHandler({NoSuchElementException.class,MissingItem.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> missingItemException(NoSuchElementException exception, HttpServletRequest request) {
-        return errorResponse(HttpStatus.NOT_FOUND,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
+        return errorResponse(HttpStatus.NOT_FOUND,Date.from(Instant.now()),"error.generic.notFound",request.getRequestURI());
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, InvalidFormat.class})
@@ -42,8 +47,8 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.UNAUTHORIZED,Date.from(Instant.now()),authenticationException.getLocalizedMessage(),request.getRequestURI());
     }
 
-    public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String message, String url) {
-        ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),message);
+    public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String code, String url) {
+        ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),messageGetter.getMessage(code));
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 }
