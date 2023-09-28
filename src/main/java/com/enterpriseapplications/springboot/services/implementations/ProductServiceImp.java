@@ -33,9 +33,12 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @Transactional
     public ProductDto getProductDetails(Long productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
-        return this.modelMapper.map(product,ProductDto.class);
+        ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
+        productDto.addLinks();
+        return productDto;
     }
 
     @Override

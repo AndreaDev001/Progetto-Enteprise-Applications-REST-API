@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.data.dto.output.user;
 import com.enterpriseapplications.springboot.controllers.BanController;
 import com.enterpriseapplications.springboot.controllers.FollowController;
 import com.enterpriseapplications.springboot.controllers.OrderController;
+import com.enterpriseapplications.springboot.controllers.images.UserImageController;
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
@@ -49,5 +50,6 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
         this.add(linkTo(methodOn(BanController.class,paginationParameters).getCreatedBans(id,new PaginationRequest(0,20))).withRel("created_bans").withName("createdBans"));
         this.add(linkTo(methodOn(BanController.class,paginationParameters).getReceivedBans(id, new PaginationRequest(0,20))).withRel("received_bans").withName("receivedBans"));
         this.add(linkTo(methodOn(OrderController.class,paginationParameters).getOrders(id, new PaginationRequest(0,20))).withRel("orders").withName("orders"));
+        this.add(linkTo(methodOn(UserImageController.class).getUserImage(id)).withRel("image").withName("image"));
     }
 }
