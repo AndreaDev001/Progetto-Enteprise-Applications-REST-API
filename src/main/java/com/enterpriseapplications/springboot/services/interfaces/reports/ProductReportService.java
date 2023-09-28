@@ -6,10 +6,11 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportD
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface ProductReportService
 {
-    Page<ProductReportDto> getReports(Long productID, Pageable pageable);
+    PagedModel<ProductReportDto> getReports(Long productID, Pageable pageable);
     ProductReportDto createProductReport(CreateReportDto createReportDto,Long productID);
     ProductReportDto updateProductReport(UpdateReportDto updateReportDto);
     void deleteProductReport(Long productReportID);

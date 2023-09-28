@@ -6,10 +6,11 @@ import com.enterpriseapplications.springboot.data.entities.enums.ProductConditio
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface ProductService
 {
-    Page<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable);
+    PagedModel<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable);
     ProductDto getProductDetails(Long productID);
     ProductDto updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(Long productID);

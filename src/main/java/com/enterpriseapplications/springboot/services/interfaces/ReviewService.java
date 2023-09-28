@@ -5,10 +5,11 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReviewD
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface ReviewService {
-    Page<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable);
-    Page<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable);
+    PagedModel<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable);
+    PagedModel<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable);
     ReviewDto findReview(Long writerID, Long receiverID);
     ReviewDto createReview(CreateReviewDto createReviewDto);
     ReviewDto updateReview(UpdateReviewDto updateReviewDto);

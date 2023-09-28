@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.OrderDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
@@ -16,6 +17,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,18 +26,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImp implements OrderService {
 
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final ProductDao productDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Order,OrderDto> modelAssembler;
+    private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
+
+    public OrderServiceImp(OrderDao orderDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Order> pagedResourcesAssembler) {
+        this.orderDao = orderDao;
+        this.userDao = userDao;
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Order.class,OrderDto.class,modelMapper);
+    }
 
     @Override
-    public Page<OrderDto> getOrders(Long userID, Pageable pageable) {
+    public PagedModel<OrderDto> getOrders(Long userID, Pageable pageable) {
         Page<Order> orders = this.orderDao.getOrders(userID,pageable);
-        return new PageImpl<>(orders.stream().map(order -> this.modelMapper.map(order,OrderDto.class)).collect(Collectors.toList()),pageable,orders.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(orders,modelAssembler);
     }
 
     @Override

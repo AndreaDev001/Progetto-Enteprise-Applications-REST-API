@@ -13,10 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface OrderDao extends JpaRepository<Order,Long> {
-
     @Query("select o from Order o where o.buyer.id = :requiredID")
     Page<Order> getOrders(@Param("requiredID") Long buyerID, Pageable pageable);
-
     @Query("select o from Order o where o.product.id = :requiredID")
     Optional<Order> findOrder(@Param("requiredID") Long productID);
 }

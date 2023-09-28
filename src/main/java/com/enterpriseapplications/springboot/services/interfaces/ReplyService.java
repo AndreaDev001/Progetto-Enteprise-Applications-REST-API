@@ -5,12 +5,13 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReplyDt
 import com.enterpriseapplications.springboot.data.dto.output.ReplyDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface ReplyService
 {
     ReplyDto getReply(Long reviewID);
     ReplyDto createReply(CreateReplyDto createReplyDto);
     ReplyDto updateReply(UpdateReplyDto updateReplyDto);
-    Page<ReplyDto> getWrittenReplies(Long userID, Pageable pageable);
+    PagedModel<ReplyDto> getWrittenReplies(Long userID, Pageable pageable);
     void deleteReply(Long replyID);
 }

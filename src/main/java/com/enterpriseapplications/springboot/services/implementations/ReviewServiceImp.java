@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -15,30 +16,42 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 
 import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
 public class ReviewServiceImp implements ReviewService {
 
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Review,ReviewDto> modelAssembler;
+    private final PagedResourcesAssembler<Review> pagedResourcesAssembler;
+
+    public ReviewServiceImp(ReviewDao reviewDao, UserDao userDao, ModelMapper modelMapper,PagedResourcesAssembler<Review> pagedResourcesAssembler) {
+        this.reviewDao = reviewDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Review.class,ReviewDto.class,modelMapper);
+    }
 
     @Override
-    public Page<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable) {
+    public PagedModel<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable) {
         Page<Review> reviews = this.reviewDao.findAllWrittenReviews(writerID,pageable);
-        return new PageImpl<>(reviews.stream().map(review -> this.modelMapper.map(review,ReviewDto.class)).collect(Collectors.toList()),pageable,reviews.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reviews,modelAssembler);
     }
     @Override
-    public Page<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable) {
+    public PagedModel<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable) {
         Page<Review> reviews = this.reviewDao.findAllReviewsReceived(receiverID,pageable);
-        return new PageImpl<>(reviews.stream().map(review -> this.modelMapper.map(review,ReviewDto.class)).collect(Collectors.toList()),pageable,reviews.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reviews,modelAssembler);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.FollowDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -11,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,23 +25,32 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class FollowServiceImp implements FollowService {
 
     private final FollowDao followDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Follow,FollowDto> modelAssembler;
+    private final PagedResourcesAssembler<Follow> pagedResourcesAssembler;
 
+
+    public FollowServiceImp(FollowDao followDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Follow> pagedResourcesAssembler) {
+        this.followDao = followDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Follow.class,FollowDto.class,modelMapper);
+    }
 
     @Override
-    public Page<FollowDto> findAllFollowers(Long userID, Pageable pageable) {
+    public PagedModel<FollowDto> findAllFollowers(Long userID, Pageable pageable) {
         Page<Follow> follows = this.followDao.findAllFollowers(userID,pageable);
-        return new PageImpl<>(follows.stream().map(follow -> this.modelMapper.map(follow,FollowDto.class)).collect(Collectors.toList()),pageable,follows.getTotalElements());
+        return pagedResourcesAssembler.toModel(follows,modelAssembler);
     }
     @Override
-    public Page<FollowDto> findAllFollowed(Long userID, Pageable pageable) {
+    public PagedModel<FollowDto> findAllFollowed(Long userID, Pageable pageable) {
         Page<Follow> follows = this.followDao.findAllFollows(userID,pageable);
-        return new PageImpl<>(follows.stream().map(follow -> this.modelMapper.map(follow,FollowDto.class)).collect(Collectors.toList()),pageable,follows.getTotalElements());
+        return pagedResourcesAssembler.toModel(follows,modelAssembler);
     }
     @Override
     public FollowDto findFollow(Long followerID, Long followedID) {

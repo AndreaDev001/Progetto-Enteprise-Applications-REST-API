@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.reports;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
@@ -16,6 +17,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,35 +27,45 @@ import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
 public class ReportServiceImp implements ReportService {
 
     private final ReportDao reportDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Report,ReportDto> modelAssembler;
+    private final PagedResourcesAssembler<Report> pagedResourcesAssembler;
+
+
+    public ReportServiceImp(ReportDao reportDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Report> pagedResourcesAssembler) {
+        this.reportDao = reportDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Report.class,ReportDto.class,modelMapper);
+    }
 
     @Override
-    public Page<ReportDto> getCreatedReports(Long userID, Pageable pageable) {
+    public PagedModel<ReportDto> getCreatedReports(Long userID, Pageable pageable) {
         Page<Report> reports = this.reportDao.getCreatedReports(userID,pageable);
-        return new PageImpl<>(reports.stream().map(report -> this.modelMapper.map(report, ReportDto.class)).collect(Collectors.toList()),pageable,reports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override
-    public Page<ReportDto> getReceivedReports(Long userID, Pageable pageable) {
+    public PagedModel<ReportDto> getReceivedReports(Long userID, Pageable pageable) {
         Page<Report> reports = this.reportDao.getReceivedReports(userID,pageable);
-        return new PageImpl<>(reports.stream().map(report -> this.modelMapper.map(report,ReportDto.class)).collect(Collectors.toList()),pageable,reports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override
-    public Page<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable) {
+    public PagedModel<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable) {
         Page<Report> reports = this.reportDao.getReportsByReason(reason,pageable);
-        return new PageImpl<>(reports.stream().map(report -> this.modelMapper.map(report,ReportDto.class)).collect(Collectors.toList()),pageable,reports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override
-    public Page<ReportDto> getReportsByType(ReportType type, Pageable pageable) {
+    public PagedModel<ReportDto> getReportsByType(ReportType type, Pageable pageable) {
         Page<Report> reports = this.reportDao.getReportsByType(type,pageable);
-        return new PageImpl<>(reports.stream().map(report -> this.modelMapper.map(report,ReportDto.class)).collect(Collectors.toList()),pageable,reports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.PaymentMethodDao;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
@@ -10,39 +11,49 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PaymentMethodServiceImp implements PaymentMethodService
 {
     private final PaymentMethodDao paymentMethodDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<PaymentMethod,PaymentMethodDto> modelAssembler;
+    private final PagedResourcesAssembler<PaymentMethod> pagedResourcesAssembler;
 
+
+    public PaymentMethodServiceImp(PaymentMethodDao paymentMethodDao,ModelMapper modelMapper,PagedResourcesAssembler<PaymentMethod> pagedResourcesAssembler) {
+        this.paymentMethodDao = paymentMethodDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(PaymentMethod.class,PaymentMethodDto.class,modelMapper);
+    }
     @Override
-    public Page<PaymentMethodDto> getPaymentMethods(Long ownerID, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethods(Long ownerID, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethods(ownerID,pageable);
-        return new PageImpl<>(paymentMethods.stream().map(paymentMethod -> this.modelMapper.map(paymentMethod,PaymentMethodDto.class)).collect(Collectors.toList()),pageable,paymentMethods.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public Page<PaymentMethodDto> getPaymentMethodsByBrand(Long ownerID, String brand, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(Long ownerID, String brand, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByBrand(ownerID,brand,pageable);
-        return new PageImpl<>(paymentMethods.stream().map(paymentMethod -> this.modelMapper.map(paymentMethod,PaymentMethodDto.class)).collect(Collectors.toList()),pageable,paymentMethods.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public Page<PaymentMethodDto> getPaymentMethodsByCountry(Long ownerID, String country, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(Long ownerID, String country, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByCountry(ownerID,country,pageable);
-        return new PageImpl<>(paymentMethods.stream().map(paymentMethod -> this.modelMapper.map(paymentMethod,PaymentMethodDto.class)).collect(Collectors.toList()),pageable,paymentMethods.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public Page<PaymentMethodDto> getPaymentMethodsByHolderName(Long ownerID, String name, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(Long ownerID, String name, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByHolderName(ownerID,name,pageable);
-        return new PageImpl<>(paymentMethods.stream().map(paymentMethod -> this.modelMapper.map(paymentMethod,PaymentMethodDto.class)).collect(Collectors.toList()),pageable,paymentMethods.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override

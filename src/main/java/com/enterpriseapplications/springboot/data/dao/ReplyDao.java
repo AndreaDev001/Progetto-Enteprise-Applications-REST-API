@@ -16,7 +16,6 @@ public interface ReplyDao extends JpaRepository<Reply,Long>
 {
     @Query("select r from Reply r where r.review = :requiredID")
     Optional<Reply> findByReview(@Param("requiredID") Long id);
-
     @Query("select r from Reply r where r.writer = :requiredID")
     Page<Reply> findByWriter(@Param("requiredID") Long requiredID, Pageable pageable);
 }

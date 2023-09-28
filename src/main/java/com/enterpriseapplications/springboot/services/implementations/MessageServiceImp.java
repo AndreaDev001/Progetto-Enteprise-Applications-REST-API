@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -14,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,29 +24,39 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class MessageServiceImp implements MessageService
 {
     private final MessageDao messageDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Message,MessageDto> modelAssembler;
+    private final PagedResourcesAssembler<Message> pagedResourcesAssembler;
+
+
+    public MessageServiceImp(MessageDao messageDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Message> pagedResourcesAssembler) {
+        this.messageDao = messageDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Message.class,MessageDto.class,modelMapper);
+    }
 
     @Override
-    public Page<MessageDto> getSentMessages(Long userID, Pageable pageable) {
+    public PagedModel<MessageDto> getSentMessages(Long userID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getSentMessages(userID,pageable);
-        return new PageImpl<>(messages.stream().map(message -> this.modelMapper.map(message, MessageDto.class)).collect(Collectors.toList()),pageable,messages.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
 
     @Override
-    public Page<MessageDto> getReceivedMessages(Long userID, Pageable pageable) {
+    public PagedModel<MessageDto> getReceivedMessages(Long userID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getReceivedMessages(userID,pageable);
-        return new PageImpl<>(messages.stream().map(review -> this.modelMapper.map(review,MessageDto.class)).collect(Collectors.toList()),pageable,messages.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
 
     @Override
-    public Page<MessageDto> getMessagesBetween(Long senderID, Long receiverID, Pageable pageable) {
+    public PagedModel<MessageDto> getMessagesBetween(Long senderID, Long receiverID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getMessagesBetween(senderID,receiverID,pageable);
-        return new PageImpl<>(messages.stream().map(review -> this.modelMapper.map(review,MessageDto.class)).collect(Collectors.toList()),pageable,messages.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
 
     @Override

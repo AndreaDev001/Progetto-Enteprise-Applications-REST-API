@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.data.dto.output.user;
 
+import com.enterpriseapplications.springboot.HateoasUtils;
 import com.enterpriseapplications.springboot.controllers.BanController;
 import com.enterpriseapplications.springboot.controllers.FollowController;
 import com.enterpriseapplications.springboot.controllers.OrderController;
@@ -7,10 +8,8 @@ import com.enterpriseapplications.springboot.controllers.images.UserImageControl
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private String name;
     private String surname;
     private String description;
+    private UserVisibility userVisibility;
     private int amountOfFollowers = 0;
     private int amountOfFollowed = 0;
     private int amountOfProducts = 0;
@@ -39,17 +39,18 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private LocalDate createdDate;
 
     @Override
+    @SneakyThrows
     public void addLinks(Object... params) {
-        Map<String,Object> paginationParameters = new HashMap<>();
-        paginationParameters.put("page",0);
-        paginationParameters.put("pageSize",20);
-        this.add(linkTo(methodOn(FollowController.class,paginationParameters).getFollowers(id,new PaginationRequest(0,20))).withRel("followers").withName("followers"));
-        this.add(linkTo(methodOn(FollowController.class,paginationParameters).getFollowed(id,new PaginationRequest(0,20))).withRel("followed").withName("followed"));
-        this.add(linkTo(methodOn(ReportController.class,paginationParameters).getReportsByReporter(id,new PaginationRequest(0,20))).withRel("created_reports").withName("createdReports"));
-        this.add(linkTo(methodOn(ReportController.class,paginationParameters).getReportsByReported(id,new PaginationRequest(0,20))).withRel("received_reports").withName("receivedReports"));
-        this.add(linkTo(methodOn(BanController.class,paginationParameters).getCreatedBans(id,new PaginationRequest(0,20))).withRel("created_bans").withName("createdBans"));
-        this.add(linkTo(methodOn(BanController.class,paginationParameters).getReceivedBans(id, new PaginationRequest(0,20))).withRel("received_bans").withName("receivedBans"));
-        this.add(linkTo(methodOn(OrderController.class,paginationParameters).getOrders(id, new PaginationRequest(0,20))).withRel("orders").withName("orders"));
+        PaginationRequest paginationRequest = new PaginationRequest(0,20);
+        String paginationQuery = HateoasUtils.convert(paginationRequest);
+        System.out.println(paginationQuery);
+        this.add(linkTo(methodOn(FollowController.class).getFollowers(id,paginationRequest)).slash(paginationQuery).withRel("followers").withName("followers"));
+        this.add(linkTo(methodOn(FollowController.class).getFollowed(id,paginationRequest)).slash(paginationQuery).withRel("followed").withName("followed"));
+        this.add(linkTo(methodOn(ReportController.class).getReportsByReporter(id,paginationRequest)).slash(paginationQuery).withRel("created_reports").withName("createdReports"));
+        this.add(linkTo(methodOn(ReportController.class).getReportsByReported(id,paginationRequest)).slash(paginationQuery).withRel("received_reports").withName("receivedReports"));
+        this.add(linkTo(methodOn(BanController.class).getCreatedBans(id,paginationRequest)).slash(paginationQuery).withRel("created_bans").withName("createdBans"));
+        this.add(linkTo(methodOn(BanController.class).getReceivedBans(id,paginationRequest)).slash(paginationQuery).withRel("received_bans").withName("receivedBans"));
+        this.add(linkTo(methodOn(OrderController.class).getOrders(id,paginationRequest)).slash(paginationQuery).withRel("orders").withName("orders"));
         this.add(linkTo(methodOn(UserImageController.class).getUserImage(id)).withRel("image").withName("image"));
     }
 }

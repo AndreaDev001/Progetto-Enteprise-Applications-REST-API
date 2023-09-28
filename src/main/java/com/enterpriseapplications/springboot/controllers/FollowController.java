@@ -3,15 +3,14 @@ package com.enterpriseapplications.springboot.controllers;
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.FollowDto;
-import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.services.interfaces.FollowService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,15 +23,15 @@ public class FollowController {
     private final FollowService followService;
 
     @GetMapping("{userID}/followers")
-    public ResponseEntity<PaginationResponse<FollowDto>> getFollowers(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        Page<FollowDto> follows = this.followService.findAllFollowers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
-        return ResponseEntity.ok(new PaginationResponse<>(follows.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),follows.getTotalPages(),follows.getTotalElements()));
+    public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<FollowDto> pagedModel = this.followService.findAllFollowers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(pagedModel);
     }
 
     @GetMapping("{userID}/followed")
-    public ResponseEntity<PaginationResponse<FollowDto>> getFollowed(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
-        Page<FollowDto> follows = this.followService.findAllFollowed(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
-        return ResponseEntity.ok(new PaginationResponse<>(follows.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),follows.getTotalPages(),follows.getTotalElements()));
+    public ResponseEntity<PagedModel<FollowDto>> getFollowed(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<FollowDto> pagedModel = this.followService.findAllFollowed(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(pagedModel);
     }
 
     @GetMapping("/follow")

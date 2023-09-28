@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
@@ -17,6 +18,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,42 +27,52 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OfferServiceImp implements OfferService
 {
     private final OfferDao offerDao;
     private final UserDao userDao;
     private final ProductDao productDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Offer,OfferDto> modelAssembler;
+    private final PagedResourcesAssembler<Offer> pagedResourcesAssembler;
+
+    public OfferServiceImp(OfferDao offerDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Offer> pagedResourcesAssembler) {
+        this.offerDao = offerDao;
+        this.userDao = userDao;
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Offer.class,OfferDto.class,modelMapper);
+    }
 
     @Override
-    public Page<OfferDto> getOffersByStatus(OfferStatus offerStatus, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByStatus(OfferStatus offerStatus, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByStatus(offerStatus,pageable);
-        return new PageImpl<>(offers.stream().map(offer -> this.modelMapper.map(offer, OfferDto.class)).collect(Collectors.toList()),pageable,offers.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public Page<OfferDto> getOffersByExpired(boolean expired, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByExpired(boolean expired, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByExpired(expired,pageable);
-        return new PageImpl<>(offers.stream().map(offer -> this.modelMapper.map(offer,OfferDto.class)).collect(Collectors.toList()),pageable,offers.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public Page<OfferDto> getOffersByBuyerID(Long buyerID, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByBuyerID(Long buyerID, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByBuyerID(buyerID,pageable);
-        return new PageImpl<>(offers.stream().map(offer -> this.modelMapper.map(offer,OfferDto.class)).collect(Collectors.toList()),pageable,offers.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public Page<OfferDto> getOffersByProductID(Long productID, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByProductID(Long productID, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByProductID(productID,pageable);
-        return new PageImpl<>(offers.stream().map(offer -> this.modelMapper.map(offer,OfferDto.class)).collect(Collectors.toList()),pageable,offers.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public Page<OfferDto> getOffersByProductIDAndStatus(Long productID, OfferStatus status, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByProductIDAndStatus(Long productID, OfferStatus status, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByProductAndStatus(productID,status,pageable);
-        return new PageImpl<>(offers.stream().map(offer -> this.modelMapper.map(offer,OfferDto.class)).collect(Collectors.toList()),pageable,offers.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override

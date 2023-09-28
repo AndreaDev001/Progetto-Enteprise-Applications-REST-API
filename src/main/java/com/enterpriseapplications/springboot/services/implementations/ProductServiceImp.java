@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
@@ -13,23 +14,33 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImp implements ProductService
 {
     private final ProductDao productDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Product,ProductDto> modelAssembler;
+    private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
+
+    public ProductServiceImp(ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Product> pagedResourcesAssembler) {
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Product.class,ProductDto.class,modelMapper);
+    }
 
     @Override
-    public Page<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable) {
+    public PagedModel<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable) {
         Page<Product> products = this.productDao.getProductsBySeller(sellerID,pageable);
-        return new PageImpl<>(products.stream().map(product -> this.modelMapper.map(product,ProductDto.class)).collect(Collectors.toList()),pageable,products.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override

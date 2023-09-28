@@ -5,14 +5,13 @@ import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
-import com.enterpriseapplications.springboot.data.dto.output.PaginationResponse;
 import com.enterpriseapplications.springboot.services.interfaces.BanService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,15 +25,15 @@ public class BanController
 
 
     @GetMapping("/banner/{userID}")
-    public ResponseEntity<PaginationResponse<BanDto>> getCreatedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        Page<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
-        return ResponseEntity.ok(new PaginationResponse<>(bans.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),bans.getTotalPages(),bans.getTotalElements()));
+    public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(bans);
     }
 
     @GetMapping("/banned/{userID}")
-    public ResponseEntity<PaginationResponse<BanDto>> getReceivedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        Page<BanDto> bans = this.banService.getReceivedBans(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
-        return ResponseEntity.ok(new PaginationResponse<>(bans.toList(),paginationRequest.getPage(),paginationRequest.getPageSize(),bans.getTotalPages(),bans.getTotalElements()));
+    public ResponseEntity<PagedModel<BanDto>> getReceivedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<BanDto> bans = this.banService.getReceivedBans(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(bans);
     }
 
     @GetMapping("/banned/{userID}/active")

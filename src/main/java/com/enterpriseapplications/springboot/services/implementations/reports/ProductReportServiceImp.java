@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.reports;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -17,6 +18,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,18 +27,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProductReportServiceImp implements ProductReportService {
 
     private final ProductReportDao productReportDao;
     private final UserDao userDao;
     private final ProductDao productDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<ProductReport,ProductReportDto> modelAssembler;
+    private final PagedResourcesAssembler<ProductReport> pagedResourcesAssembler;
 
+
+    public ProductReportServiceImp(ProductReportDao productReportDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<ProductReport> pagedResourcesAssembler) {
+        this.productReportDao = productReportDao;
+        this.userDao = userDao;
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(ProductReport.class,ProductReportDto.class,modelMapper);
+    }
     @Override
-    public Page<ProductReportDto> getReports(Long productID, Pageable pageable) {
+    public PagedModel<ProductReportDto> getReports(Long productID, Pageable pageable) {
         Page<ProductReport> productReports = this.productReportDao.getProductReports(productID,pageable);
-        return new PageImpl<>(productReports.stream().map(productReport -> this.modelMapper.map(ProductReport.class,ProductReportDto.class)).collect(Collectors.toList()),pageable,productReports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(productReports,modelAssembler);
     }
 
     @Override

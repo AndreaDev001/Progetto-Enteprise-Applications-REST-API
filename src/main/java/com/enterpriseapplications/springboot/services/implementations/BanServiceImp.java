@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -16,6 +17,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,22 +27,31 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class BanServiceImp implements BanService {
 
     private final BanDao banDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Ban,BanDto> modelAssembler;
+    private final PagedResourcesAssembler<Ban> pagedResourcesAssembler;
+
+    public BanServiceImp(BanDao banDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Ban> pagedResourcesAssembler) {
+        this.banDao = banDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Ban.class,BanDto.class,modelMapper);
+    }
 
     @Override
-    public Page<BanDto> getCreatedBans(Long userID, Pageable pageable) {
+    public PagedModel<BanDto> getCreatedBans(Long userID, Pageable pageable) {
         Page<Ban> bans = this.banDao.getCreatedBans(userID,pageable);
-        return new PageImpl<>(bans.stream().map(ban -> this.modelMapper.map(ban,BanDto.class)).collect(Collectors.toList()),pageable,bans.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
     @Override
-    public Page<BanDto> getReceivedBans(Long userID, Pageable pageable) {
+    public PagedModel<BanDto> getReceivedBans(Long userID, Pageable pageable) {
         Page<Ban> bans = this.banDao.getReceivedBans(userID,pageable);
-        return new PageImpl<>(bans.stream().map(ban -> this.modelMapper.map(ban,BanDto.class)).collect(Collectors.toList()),pageable,bans.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
     @Override
     public BanDto getCurrentBan(Long userID) {
@@ -82,11 +94,10 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
-    public Page<BanDto> getBansByReason(ReportReason reason, Pageable pageable) {
+    public PagedModel<BanDto> getBansByReason(ReportReason reason, Pageable pageable) {
         Page<Ban> bans = this.banDao.getBansByReason(reason,pageable);
-        return new PageImpl<>(bans.stream().map(ban -> this.modelMapper.map(ban,BanDto.class)).collect(Collectors.toList()),pageable,bans.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
-
 
     @Override
     public void deleteBan(Long id) {

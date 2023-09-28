@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.reports;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -17,6 +18,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,18 +28,29 @@ import java.util.stream.Collectors;
 
 
 @Service
-@RequiredArgsConstructor
 public class MessageReportServiceImp implements MessageReportService {
 
     private final MessageReportDao messageReportDao;
     private final UserDao userDao;
     private final MessageDao messageDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<MessageReport,MessageReportDto> modelAssembler;
+    private final PagedResourcesAssembler<MessageReport> pagedResourcesAssembler;
+
+
+    public MessageReportServiceImp(MessageReportDao messageReportDao,UserDao userDao,MessageDao messageDao,ModelMapper modelMapper,PagedResourcesAssembler<MessageReport> pagedResourcesAssembler) {
+        this.messageReportDao = messageReportDao;
+        this.userDao = userDao;
+        this.messageDao = messageDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(MessageReport.class,MessageReportDto.class,modelMapper);
+    }
 
     @Override
-    public Page<MessageReportDto> getMessageReports(Long messageID, Pageable pageable) {
+    public PagedModel<MessageReportDto> getMessageReports(Long messageID, Pageable pageable) {
         Page<MessageReport> messageReports = this.messageReportDao.getMessageReports(messageID,pageable);
-        return new PageImpl<>(messageReports.stream().map(messageReport -> this.modelMapper.map(MessageReport.class,MessageReportDto.class)).collect(Collectors.toList()),pageable,messageReports.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(messageReports,modelAssembler);
     }
 
     @Override

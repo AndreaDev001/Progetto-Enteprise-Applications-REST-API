@@ -6,15 +6,18 @@ import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
+@EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfferDto
+public class OfferDto extends GenericOutput<OfferDto>
 {
     private UserRef buyer;
     private ProductRef product;

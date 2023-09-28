@@ -7,13 +7,14 @@ import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface ReportService {
 
-    Page<ReportDto> getCreatedReports(Long userID, Pageable pageable);
-    Page<ReportDto> getReceivedReports(Long userID,Pageable pageable);
-    Page<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable);
-    Page<ReportDto> getReportsByType(ReportType type,Pageable pageable);
+    PagedModel<ReportDto> getCreatedReports(Long userID, Pageable pageable);
+    PagedModel<ReportDto> getReceivedReports(Long userID,Pageable pageable);
+    PagedModel<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable);
+    PagedModel<ReportDto> getReportsByType(ReportType type,Pageable pageable);
     ReportDto createReport(CreateReportDto createReportDto,Long reportedID);
     ReportDto updateReport(UpdateReportDto updateReportDto);
     ReportReason[] getReasons();

@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.ReplyDao;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +30,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ReplyServiceImp implements ReplyService
 {
     private final ReplyDao replyDao;
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Reply,ReplyDto> modelAssembler;
+    private final PagedResourcesAssembler<Reply> pagedResourcesAssembler;
+
+    public ReplyServiceImp(ReplyDao replyDao,ReviewDao reviewDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Reply> pagedResourcesAssembler) {
+        this.replyDao = replyDao;
+        this.reviewDao = reviewDao;
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Reply.class,ReplyDto.class,modelMapper);
+    }
 
     @Override
     public ReplyDto getReply(Long reviewID) {
@@ -66,9 +79,9 @@ public class ReplyServiceImp implements ReplyService
     }
 
     @Override
-    public Page<ReplyDto> getWrittenReplies(Long userID, Pageable pageable) {
+    public PagedModel<ReplyDto> getWrittenReplies(Long userID, Pageable pageable) {
         Page<Reply> replies = this.replyDao.findByWriter(userID, pageable);
-        return new PageImpl<>(replies.stream().map(reply -> this.modelMapper.map(reply,ReplyDto.class)).collect(Collectors.toList()),pageable,replies.getTotalElements());
+        return this.pagedResourcesAssembler.toModel(replies,modelAssembler);
     }
 
     @Override
