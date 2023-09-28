@@ -1,9 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.output.user;
 
 import com.enterpriseapplications.springboot.HateoasUtils;
-import com.enterpriseapplications.springboot.controllers.BanController;
-import com.enterpriseapplications.springboot.controllers.FollowController;
-import com.enterpriseapplications.springboot.controllers.OrderController;
+import com.enterpriseapplications.springboot.controllers.*;
 import com.enterpriseapplications.springboot.controllers.images.UserImageController;
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
@@ -51,6 +49,9 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
         this.add(linkTo(methodOn(BanController.class).getCreatedBans(id,paginationRequest)).slash(paginationQuery).withRel("created_bans").withName("createdBans"));
         this.add(linkTo(methodOn(BanController.class).getReceivedBans(id,paginationRequest)).slash(paginationQuery).withRel("received_bans").withName("receivedBans"));
         this.add(linkTo(methodOn(OrderController.class).getOrders(id,paginationRequest)).slash(paginationQuery).withRel("orders").withName("orders"));
+        this.add(linkTo(methodOn(ReviewController.class).findAllWrittenReviews(id,paginationRequest)).slash(paginationQuery).withRel("written_reviews").withName("writtenReviews"));
+        this.add(linkTo(methodOn(ReviewController.class).findAllReceivedReviews(id,paginationRequest)).slash(paginationQuery).withRel("received_reviews").withName("receivedReviews"));
+        this.add(linkTo(methodOn(ReplyController.class).getReplies(id,paginationRequest)).slash(paginationQuery).withRel("replies").withName("replies"));
         this.add(linkTo(methodOn(UserImageController.class).getUserImage(id)).withRel("image").withName("image"));
     }
 }
