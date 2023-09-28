@@ -21,6 +21,7 @@ public class SecurityConfig
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("http://localhost:4200");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("OPTIONS");
         corsConfiguration.addAllowedMethod("HEAD");
@@ -46,8 +47,10 @@ public class SecurityConfig
                         .requestMatchers("/bans/**").permitAll()
                         .requestMatchers("/offers/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/userImages/**").permitAll()
+                        .requestMatchers("/productImages/**").permitAll()
                         .requestMatchers(("/users/**")).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

@@ -4,6 +4,8 @@ package com.enterpriseapplications.springboot.data.entities;
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
+import com.enterpriseapplications.springboot.data.entities.images.Image;
+import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -74,6 +76,9 @@ public class User
     @JoinTable(name = "LIKED_PRODUCTS")
     private Set<Product> likedProducts = new HashSet<>();
 
+    @OneToOne(orphanRemoval = true,cascade = CascadeType.ALL)
+    private UserImage userImage;
+
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 
@@ -82,6 +87,9 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "receiver",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Review> receivedReviews = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "writer",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Reply> writtenReplies = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "followed",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Follow> followers;

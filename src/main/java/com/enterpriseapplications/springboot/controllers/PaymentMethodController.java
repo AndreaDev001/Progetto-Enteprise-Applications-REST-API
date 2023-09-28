@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("paymentMethods")
+@RequestMapping("/paymentMethods")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class PaymentMethodController

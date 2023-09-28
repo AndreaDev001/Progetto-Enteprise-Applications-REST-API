@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,27 +12,29 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
+@Table(name = "REPLIES")
 @Entity
-@Table(name = "IMAGES")
 @EntityListeners(value = AuditingEntityListener.class)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Image
+public class Reply
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME",unique = true)
-    private String name;
+    @OneToOne(mappedBy = "reply")
+    private Review review;
 
-    @Column(name = "TYPE",unique = false)
-    private String type;
+    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @JoinColumn(name = "WRITER")
+    private User writer;
 
-    @Lob
-    @Column(name = "IMAGE",unique = false,nullable = false)
-    private byte[] image;
+    @Column(name = "TEXT",unique = false)
+    @Convert(converter = TrimConverter.class)
+    private String text;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

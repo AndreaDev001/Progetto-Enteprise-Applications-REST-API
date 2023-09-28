@@ -17,8 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class ProductController

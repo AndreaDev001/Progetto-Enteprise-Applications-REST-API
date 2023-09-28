@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("offers")
+@RequestMapping("/offers")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class OfferController

@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("messages")
+@RequestMapping("/messages")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class MessageController {

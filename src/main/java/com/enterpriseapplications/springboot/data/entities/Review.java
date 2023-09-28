@@ -28,6 +28,9 @@ public class Review
     @Convert(converter = TrimConverter.class)
     private String text;
 
+    @OneToOne(optional = true)
+    private Reply reply;
+
     @Column(name = "RATING",unique = false)
     private Integer rating;
 

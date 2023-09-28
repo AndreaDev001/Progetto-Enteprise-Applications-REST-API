@@ -41,12 +41,6 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.TOO_MANY_REQUESTS,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
     }
 
-    @ExceptionHandler({AuthenticationException.class})
-    @ResponseStatus(value= HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> authenticationException(AuthenticationException authenticationException,HttpServletRequest request) {
-        return errorResponse(HttpStatus.UNAUTHORIZED,Date.from(Instant.now()),authenticationException.getLocalizedMessage(),request.getRequestURI());
-    }
-
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String code, String url) {
         ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),messageGetter.getMessage(code));
         return ResponseEntity.status(httpStatus).body(errorResponse);

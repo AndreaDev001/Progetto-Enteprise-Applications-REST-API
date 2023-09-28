@@ -4,6 +4,8 @@ package com.enterpriseapplications.springboot.data.entities;
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
+import com.enterpriseapplications.springboot.data.entities.images.Image;
+import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,7 +65,7 @@ public class Product {
     private User seller;
 
     @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
-    private Set<Image> productImages = new HashSet<>();
+    private Set<ProductImage> productImages = new HashSet<>();
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)

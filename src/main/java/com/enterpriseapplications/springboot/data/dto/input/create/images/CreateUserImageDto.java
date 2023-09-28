@@ -1,7 +1,8 @@
-package com.enterpriseapplications.springboot.data.dto.input.images;
+package com.enterpriseapplications.springboot.data.dto.input.create.images;
 
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,8 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserImageDto extends CreateImageDto
+public class CreateUserImageDto
 {
+    @NotNull
+    @PositiveOrZero
+    private Long userID;
+    
     @NotNull
     private MultipartFile file;
 }

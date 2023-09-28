@@ -1,7 +1,8 @@
-package com.enterpriseapplications.springboot.data.dto.output;
+package com.enterpriseapplications.springboot.data.dto.output.images;
 
 
-import com.enterpriseapplications.springboot.controllers.ImageController;
+import com.enterpriseapplications.springboot.controllers.images.ImageController;
+import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,15 +20,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @NoArgsConstructor
 public class ImageDto extends GenericOutput<ImageDto>
 {
-    private Long id;
-    private String name;
-    private String type;
-    private LocalDate createdDate;
+    protected Long id;
+    protected String name;
+    protected String type;
+    protected LocalDate createdDate;
     @JsonIgnore
-    private byte[] image;
+    protected byte[] image;
 
     @Override
     public void addLinks(Object... params) {
-        this.add(linkTo(methodOn(ImageController.class).getImage(name)).withRel("imageURL"));
+        this.add(linkTo(methodOn(ImageController.class).getImage(id)).withRel("imageURL"));
     }
 }

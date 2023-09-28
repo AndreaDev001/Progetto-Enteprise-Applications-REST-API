@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("reviews")
+@RequestMapping("/reviews")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class ReviewController {

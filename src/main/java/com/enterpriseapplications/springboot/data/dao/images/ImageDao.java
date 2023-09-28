@@ -1,8 +1,7 @@
-package com.enterpriseapplications.springboot.data.dao;
+package com.enterpriseapplications.springboot.data.dao.images;
 
 
-import com.enterpriseapplications.springboot.data.dto.output.ImageDto;
-import com.enterpriseapplications.springboot.data.entities.Image;
+import com.enterpriseapplications.springboot.data.entities.images.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,10 +15,8 @@ import java.util.Optional;
 @Transactional
 public interface ImageDao extends JpaRepository<Image,Long>
 {
-
     @Query("select i from Image i where i.type = :requiredType")
     List<Image> getImagesByType(@Param("requiredType") String type);
-
     @Query("select i from Image i where i.name = :requiredName")
-    Optional<Image> getImage(@Param("requiredName") String name);
+    List<Image> getImagesByName(@Param("requiredName") String name);
 }

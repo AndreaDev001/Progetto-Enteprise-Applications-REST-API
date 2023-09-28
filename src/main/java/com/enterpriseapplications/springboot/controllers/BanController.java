@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("bans")
+@RequestMapping("/bans")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class BanController

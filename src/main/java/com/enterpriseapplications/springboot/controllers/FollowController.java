@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("follows")
+@RequestMapping("/follows")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class FollowController {
