@@ -3,10 +3,9 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
-import com.enterpriseapplications.springboot.data.dto.output.user.UserDetailsDto;
+import com.enterpriseapplications.springboot.data.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
-import com.enterpriseapplications.springboot.handlers.CustomerHandler;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.data.dto.output.user;
+package com.enterpriseapplications.springboot.data;
 
 import com.enterpriseapplications.springboot.HateoasUtils;
 import com.enterpriseapplications.springboot.controllers.*;
@@ -10,8 +10,6 @@ import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
