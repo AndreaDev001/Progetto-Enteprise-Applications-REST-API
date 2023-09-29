@@ -26,6 +26,11 @@ public class OfferController
 {
     private final OfferService offerService;
 
+    @GetMapping
+    public ResponseEntity<PagedModel<OfferDto>> getOffers(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<OfferDto> offers = this.offerService.getOffers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(offers);
+    }
     @GetMapping("/status/{status}")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByStatus(@PathVariable("status") OfferStatus status, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByStatus(status, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

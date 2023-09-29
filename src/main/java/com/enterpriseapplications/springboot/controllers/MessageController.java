@@ -23,6 +23,13 @@ import java.util.UUID;
 public class MessageController {
     private final MessageService messageService;
 
+
+    @GetMapping
+    public ResponseEntity<PagedModel<MessageDto>> getMessages(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<MessageDto> messages = this.messageService.getMessages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(messages);
+    }
+
     @GetMapping("{userID}/sent")
     public ResponseEntity<PagedModel<MessageDto>> getSentMessages(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getSentMessages(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

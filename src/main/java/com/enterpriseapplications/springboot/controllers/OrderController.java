@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers;
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
+import com.enterpriseapplications.springboot.data.entities.Order;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -22,6 +23,12 @@ import java.util.UUID;
 public class OrderController
 {
     private final OrderService orderService;
+
+    @GetMapping
+    public ResponseEntity<PagedModel<OrderDto>> getOrders(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<OrderDto> orders = this.orderService.getOrders(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(orders);
+    }
 
     @GetMapping("/buyer/{userID}")
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {

@@ -28,6 +28,12 @@ public class ProductController
     private final ProductService productService;
 
 
+    @GetMapping
+    public ResponseEntity<PagedModel<ProductDto>> getProducts(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("{productID}/details")
     public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productService.getProductDetails(productID));

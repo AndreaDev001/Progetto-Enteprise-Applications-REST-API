@@ -5,9 +5,11 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReplyDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReplyDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReplyDto;
+import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.services.interfaces.ReplyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
@@ -22,6 +24,12 @@ import java.util.UUID;
 public class ReplyController
 {
     private final ReplyService replyService;
+
+    @GetMapping
+    public ResponseEntity<PagedModel<ReplyDto>> getReplies(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ReplyDto> replies = this.replyService.getReplies(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(replies);
+    }
 
     @GetMapping("/review/{reviewID}")
     public ResponseEntity<ReplyDto> getReply(@PathVariable("reviewID") UUID id) {

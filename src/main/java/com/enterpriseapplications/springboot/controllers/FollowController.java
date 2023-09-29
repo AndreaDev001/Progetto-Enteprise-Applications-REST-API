@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers;
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.FollowDto;
+import com.enterpriseapplications.springboot.data.entities.Follow;
 import com.enterpriseapplications.springboot.services.interfaces.FollowService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -23,6 +24,12 @@ import java.util.UUID;
 public class FollowController {
 
     private final FollowService followService;
+
+    @GetMapping
+    public ResponseEntity<PagedModel<FollowDto>> getFollows(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<FollowDto> follows = this.followService.getFollows(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(follows);
+    }
 
     @GetMapping("{userID}/followers")
     public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {

@@ -26,6 +26,12 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @GetMapping
+    public ResponseEntity<PagedModel<ReviewDto>> getAll(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ReviewDto> reviews = this.reviewService.getReviews(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(reviews);
+    }
+
     @GetMapping("{userID}/writer")
     public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") UUID userID, @Parameter @Valid PaginationRequest paginationRequest)
     {

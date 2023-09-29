@@ -9,6 +9,7 @@ import com.enterpriseapplications.springboot.services.interfaces.reports.Product
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
@@ -23,6 +24,13 @@ import java.util.UUID;
 public class ProductReportController {
 
     private final ProductReportService productReportService;
+
+
+    @GetMapping
+    public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ProductReportDto> productReports = this.productReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(productReports);
+    }
 
     @GetMapping("{productID}")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {

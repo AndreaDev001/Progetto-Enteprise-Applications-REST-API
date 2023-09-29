@@ -28,6 +28,12 @@ public class BanController
     private final BanService banService;
 
 
+    @GetMapping
+    public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<BanDto> bans = this.banService.getBans(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(bans);
+    }
+
     @GetMapping("/banner/{userID}")
     public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

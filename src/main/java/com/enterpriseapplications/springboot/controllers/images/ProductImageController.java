@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers.images;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateProductImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
@@ -8,6 +9,9 @@ import com.enterpriseapplications.springboot.services.interfaces.images.ProductI
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,12 @@ import java.util.UUID;
 public class ProductImageController
 {
     private final ProductImageService productImageService;
+
+    @GetMapping
+    public ResponseEntity<PagedModel<ProductImageDto>> getProductImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ProductImageDto> products = this.productImageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
 
     @GetMapping("{productID}")
     public ResponseEntity<List<ProductImageDto>> getProductImages(@PathVariable("productID") UUID productID) {
