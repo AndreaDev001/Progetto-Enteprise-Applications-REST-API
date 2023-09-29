@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot;
 
+import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
@@ -8,7 +9,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 
-public class GenericModelAssembler<T,U extends RepresentationModel<?>> extends RepresentationModelAssemblerSupport<T,U> {
+public class GenericModelAssembler<T,U extends GenericOutput<?>> extends RepresentationModelAssemblerSupport<T,U> {
 
     private final ModelMapper modelMapper;
 
@@ -19,6 +20,8 @@ public class GenericModelAssembler<T,U extends RepresentationModel<?>> extends R
 
     @Override
     public U toModel(T entity) {
-        return HateoasUtils.convertToType(entity,this.getResourceType(),modelMapper);
+        U result = HateoasUtils.convertToType(entity,this.getResourceType(),modelMapper);
+        result.addLinks();
+        return result;
     }
 }

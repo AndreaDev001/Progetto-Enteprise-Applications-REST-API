@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.BanSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,12 @@ public class BanController
     @GetMapping("/banned/{userID}")
     public ResponseEntity<PagedModel<BanDto>> getReceivedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getReceivedBans(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(bans);
+    }
+
+    @GetMapping("/spec")
+    public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid BanSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<BanDto> bans = this.banService.getBansBySpec(BanSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 

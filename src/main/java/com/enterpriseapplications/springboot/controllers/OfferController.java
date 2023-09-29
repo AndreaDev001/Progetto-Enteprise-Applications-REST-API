@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
@@ -47,6 +48,12 @@ public class OfferController
     @PostMapping
     public ResponseEntity<OfferDto> createOffer(@RequestBody @Valid CreateOfferDto createOfferDto) {
         return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
+    }
+
+    @GetMapping("/spec")
+    public ResponseEntity<PagedModel<OfferDto>> getOffersBySpec(@ParameterObject @Valid OfferSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<OfferDto> offers = this.offerService.getOffersBySpec(OfferSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(offers);
     }
 
     @GetMapping("/product/{productID}/status/{status}")

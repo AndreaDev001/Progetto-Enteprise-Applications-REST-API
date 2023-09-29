@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -96,6 +97,12 @@ public class BanServiceImp implements BanService {
     @Override
     public PagedModel<BanDto> getBansByReason(ReportReason reason, Pageable pageable) {
         Page<Ban> bans = this.banDao.getBansByReason(reason,pageable);
+        return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<BanDto> getBansBySpec(Specification<Ban> specification, Pageable pageable) {
+        Page<Ban> bans = this.banDao.findAll(specification, pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
 

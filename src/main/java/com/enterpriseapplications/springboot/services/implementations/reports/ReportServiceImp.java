@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,6 +66,12 @@ public class ReportServiceImp implements ReportService {
     @Override
     public PagedModel<ReportDto> getReportsByType(ReportType type, Pageable pageable) {
         Page<Report> reports = this.reportDao.getReportsByType(type,pageable);
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<ReportDto> getReportsBySpec(Specification<Report> specification, Pageable pageable) {
+        Page<Report> reports = this.reportDao.findAll(specification,pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 

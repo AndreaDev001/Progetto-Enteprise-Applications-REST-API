@@ -1,6 +1,8 @@
 package com.enterpriseapplications.springboot.controllers.reports;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
@@ -27,6 +29,12 @@ public class ReportController {
     @GetMapping("reason/{reason}")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByReason(@PathVariable("reason") ReportReason reason, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReportsByReason(reason, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(reports);
+    }
+
+    @GetMapping("/spec")
+    public ResponseEntity<PagedModel<ReportDto>> getReportsBySpec(@ParameterObject @Valid ReportSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ReportDto> reports = this.reportService.getReportsBySpec(ReportSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 

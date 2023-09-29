@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
@@ -25,7 +26,7 @@ public class ProductController
     private final ProductService productService;
 
 
-    @GetMapping("{productID}")
+    @GetMapping("{productID}/details")
     public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") Long productID) {
         return ResponseEntity.ok(this.productService.getProductDetails(productID));
     }
@@ -33,6 +34,12 @@ public class ProductController
     @GetMapping("seller/{sellerID}")
     public ResponseEntity<PagedModel<ProductDto>> getProducts(@PathVariable("sellerID") Long sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProductsBySeller(sellerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/spec")
+    public ResponseEntity<PagedModel<ProductDto>> getProductsBySpec(@ParameterObject @Valid ProductSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getProductsBySpec(ProductSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
 

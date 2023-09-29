@@ -30,6 +30,7 @@ public class ProductDto extends GenericOutput<ProductDto>
     private UserRef seller;
     private ProductCondition condition;
     private BigDecimal price;
+    private CategoryDto category;
     private LocalDate createdDate;
 
     @Override

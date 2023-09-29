@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,6 +73,12 @@ public class OfferServiceImp implements OfferService
     @Override
     public PagedModel<OfferDto> getOffersByProductIDAndStatus(Long productID, OfferStatus status, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByProductAndStatus(productID,status,pageable);
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable) {
+        Page<Offer> offers = this.offerDao.findAll(specification,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 

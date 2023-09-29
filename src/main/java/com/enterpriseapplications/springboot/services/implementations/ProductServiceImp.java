@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,12 @@ public class ProductServiceImp implements ProductService
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
         productDto.addLinks();
         return productDto;
+    }
+
+    @Override
+    public PagedModel<ProductDto> getProductsBySpec(Specification<Product> specification, Pageable pageable) {
+        Page<Product> products = this.productDao.findAll(specification,pageable);
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
