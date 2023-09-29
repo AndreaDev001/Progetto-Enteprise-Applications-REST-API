@@ -31,6 +31,11 @@ public class FollowController {
         return ResponseEntity.ok(follows);
     }
 
+    @GetMapping("{followID}")
+    public ResponseEntity<FollowDto> getFollow(@PathVariable("followID") UUID followID) {
+        return ResponseEntity.ok(this.followService.getFollow(followID));
+    }
+
     @GetMapping("{userID}/followers")
     public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> pagedModel = this.followService.findAllFollowers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

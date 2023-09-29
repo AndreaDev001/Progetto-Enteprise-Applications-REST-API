@@ -23,6 +23,11 @@ public class CategoryController
         return ResponseEntity.ok(this.categoryService.getCategories());
     }
 
+    @GetMapping("{categoryID}")
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable("categoryID") UUID categoryID) {
+        return ResponseEntity.ok(this.categoryService.getCategory(categoryID));
+    }
+
     @GetMapping("/primaries")
     public ResponseEntity<List<String>> getPrimaryCategories() {
         return ResponseEntity.ok(this.categoryService.getPrimaryCategories());

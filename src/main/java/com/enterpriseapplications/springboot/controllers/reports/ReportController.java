@@ -28,10 +28,16 @@ import java.util.UUID;
 public class ReportController {
     private final ReportService reportService;
 
+
     @GetMapping
     public ResponseEntity<PagedModel<ReportDto>> getReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
+    }
+
+    @GetMapping("{reportID}")
+    public ResponseEntity<ReportDto> getReport(@PathVariable("reportID") UUID reportID) {
+        return ResponseEntity.ok(this.reportService.getReport(reportID));
     }
 
     @GetMapping("reason/{reason}")

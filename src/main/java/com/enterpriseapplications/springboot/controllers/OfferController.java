@@ -31,6 +31,12 @@ public class OfferController
         PagedModel<OfferDto> offers = this.offerService.getOffers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
+
+    @GetMapping("{offerID}")
+    public ResponseEntity<OfferDto> getOffer(@PathVariable("offerID") UUID offerID) {
+        return ResponseEntity.ok(this.offerService.getOffer(offerID));
+    }
+
     @GetMapping("/status/{status}")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByStatus(@PathVariable("status") OfferStatus status, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByStatus(status, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

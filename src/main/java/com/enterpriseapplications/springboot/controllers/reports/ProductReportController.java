@@ -32,6 +32,11 @@ public class ProductReportController {
         return ResponseEntity.ok(productReports);
     }
 
+    @GetMapping("{reportID}")
+    public ResponseEntity<ProductReportDto> getProductReport(@PathVariable("reportID") UUID reportID) {
+        return ResponseEntity.ok(this.productReportService.getReport(reportID));
+    }
+
     @GetMapping("{productID}")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(productID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

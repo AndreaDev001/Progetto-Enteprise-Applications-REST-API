@@ -31,9 +31,14 @@ public class ReplyController
         return ResponseEntity.ok(replies);
     }
 
+    @GetMapping("{replyID}")
+    public ResponseEntity<ReplyDto> getReply(@PathVariable("replyID") UUID replyID) {
+        return ResponseEntity.ok(this.replyService.getReply(replyID));
+    }
+
     @GetMapping("/review/{reviewID}")
-    public ResponseEntity<ReplyDto> getReply(@PathVariable("reviewID") UUID id) {
-        return ResponseEntity.ok(this.replyService.getReply(id));
+    public ResponseEntity<ReplyDto> getReplyByReviews(@PathVariable("reviewID") UUID reviewID) {
+        return ResponseEntity.ok(this.replyService.getReplyByReview(reviewID));
     }
 
     @GetMapping("/writer/{writerID}")

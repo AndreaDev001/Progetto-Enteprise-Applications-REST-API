@@ -30,6 +30,11 @@ public class MessageController {
         return ResponseEntity.ok(messages);
     }
 
+    @GetMapping("{messageID}")
+    public ResponseEntity<MessageDto> getMessage(@PathVariable("messageID") UUID messageID) {
+        return ResponseEntity.ok(this.messageService.getMessage(messageID));
+    }
+
     @GetMapping("{userID}/sent")
     public ResponseEntity<PagedModel<MessageDto>> getSentMessages(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getSentMessages(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

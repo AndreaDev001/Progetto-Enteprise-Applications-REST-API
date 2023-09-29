@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -28,6 +29,11 @@ public class OrderController
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("{orderID}")
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("orderID") UUID orderID) {
+        return ResponseEntity.ok(this.orderService.getOrder(orderID));
     }
 
     @GetMapping("/buyer/{userID}")

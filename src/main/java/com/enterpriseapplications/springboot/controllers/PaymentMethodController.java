@@ -29,6 +29,11 @@ public class PaymentMethodController
         return ResponseEntity.ok(paymentMethods);
     }
 
+    @GetMapping("{paymentMethodID}")
+    public ResponseEntity<PaymentMethodDto> getPaymentMethod(@PathVariable("paymentMethodID") UUID paymentMethodID) {
+        return ResponseEntity.ok(this.paymentMethodService.getPaymentMethod(paymentMethodID));
+    }
+
     @GetMapping("/owner/{userID}")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethods(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

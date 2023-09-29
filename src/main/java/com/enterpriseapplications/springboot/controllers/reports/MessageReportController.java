@@ -30,6 +30,11 @@ public class MessageReportController {
         return ResponseEntity.ok(reports);
     }
 
+    @GetMapping("{reportID}")
+    public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("reportID") UUID reportID) {
+        return ResponseEntity.ok(this.messageReportService.getReport(reportID));
+    }
+
     @GetMapping("{messageID}")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") UUID messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
