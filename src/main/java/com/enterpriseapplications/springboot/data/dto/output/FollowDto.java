@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class FollowDto extends GenericOutput<FollowDto>
 {
+    private UUID id;
     private UserRef follower;
     private UserRef followed;
     private LocalDate createdDate;

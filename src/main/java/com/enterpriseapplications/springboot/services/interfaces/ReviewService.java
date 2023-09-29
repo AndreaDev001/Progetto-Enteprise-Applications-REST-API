@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface ReviewService {
-    PagedModel<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable);
-    PagedModel<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable);
-    ReviewDto findReview(Long writerID, Long receiverID);
+    PagedModel<ReviewDto> findAllWrittenReviews(UUID writerID, Pageable pageable);
+    PagedModel<ReviewDto> findAllReceivedReviews(UUID receiverID,Pageable pageable);
+    ReviewDto findReview(UUID writerID, UUID receiverID);
     ReviewDto createReview(CreateReviewDto createReviewDto);
     ReviewDto updateReview(UpdateReviewDto updateReviewDto);
-    void deleteReview(Long reviewID);
+    void deleteReview(UUID reviewID);
 }

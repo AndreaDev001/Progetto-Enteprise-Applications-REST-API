@@ -10,10 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @Transactional
-public interface ImageDao extends JpaRepository<Image,Long>
+public interface ImageDao extends JpaRepository<Image, UUID>
 {
     @Query("select i from Image i where i.type = :requiredType")
     List<Image> getImagesByType(@Param("requiredType") String type);

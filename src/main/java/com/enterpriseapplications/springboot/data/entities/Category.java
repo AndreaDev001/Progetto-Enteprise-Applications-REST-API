@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
@@ -23,8 +24,8 @@ import java.util.Set;
 public class Category
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "PRIMARY_CAT",unique = false)
     @Convert(converter = TrimConverter.class)

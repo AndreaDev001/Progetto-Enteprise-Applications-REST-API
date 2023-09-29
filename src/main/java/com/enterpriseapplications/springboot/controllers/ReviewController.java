@@ -16,6 +16,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
@@ -25,20 +27,20 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("{userID}/writer")
-    public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") Long userID, @Parameter @Valid PaginationRequest paginationRequest)
+    public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") UUID userID, @Parameter @Valid PaginationRequest paginationRequest)
     {
         PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("{userID}/received")
-    public ResponseEntity<PagedModel<ReviewDto>> findAllReceivedReviews(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ReviewDto>> findAllReceivedReviews(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/review")
-    public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") Long writerID,@RequestParam("receiverID") Long receiverID) {
+    public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") UUID writerID,@RequestParam("receiverID") UUID receiverID) {
         return ResponseEntity.ok(this.reviewService.findReview(writerID,receiverID));
     }
 
@@ -53,7 +55,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("{reviewID}")
-    public ResponseEntity<Void> deleteReview(@PathVariable("reviewID") Long reviewID) {
+    public ResponseEntity<Void> deleteReview(@PathVariable("reviewID") UUID reviewID) {
         this.reviewService.deleteReview(reviewID);
         return ResponseEntity.noContent().build();
     }

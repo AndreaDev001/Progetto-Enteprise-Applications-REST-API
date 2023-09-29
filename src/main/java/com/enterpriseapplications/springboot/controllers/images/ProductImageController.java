@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/productImages")
@@ -23,21 +24,21 @@ public class ProductImageController
     private final ProductImageService productImageService;
 
     @GetMapping("{productID}")
-    public ResponseEntity<List<ProductImageDto>> getProductImages(@PathVariable("productID") Long productID) {
+    public ResponseEntity<List<ProductImageDto>> getProductImages(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productImageService.getProductImages(productID));
     }
     @GetMapping("{productID}/first")
-    public ResponseEntity<byte[]> getFirstImage(@PathVariable("productID") Long productID) {
+    public ResponseEntity<byte[]> getFirstImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getFirstProductImage(productID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
     @GetMapping("{productID}/last")
-    public ResponseEntity<byte[]> getLastImage(@PathVariable("productID") Long productID) {
+    public ResponseEntity<byte[]> getLastImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getLastProductImage(productID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
     @GetMapping("{productID}/{index}")
-    public ResponseEntity<byte[]> getImageByIndex(@PathVariable("productID") Long productID,@PathVariable("index") Integer index) {
+    public ResponseEntity<byte[]> getImageByIndex(@PathVariable("productID") UUID productID,@PathVariable("index") Integer index) {
         ProductImageDto productImageDto = this.productImageService.getProductImage(productID,index);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
@@ -46,7 +47,7 @@ public class ProductImageController
         return ResponseEntity.ok(this.productImageService.uploadImages(productImageDto));
     }
     @DeleteMapping("{productID}")
-    public ResponseEntity<Void> deleteProductImages(@PathVariable("productID") Long productID) {
+    public ResponseEntity<Void> deleteProductImages(@PathVariable("productID") UUID productID) {
         this.productImageService.deleteProductImages(productID);
         return ResponseEntity.noContent().build();
     }

@@ -10,9 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface MessageReportDao extends JpaRepository<MessageReport,Long> {
+public interface MessageReportDao extends JpaRepository<MessageReport, UUID> {
 
     @Query("select m from MessageReport m where m.message.id = :requiredID")
-    Page<MessageReport> getMessageReports(@Param("requiredID") Long requiredID, Pageable pageable);
+    Page<MessageReport> getMessageReports(@Param("requiredID") UUID requiredID, Pageable pageable);
 }

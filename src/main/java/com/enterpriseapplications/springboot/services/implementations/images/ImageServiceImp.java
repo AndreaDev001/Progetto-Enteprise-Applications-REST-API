@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +33,7 @@ public class ImageServiceImp implements ImageService
 
 
     @Override
-    public ImageDto getImage(Long imageID) {
+    public ImageDto getImage(UUID imageID) {
         Image image = this.imageDao.findById(imageID).orElseThrow();
         ImageDto imageDto = new ImageDto();
         imageDto.setName(image.getName());
@@ -55,7 +56,7 @@ public class ImageServiceImp implements ImageService
 
     @Override
     @Transactional
-    public void deleteImage(Long imageID) {
+    public void deleteImage(UUID imageID) {
         this.imageDao.findById(imageID).orElseThrow();
         this.imageDao.deleteById(imageID);
     }

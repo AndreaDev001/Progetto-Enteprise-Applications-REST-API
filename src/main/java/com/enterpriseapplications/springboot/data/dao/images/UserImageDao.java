@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @Transactional
-public interface UserImageDao extends JpaRepository<UserImage,Long>
+public interface UserImageDao extends JpaRepository<UserImage, UUID>
 {
     @Query("select u from UserImage u where u.user.id = :requiredID")
-    Optional<UserImage> getUserImage(@Param("requiredID") Long requiredID);
+    Optional<UserImage> getUserImage(@Param("requiredID") UUID requiredID);
 }

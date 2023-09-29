@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -27,8 +28,8 @@ import java.util.Set;
 public class User
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "ID")
+    private UUID id;
 
     @Column(name = "EMAIL",unique = true)
     @Convert(converter = TrimConverter.class)

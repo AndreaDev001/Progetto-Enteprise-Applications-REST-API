@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/categories")
@@ -38,7 +39,7 @@ public class CategoryController
     }
 
     @DeleteMapping("{categoryID}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable("categoryID") Long categoryID) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable("categoryID") UUID categoryID) {
         this.categoryService.deleteCategory(categoryID);
         return ResponseEntity.noContent().build();
     }

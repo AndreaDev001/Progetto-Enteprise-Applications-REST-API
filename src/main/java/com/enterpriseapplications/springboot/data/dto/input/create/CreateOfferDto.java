@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -14,5 +15,5 @@ public class CreateOfferDto
 {
     private BigDecimal price;
     private String description;
-    private Long productID;
+    private UUID productID;
 }

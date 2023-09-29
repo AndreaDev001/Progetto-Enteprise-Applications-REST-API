@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,13 +46,13 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public PagedModel<OrderDto> getOrders(Long userID, Pageable pageable) {
+    public PagedModel<OrderDto> getOrders(UUID userID, Pageable pageable) {
         Page<Order> orders = this.orderDao.getOrders(userID,pageable);
         return this.pagedResourcesAssembler.toModel(orders,modelAssembler);
     }
 
     @Override
-    public OrderDto getOrder(Long productID) {
+    public OrderDto getOrder(UUID productID) {
         Order order = this.orderDao.findOrder(productID).orElseThrow();
         return this.modelMapper.map(order,OrderDto.class);
     }
@@ -59,7 +60,7 @@ public class OrderServiceImp implements OrderService {
     @Override
     @Transactional
     public OrderDto createOrder(CreateOrderDto createOrderDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(createOrderDto.getProductID()).orElseThrow();
         if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
             throw new InvalidFormat("errors.order.invalidOwner");
@@ -72,7 +73,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public void deleteOrder(Long orderID) {
+    public void deleteOrder(UUID orderID) {
         this.orderDao.findById(orderID).orElseThrow();
         this.orderDao.deleteById(orderID);
     }

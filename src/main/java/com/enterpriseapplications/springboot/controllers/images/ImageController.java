@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/images")
@@ -21,7 +22,7 @@ public class ImageController
     private final ImageService imageService;
 
     @GetMapping("{imageID}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("imageID") Long imageID) {
+    public ResponseEntity<byte[]> getImage(@PathVariable("imageID") UUID imageID) {
         ImageDto imageDto = this.imageService.getImage(imageID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(imageDto.getType())).body(imageDto.getImage());
     }
@@ -37,7 +38,7 @@ public class ImageController
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteImage(@PathVariable("id") Long imageID) {
+    public ResponseEntity<Void> deleteImage(@PathVariable("id") UUID imageID) {
         this.imageService.deleteImage(imageID);
         return ResponseEntity.noContent().build();
     }

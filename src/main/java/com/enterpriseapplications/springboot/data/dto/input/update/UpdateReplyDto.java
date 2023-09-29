@@ -8,14 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateReplyDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long replyID;
+    private UUID replyID;
 
     @NotNull
     @NotBlank

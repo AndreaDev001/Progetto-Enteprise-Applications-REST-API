@@ -10,6 +10,7 @@ import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -22,7 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Relation(collectionRelation = "content")
 public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
 
-    private Long id;
+    private UUID id;
     private String email;
     private String username;
     private String name;

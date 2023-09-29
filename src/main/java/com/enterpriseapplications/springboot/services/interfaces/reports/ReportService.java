@@ -11,16 +11,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface ReportService {
 
-    PagedModel<ReportDto> getCreatedReports(Long userID, Pageable pageable);
-    PagedModel<ReportDto> getReceivedReports(Long userID,Pageable pageable);
+    PagedModel<ReportDto> getCreatedReports(UUID userID, Pageable pageable);
+    PagedModel<ReportDto> getReceivedReports(UUID userID,Pageable pageable);
     PagedModel<ReportDto> getReportsByReason(ReportReason reason, Pageable pageable);
     PagedModel<ReportDto> getReportsByType(ReportType type,Pageable pageable);
     PagedModel<ReportDto> getReportsBySpec(Specification<Report> specification,Pageable pageable);
-    ReportDto createReport(CreateReportDto createReportDto,Long reportedID);
+    ReportDto createReport(CreateReportDto createReportDto,UUID reportedID);
     ReportDto updateReport(UpdateReportDto updateReportDto);
     ReportReason[] getReasons();
     ReportType[] getTypes();
-    void deleteReport(Long reportID);
+    void deleteReport(UUID reportID);
 }

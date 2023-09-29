@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,24 +44,24 @@ public class FollowServiceImp implements FollowService {
     }
 
     @Override
-    public PagedModel<FollowDto> findAllFollowers(Long userID, Pageable pageable) {
+    public PagedModel<FollowDto> findAllFollowers(UUID userID, Pageable pageable) {
         Page<Follow> follows = this.followDao.findAllFollowers(userID,pageable);
         return pagedResourcesAssembler.toModel(follows,modelAssembler);
     }
     @Override
-    public PagedModel<FollowDto> findAllFollowed(Long userID, Pageable pageable) {
+    public PagedModel<FollowDto> findAllFollowed(UUID userID, Pageable pageable) {
         Page<Follow> follows = this.followDao.findAllFollows(userID,pageable);
         return pagedResourcesAssembler.toModel(follows,modelAssembler);
     }
     @Override
-    public FollowDto findFollow(Long followerID, Long followedID) {
+    public FollowDto findFollow(UUID followerID, UUID followedID) {
         return this.modelMapper.map(this.followDao.findFollow(followerID,followedID),FollowDto.class);
     }
 
     @Override
     @Transactional
-    public FollowDto createFollow(Long followedID) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+    public FollowDto createFollow(UUID followedID) {
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User followed = this.userDao.findById(followedID).orElseThrow();
         if(requiredUser.getId().equals(followedID))
             throw new InvalidFormat("errors.follows.invalidFollower");
@@ -73,7 +74,7 @@ public class FollowServiceImp implements FollowService {
 
     @Override
     @Transactional
-    public void deleteFollows(Long followId) {
+    public void deleteFollows(UUID followId) {
         this.followDao.findById(followId);
         this.followDao.deleteById(followId);
     }

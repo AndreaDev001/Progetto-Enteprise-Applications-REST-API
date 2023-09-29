@@ -10,13 +10,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface ProductService
 {
-    PagedModel<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable);
+    PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable);
     PagedModel<ProductDto> getProductsBySpec(Specification<Product> specification, Pageable pageable);
-    ProductDto getProductDetails(Long productID);
+    ProductDto getProductDetails(UUID productID);
     ProductDto updateProduct(UpdateProductDto updateProductDto);
-    void deleteProduct(Long productID);
+    void deleteProduct(UUID productID);
     ProductCondition[] getConditions();
     ProductVisibility[] getVisibilities();
 }

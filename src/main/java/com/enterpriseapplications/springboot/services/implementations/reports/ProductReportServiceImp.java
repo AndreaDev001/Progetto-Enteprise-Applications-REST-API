@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,16 +47,16 @@ public class ProductReportServiceImp implements ProductReportService {
         this.modelAssembler = new GenericModelAssembler<>(ProductReport.class,ProductReportDto.class,modelMapper);
     }
     @Override
-    public PagedModel<ProductReportDto> getReports(Long productID, Pageable pageable) {
+    public PagedModel<ProductReportDto> getReports(UUID productID, Pageable pageable) {
         Page<ProductReport> productReports = this.productReportDao.getProductReports(productID,pageable);
         return this.pagedResourcesAssembler.toModel(productReports,modelAssembler);
     }
 
     @Override
     @Transactional
-    public ProductReportDto createProductReport(CreateReportDto createReportDto, Long productID) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
-        Product requiredProduct = this.productDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+    public ProductReportDto createProductReport(CreateReportDto createReportDto, UUID productID) {
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        Product requiredProduct = this.productDao.findById(productID).orElseThrow();
         if(requiredProduct.getSeller().getId().equals(requiredUser.getId()))
             throw new InvalidFormat("errors.productReport.invalidReporter");
         ProductReport productReport = new ProductReport();
@@ -72,7 +73,7 @@ public class ProductReportServiceImp implements ProductReportService {
     @Override
     @Transactional
     public ProductReportDto updateProductReport(UpdateReportDto updateReportDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         ProductReport productReport = this.productReportDao.findById(updateReportDto.getReportID()).orElseThrow();
         if(requiredUser.getId().equals(productReport.getProduct().getSeller().getId()))
             throw new InvalidFormat("error.productReport.invalidUpdater");
@@ -86,7 +87,7 @@ public class ProductReportServiceImp implements ProductReportService {
 
     @Override
     @Transactional
-    public void deleteProductReport(Long productReportID) {
+    public void deleteProductReport(UUID productReportID) {
         this.productReportDao.findById(productReportID).orElseThrow();
         this.productReportDao.deleteById(productReportID);
     }

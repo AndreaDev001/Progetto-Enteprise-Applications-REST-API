@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,19 +60,19 @@ public class OfferServiceImp implements OfferService
     }
 
     @Override
-    public PagedModel<OfferDto> getOffersByBuyerID(Long buyerID, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByBuyerID(UUID buyerID, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByBuyerID(buyerID,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public PagedModel<OfferDto> getOffersByProductID(Long productID, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByProductID(UUID productID, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByProductID(productID,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
     @Override
-    public PagedModel<OfferDto> getOffersByProductIDAndStatus(Long productID, OfferStatus status, Pageable pageable) {
+    public PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID, OfferStatus status, Pageable pageable) {
         Page<Offer> offers = this.offerDao.getOffersByProductAndStatus(productID,status,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
@@ -85,7 +86,7 @@ public class OfferServiceImp implements OfferService
     @Override
     @Transactional
     public OfferDto createOffer(CreateOfferDto createOfferDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(createOfferDto.getProductID()).orElseThrow();
         if(requiredProduct.getSeller().getId().equals(requiredUser.getId()))
             throw new InvalidFormat("errors.offer.invalidBidder");
@@ -101,7 +102,7 @@ public class OfferServiceImp implements OfferService
 
     @Override
     @Transactional
-    public void deleteOffer(Long offerID) {
+    public void deleteOffer(UUID offerID) {
         this.offerDao.findById(offerID).orElseThrow();
         this.offerDao.deleteById(offerID);
     }

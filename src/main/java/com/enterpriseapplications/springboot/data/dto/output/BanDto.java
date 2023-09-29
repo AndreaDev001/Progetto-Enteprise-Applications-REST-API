@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class BanDto extends GenericOutput<BanDto>
 {
+    private UUID id;
     private UserRef banner;
     private UserRef banned;
     private ReportReason reason;

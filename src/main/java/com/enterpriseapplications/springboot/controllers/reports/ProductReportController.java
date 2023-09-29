@@ -15,6 +15,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/productReports")
 @RequiredArgsConstructor
@@ -23,13 +25,13 @@ public class ProductReportController {
     private final ProductReportService productReportService;
 
     @GetMapping("{productID}")
-    public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") Long productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(productID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(productReports);
     }
 
     @PostMapping("{productID}")
-    public ResponseEntity<ProductReportDto> createProductReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("productID") @PositiveOrZero Long productID) {
+    public ResponseEntity<ProductReportDto> createProductReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productReportService.createProductReport(createReportDto,productID));
     }
 
@@ -39,7 +41,7 @@ public class ProductReportController {
     }
 
     @DeleteMapping("{productReportID}")
-    public ResponseEntity<Void> deleteProductReport(@PathVariable("productReportID") Long productReportID) {
+    public ResponseEntity<Void> deleteProductReport(@PathVariable("productReportID") UUID productReportID) {
         this.productReportService.deleteProductReport(productReportID);
         return ResponseEntity.noContent().build();
     }

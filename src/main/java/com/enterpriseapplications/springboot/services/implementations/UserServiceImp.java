@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 
 @Service
 public class UserServiceImp implements UserService {
@@ -36,7 +38,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDetailsDto getUserDetails(Long userID) {
+    public UserDetailsDto getUserDetails(UUID userID) {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
         UserDetailsDto userDetails = this.modelMapper.map(requiredUser,UserDetailsDto.class);
         userDetails.setAmountOfFollowers(requiredUser.getFollowers().size());
@@ -51,7 +53,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public UserDetailsDto updateUser(UpdateUserDto updateUserDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         if(updateUserDto.getName() != null)
             requiredUser.setName(updateUserDto.getName());
         if(updateUserDto.getSurname() != null)
@@ -85,7 +87,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userID) {
+    public void deleteUser(UUID userID) {
         this.userDao.findById(userID).orElseThrow();
         this.userDao.deleteById(userID);
     }

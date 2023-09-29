@@ -5,9 +5,11 @@ import com.enterpriseapplications.springboot.data.dto.output.images.ProductImage
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 public interface UserImageService
 {
-    UserImageDto getUserImageDetails(Long userID);
-    UserImageDto getUserImage(Long userID);
+    UserImageDto getUserImageDetails(UUID userID);
+    UserImageDto getUserImage(UUID userID);
     UserImageDto uploadImage(CreateUserImageDto createUserImageDto);
 }

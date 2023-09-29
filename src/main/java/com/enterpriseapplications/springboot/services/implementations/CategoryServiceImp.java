@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +45,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(Long categoryID) {
+    public void deleteCategory(UUID categoryID) {
         this.categoryDao.findById(categoryID).orElseThrow();
         this.categoryDao.deleteById(categoryID);
     }

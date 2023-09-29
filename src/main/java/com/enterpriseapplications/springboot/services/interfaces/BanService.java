@@ -13,14 +13,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface BanService
 {
-    PagedModel<BanDto> getCreatedBans(Long userID, Pageable pageable);
-    PagedModel<BanDto> getReceivedBans(Long userID,Pageable pageable);
+    PagedModel<BanDto> getCreatedBans(UUID userID, Pageable pageable);
+    PagedModel<BanDto> getReceivedBans(UUID userID,Pageable pageable);
     PagedModel<BanDto> getBansByReason(ReportReason reason,Pageable pageable);
     PagedModel<BanDto> getBansBySpec(Specification<Ban> specification,Pageable pageable);
-    BanDto getCurrentBan(Long userID);
+    BanDto getCurrentBan(UUID userID);
     BanDto createBan(CreateBanDto createBanDto);
     BanDto updateBan(UpdateBanDto updateBanDto);
-    void deleteBan(Long id);
+    void deleteBan(UUID id);
 }

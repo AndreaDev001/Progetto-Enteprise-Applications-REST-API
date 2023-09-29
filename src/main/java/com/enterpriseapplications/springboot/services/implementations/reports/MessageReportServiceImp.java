@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -48,15 +49,15 @@ public class MessageReportServiceImp implements MessageReportService {
     }
 
     @Override
-    public PagedModel<MessageReportDto> getMessageReports(Long messageID, Pageable pageable) {
+    public PagedModel<MessageReportDto> getMessageReports(UUID messageID, Pageable pageable) {
         Page<MessageReport> messageReports = this.messageReportDao.getMessageReports(messageID,pageable);
         return this.pagedResourcesAssembler.toModel(messageReports,modelAssembler);
     }
 
     @Override
     @Transactional
-    public MessageReportDto createMessageReport(CreateReportDto createReportDto, Long messageID) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+    public MessageReportDto createMessageReport(CreateReportDto createReportDto, UUID messageID) {
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Message requiredMessage = this.messageDao.findById(messageID).orElseThrow();
         if(requiredMessage.getSender().getId().equals(requiredUser.getId()))
             throw new InvalidFormat(("errors.messageReport.invalidReporter"));
@@ -74,7 +75,7 @@ public class MessageReportServiceImp implements MessageReportService {
     @Override
     @Transactional
     public MessageReportDto updateMessageReport(UpdateReportDto updateReportDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         MessageReport messageReport = this.messageReportDao.findById(updateReportDto.getReportID()).orElseThrow();
         if(messageReport.getMessage().getSender().getId().equals(requiredUser.getId()))
             throw new InvalidFormat("errors.messageReport.invalidUpdater");
@@ -89,7 +90,7 @@ public class MessageReportServiceImp implements MessageReportService {
 
     @Override
     @Transactional
-    public void deleteMessageReport(Long messageID) {
+    public void deleteMessageReport(UUID messageID) {
         this.messageReportDao.findById(messageID);
         this.messageReportDao.deleteById(messageID);
     }

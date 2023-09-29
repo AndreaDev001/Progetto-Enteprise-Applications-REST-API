@@ -17,6 +17,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -27,12 +29,12 @@ public class ProductController
 
 
     @GetMapping("{productID}/details")
-    public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") Long productID) {
+    public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productService.getProductDetails(productID));
     }
 
     @GetMapping("seller/{sellerID}")
-    public ResponseEntity<PagedModel<ProductDto>> getProducts(@PathVariable("sellerID") Long sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ProductDto>> getProducts(@PathVariable("sellerID") UUID sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProductsBySeller(sellerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
@@ -59,7 +61,7 @@ public class ProductController
     }
 
     @DeleteMapping("{productID}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("productID") Long productID) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable("productID") UUID productID) {
         this.productService.deleteProduct(productID);
         return ResponseEntity.noContent().build();
     }

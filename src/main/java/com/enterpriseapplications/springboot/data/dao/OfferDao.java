@@ -11,17 +11,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface OfferDao extends JpaRepository<Offer,Long>, JpaSpecificationExecutor<Offer>
+public interface OfferDao extends JpaRepository<Offer,UUID>, JpaSpecificationExecutor<Offer>
 {
     @Query("select o from Offer o where o.status = :requiredStatus")
     Page<Offer> getOffersByStatus(@Param("requiredStatus")OfferStatus status,Pageable pageable);
     @Query("select o from Offer o where o.expired = :requiredExpired")
     Page<Offer> getOffersByExpired(@Param("requiredExpired") boolean expired,Pageable pageable);
     @Query("select o from Offer o where o.buyer.id = :requiredID")
-    Page<Offer> getOffersByBuyerID(@Param("requiredID") Long requiredID, Pageable pageable);
+    Page<Offer> getOffersByBuyerID(@Param("requiredID") UUID requiredID, Pageable pageable);
     @Query("select o from Offer o where o.product.id = :requiredID")
-    Page<Offer> getOffersByProductID(@Param("requiredID") Long requiredID,Pageable pageable);
+    Page<Offer> getOffersByProductID(@Param("requiredID") UUID requiredID, Pageable pageable);
     @Query("select o from Offer  o where o.product.id = :requiredID and o.status = :requiredStatus")
-    Page<Offer> getOffersByProductAndStatus(@Param("requiredID") Long offerID,@Param("requiredStatus") OfferStatus status,Pageable pageable);
+    Page<Offer> getOffersByProductAndStatus(@Param("requiredID") UUID offerID,@Param("requiredStatus") OfferStatus status,Pageable pageable);
 }

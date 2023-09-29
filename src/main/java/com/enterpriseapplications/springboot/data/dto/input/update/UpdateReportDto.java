@@ -9,14 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateReportDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long reportID;
+    private UUID reportID;
 
     @NotNull
     @NotBlank

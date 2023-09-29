@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface ProductReportDao extends JpaRepository<ProductReport,Long> {
+public interface ProductReportDao extends JpaRepository<ProductReport, UUID> {
     @Query("select p from ProductReport p where p.product.id = :requiredID")
-    Page<ProductReport> getProductReports(@Param("requiredID") Long productID, Pageable pageable);
+    Page<ProductReport> getProductReports(@Param("requiredID") UUID productID, Pageable pageable);
 }

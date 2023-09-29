@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -18,8 +19,7 @@ import java.time.LocalDate;
 public class UpdateBanDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long bannedID;
+    private UUID bannedID;
 
     @NotBlank
     private String description;

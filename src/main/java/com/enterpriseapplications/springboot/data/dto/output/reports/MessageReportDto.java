@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -14,6 +16,6 @@ import org.springframework.hateoas.server.core.Relation;
 @Relation(collectionRelation = "content")
 public class MessageReportDto extends ReportDto
 {
-    private Long messageID;
+    private UUID messageID;
     private String messageText;
 }

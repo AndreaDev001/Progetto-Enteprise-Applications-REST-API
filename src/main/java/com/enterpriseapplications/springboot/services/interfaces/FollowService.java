@@ -7,11 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface FollowService {
-    PagedModel<FollowDto> findAllFollowers(Long userID, Pageable pageable);
-    PagedModel<FollowDto> findAllFollowed(Long userID,Pageable pageable);
-    FollowDto findFollow(Long followerID,Long followedID);
-    FollowDto createFollow(Long followedID);
-    void deleteFollows(Long followID);
+    PagedModel<FollowDto> findAllFollowers(UUID userID, Pageable pageable);
+    PagedModel<FollowDto> findAllFollowed(UUID userID,Pageable pageable);
+    FollowDto findFollow(UUID followerID,UUID followedID);
+    FollowDto createFollow(UUID followedID);
+    void deleteFollows(UUID followID);
 }

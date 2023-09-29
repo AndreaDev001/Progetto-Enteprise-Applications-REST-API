@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -33,7 +35,7 @@ public class UserImageServiceImp implements UserImageService
     private final ModelMapper modelMapper;
 
     @Override
-    public UserImageDto getUserImageDetails(Long userID) {
+    public UserImageDto getUserImageDetails(UUID userID) {
         UserImage userImage = this.userImageDao.getUserImage(userID).orElseThrow();
         UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
         userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
@@ -41,7 +43,7 @@ public class UserImageServiceImp implements UserImageService
     }
 
     @Override
-    public UserImageDto getUserImage(Long userID) {
+    public UserImageDto getUserImage(UUID userID) {
         UserImage userImage = this.userImageDao.getUserImage(userID).orElseThrow();
         UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
         userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
@@ -52,7 +54,7 @@ public class UserImageServiceImp implements UserImageService
     @Transactional
     @SneakyThrows
     public UserImageDto uploadImage(CreateUserImageDto createUserImageDto) {
-        UserImage userImage = this.userImageDao.getUserImage(createUserImageDto.getUserID()).orElseThrow();
+        UserImage userImage = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
         userImage.setName(createUserImageDto.getFile().getOriginalFilename());
         userImage.setType(createUserImageDto.getFile().getContentType());

@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +50,7 @@ public class ReplyServiceImp implements ReplyService
     }
 
     @Override
-    public ReplyDto getReply(Long reviewID) {
+    public ReplyDto getReply(UUID reviewID) {
         Reply reply = this.replyDao.findByReview(reviewID).orElseThrow();
         return this.modelMapper.map(reply,ReplyDto.class);
     }
@@ -57,7 +58,7 @@ public class ReplyServiceImp implements ReplyService
     @Override
     @Transactional
     public ReplyDto createReply(CreateReplyDto createReplyDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Review requiredReview  = this.reviewDao.findById(createReplyDto.getReviewID()).orElseThrow();
         if(requiredUser.getId().equals(requiredReview.getWriter().getId()))
             throw new InvalidFormat("error.reply.invalidWriter");
@@ -79,14 +80,14 @@ public class ReplyServiceImp implements ReplyService
     }
 
     @Override
-    public PagedModel<ReplyDto> getWrittenReplies(Long userID, Pageable pageable) {
+    public PagedModel<ReplyDto> getWrittenReplies(UUID userID, Pageable pageable) {
         Page<Reply> replies = this.replyDao.findByWriter(userID, pageable);
         return this.pagedResourcesAssembler.toModel(replies,modelAssembler);
     }
 
     @Override
     @Transactional
-    public void deleteReply(Long replyID) {
+    public void deleteReply(UUID replyID) {
         this.replyDao.findById(replyID).orElseThrow();
         this.replyDao.deleteById(replyID);
     }

@@ -13,6 +13,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -22,18 +24,18 @@ public class OrderController
     private final OrderService orderService;
 
     @GetMapping("/buyer/{userID}")
-    public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/product/{productID}")
-    public ResponseEntity<OrderDto> findOrder(@PathVariable("productID") Long productID) {
+    public ResponseEntity<OrderDto> findOrder(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.orderService.getOrder(productID));
     }
 
     @DeleteMapping("{orderID}")
-    public ResponseEntity<OrderDto> deleteOrder(@PathVariable("orderID") Long orderID) {
+    public ResponseEntity<OrderDto> deleteOrder(@PathVariable("orderID") UUID orderID) {
         this.orderService.deleteOrder(orderID);
         return ResponseEntity.noContent().build();
     }

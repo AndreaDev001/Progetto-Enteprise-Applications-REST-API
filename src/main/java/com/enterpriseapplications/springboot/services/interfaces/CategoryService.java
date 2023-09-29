@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.interfaces;
 import com.enterpriseapplications.springboot.data.dto.output.CategoryDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CategoryService
 {
@@ -10,5 +11,5 @@ public interface CategoryService
     List<String> getPrimaryCategories();
     List<String> getCategoriesByPrimary(String primary);
     List<String> getCategoriesBySecondary(String primary,String secondary);
-    void deleteCategory(Long categoryID);
+    void deleteCategory(UUID categoryID);
 }

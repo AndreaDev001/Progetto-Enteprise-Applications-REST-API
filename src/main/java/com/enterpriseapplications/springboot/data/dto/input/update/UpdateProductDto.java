@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +18,7 @@ import java.math.BigDecimal;
 public class UpdateProductDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long productID;
+    private UUID productID;
 
     private String description;
     private String brand;

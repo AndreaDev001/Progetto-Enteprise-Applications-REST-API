@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Table(name = "FOLLOWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FOLLOWED_ID","FOLLOWER_ID"})})
 @Entity
@@ -21,8 +22,8 @@ import java.time.LocalDate;
 public class Follow {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOLLOWED_ID")

@@ -16,6 +16,8 @@ import com.stripe.param.PaymentIntentCreateParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentIntentServiceImp implements PaymentIntentService
@@ -23,10 +25,9 @@ public class PaymentIntentServiceImp implements PaymentIntentService
     private final UserDao userDao;
     private final ProductDao productDao;
     private final OfferDao offerDao;
-    private final PaymentMethodDao paymentMethodDao;
 
     @Override
-    public PaymentIntent createPaymentIntentProduct(Long userID, Long productID) throws StripeException {
+    public PaymentIntent createPaymentIntentProduct(UUID userID, UUID productID) throws StripeException {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
         Product requiredProduct = this.productDao.findById(productID).orElseThrow();
         if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
@@ -35,7 +36,7 @@ public class PaymentIntentServiceImp implements PaymentIntentService
         return PaymentIntent.create(paymentIntentCreateParams);
     }
     @Override
-    public PaymentIntent createPaymentIntentOffer(Long userID, Long offerID) throws StripeException {
+    public PaymentIntent createPaymentIntentOffer(UUID userID, UUID offerID) throws StripeException {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
         Offer requiredOffer = this.offerDao.findById(offerID).orElseThrow();
         if(requiredUser.getId().equals(requiredOffer.getProduct().getSeller().getId()))

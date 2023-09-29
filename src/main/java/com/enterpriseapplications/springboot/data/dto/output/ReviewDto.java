@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
@@ -15,6 +17,7 @@ import org.springframework.hateoas.server.core.Relation;
 @Relation(collectionRelation = "content")
 public class ReviewDto extends GenericOutput<ReviewDto>
 {
+    private UUID id;
     private UserRef writer;
     private UserRef receiver;
     private Integer rating;

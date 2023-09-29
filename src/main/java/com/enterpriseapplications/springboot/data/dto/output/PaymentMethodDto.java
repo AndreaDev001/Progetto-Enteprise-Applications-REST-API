@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class PaymentMethodDto extends GenericOutput<PaymentMethodDto>
 {
-    private Long id;
+    private UUID id;
     private UserRef owner;
     private String holderName;
     private String number;

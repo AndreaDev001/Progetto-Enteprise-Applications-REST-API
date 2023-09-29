@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -46,13 +47,13 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
-    public PagedModel<ReportDto> getCreatedReports(Long userID, Pageable pageable) {
+    public PagedModel<ReportDto> getCreatedReports(UUID userID, Pageable pageable) {
         Page<Report> reports = this.reportDao.getCreatedReports(userID,pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override
-    public PagedModel<ReportDto> getReceivedReports(Long userID, Pageable pageable) {
+    public PagedModel<ReportDto> getReceivedReports(UUID userID, Pageable pageable) {
         Page<Report> reports = this.reportDao.getReceivedReports(userID,pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
@@ -77,8 +78,8 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     @Transactional
-    public ReportDto createReport(CreateReportDto createReportDto,Long reportedID) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+    public ReportDto createReport(CreateReportDto createReportDto,UUID reportedID) {
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User reported = this.userDao.findById(reportedID).orElseThrow();
         if(requiredUser.getId().equals(reportedID))
             throw new InvalidFormat("errors.report.invalidReporter");
@@ -116,7 +117,7 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     @Transactional
-    public void deleteReport(Long reportID) {
+    public void deleteReport(UUID reportID) {
         this.reportDao.findById(reportID).orElseThrow();
         this.reportDao.deleteById(reportID);
     }

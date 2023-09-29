@@ -14,8 +14,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-@Table(name = "REPORTS")
+@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTED","REPORTER"})})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -25,8 +26,8 @@ import java.time.LocalDate;
 public class Report
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected UUID id;
 
     @Column(name = "DESCRIPTION",unique = false)
     @Convert(converter = TrimConverter.class)

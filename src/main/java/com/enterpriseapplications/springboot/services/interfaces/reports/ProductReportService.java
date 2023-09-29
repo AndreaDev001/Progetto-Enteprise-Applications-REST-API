@@ -8,10 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface ProductReportService
 {
-    PagedModel<ProductReportDto> getReports(Long productID, Pageable pageable);
-    ProductReportDto createProductReport(CreateReportDto createReportDto,Long productID);
+    PagedModel<ProductReportDto> getReports(UUID productID, Pageable pageable);
+    ProductReportDto createProductReport(CreateReportDto createReportDto,UUID productID);
     ProductReportDto updateProductReport(UpdateReportDto updateReportDto);
-    void deleteProductReport(Long productReportID);
+    void deleteProductReport(UUID productReportID);
 }

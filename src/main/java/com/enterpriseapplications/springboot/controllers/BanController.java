@@ -17,6 +17,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/bans")
 @RequiredArgsConstructor
@@ -27,13 +29,13 @@ public class BanController
 
 
     @GetMapping("/banner/{userID}")
-    public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
     @GetMapping("/banned/{userID}")
-    public ResponseEntity<PagedModel<BanDto>> getReceivedBans(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<BanDto>> getReceivedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getReceivedBans(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
@@ -45,7 +47,7 @@ public class BanController
     }
 
     @GetMapping("/banned/{userID}/active")
-    public ResponseEntity<BanDto> findBan(@PathVariable("userID") Long userID) {
+    public ResponseEntity<BanDto> findBan(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.banService.getCurrentBan(userID));
     }
 
@@ -60,7 +62,7 @@ public class BanController
     }
 
     @DeleteMapping("{banID}")
-    public ResponseEntity<BanDto> deleteBan(@PathVariable("banID") Long banID) {
+    public ResponseEntity<BanDto> deleteBan(@PathVariable("banID") UUID banID) {
         this.banService.deleteBan(banID);
         return ResponseEntity.noContent().build();
     }

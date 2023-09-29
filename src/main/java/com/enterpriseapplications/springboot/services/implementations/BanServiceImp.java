@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,17 +46,17 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
-    public PagedModel<BanDto> getCreatedBans(Long userID, Pageable pageable) {
+    public PagedModel<BanDto> getCreatedBans(UUID userID, Pageable pageable) {
         Page<Ban> bans = this.banDao.getCreatedBans(userID,pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
     @Override
-    public PagedModel<BanDto> getReceivedBans(Long userID, Pageable pageable) {
+    public PagedModel<BanDto> getReceivedBans(UUID userID, Pageable pageable) {
         Page<Ban> bans = this.banDao.getReceivedBans(userID,pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
     }
     @Override
-    public BanDto getCurrentBan(Long userID) {
+    public BanDto getCurrentBan(UUID userID) {
         Ban ban = this.banDao.findBan(userID).orElseThrow();
         return this.modelMapper.map(ban,BanDto.class);
     }
@@ -63,7 +64,7 @@ public class BanServiceImp implements BanService {
     @Override
     @Transactional
     public BanDto createBan(CreateBanDto createBanDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User bannedUser = this.userDao.findById(createBanDto.getBannedID()).orElseThrow();
         Optional<Ban> banOptional = this.banDao.findBan(createBanDto.getBannedID());
         if(requiredUser.getId().equals(createBanDto.getBannedID()))
@@ -107,7 +108,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
-    public void deleteBan(Long id) {
+    public void deleteBan(UUID id) {
         this.banDao.findById(id).orElseThrow();
         this.banDao.deleteById(id);
     }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class ReplyDto extends GenericOutput<ReplyDto>
 {
-    private Long id;
+    private UUID id;
     private String text;
     private UserRef writer;
     private LocalDate createdDate;

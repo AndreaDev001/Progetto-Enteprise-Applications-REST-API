@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class AuthenticationHandler
 
     @Transactional
     public void handleSuccess(JwtAuthenticationToken jwtAuthenticationToken) {
-        Long userID = Long.valueOf((String)jwtAuthenticationToken.getTokenAttributes().get("sub"));
+        UUID userID = UUID.fromString((String)jwtAuthenticationToken.getTokenAttributes().get("sub"));
         Optional<User> userOptional = this.userDao.findById(userID);
         if(userOptional.isEmpty()) {
             String username = (String)jwtAuthenticationToken.getTokenAttributes().get("username");

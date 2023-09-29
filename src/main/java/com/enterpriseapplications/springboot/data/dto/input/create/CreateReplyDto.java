@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,8 +17,7 @@ public class CreateReplyDto
 {
 
     @NotNull
-    @PositiveOrZero
-    private Long reviewID;
+    private UUID reviewID;
 
     @NotNull
     @NotBlank

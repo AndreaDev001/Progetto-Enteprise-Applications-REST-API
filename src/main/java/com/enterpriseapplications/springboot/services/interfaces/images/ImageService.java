@@ -4,11 +4,12 @@ import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ImageService
 {
-    ImageDto getImage(Long imageID);
+    ImageDto getImage(UUID imageID);
     List<ImageDto> getImagesByName(String name);
     List<ImageDto> getImagesByType(String type);
-    void deleteImage(Long imageID);
+    void deleteImage(UUID imageID);
 }

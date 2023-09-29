@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/userImages")
 @RequiredArgsConstructor
@@ -21,11 +23,11 @@ public class UserImageController {
     private final UserImageService userImageService;
 
     @GetMapping("{userID}/details")
-    public ResponseEntity<UserImageDto> getUserImageDetails(@PathVariable("userID") Long userID) {
+    public ResponseEntity<UserImageDto> getUserImageDetails(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.userImageService.getUserImageDetails(userID));
     }
     @GetMapping("{userID}")
-    public ResponseEntity<byte[]> getUserImage(@PathVariable("userID") Long userID) {
+    public ResponseEntity<byte[]> getUserImage(@PathVariable("userID") UUID userID) {
         UserImageDto userImageDto = this.userImageService.getUserImage(userID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(userImageDto.getType())).body(userImageDto.getImage());
     }

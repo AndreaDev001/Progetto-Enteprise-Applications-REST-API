@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class ReportDto extends GenericOutput<ReportDto>
 {
+    protected UUID id;
     protected UserRef reporter;
     protected UserRef reported;
     protected ReportReason reason;

@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface PaymentMethodService
 {
-    PagedModel<PaymentMethodDto> getPaymentMethods(Long ownerID, Pageable pageable);
-    PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(Long ownerID,String brand,Pageable pageable);
-    PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(Long ownerID,String country,Pageable pageable);
-    PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(Long ownerID,String name,Pageable pageable);
-    void deletePaymentMethod(Long paymentMethodID);
+    PagedModel<PaymentMethodDto> getPaymentMethods(UUID ownerID, Pageable pageable);
+    PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(UUID ownerID,String brand,Pageable pageable);
+    PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(UUID ownerID,String country,Pageable pageable);
+    PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(UUID ownerID,String name,Pageable pageable);
+    void deletePaymentMethod(UUID paymentMethodID);
 }

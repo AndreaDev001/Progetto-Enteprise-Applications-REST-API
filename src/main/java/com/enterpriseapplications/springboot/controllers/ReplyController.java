@@ -14,6 +14,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/replies")
 @RequiredArgsConstructor
@@ -22,12 +24,12 @@ public class ReplyController
     private final ReplyService replyService;
 
     @GetMapping("/review/{reviewID}")
-    public ResponseEntity<ReplyDto> getReply(@PathVariable("reviewID") Long id) {
+    public ResponseEntity<ReplyDto> getReply(@PathVariable("reviewID") UUID id) {
         return ResponseEntity.ok(this.replyService.getReply(id));
     }
 
     @GetMapping("/writer/{writerID}")
-    public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") Long id, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") UUID id, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getWrittenReplies(id, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
     }
@@ -43,7 +45,7 @@ public class ReplyController
     }
 
     @DeleteMapping("{replyID}")
-    public ResponseEntity<Void> deleteReply(@PathVariable("replyID") Long replyID) {
+    public ResponseEntity<Void> deleteReply(@PathVariable("replyID") UUID replyID) {
         this.replyService.deleteReply(replyID);
         return ResponseEntity.noContent().build();
     }

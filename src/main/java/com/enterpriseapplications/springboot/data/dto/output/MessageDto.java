@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Relation(collectionRelation = "content")
 public class MessageDto extends GenericOutput<MessageDto>
 {
+    private UUID id;
     private UserRef sender;
     private UserRef receiver;
     private String text;

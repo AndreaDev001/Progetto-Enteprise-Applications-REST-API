@@ -12,6 +12,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -23,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Relation(collectionRelation = "content")
 public class ProductDto extends GenericOutput<ProductDto>
 {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
     private String brand;

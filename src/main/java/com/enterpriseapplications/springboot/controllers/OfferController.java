@@ -16,6 +16,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/offers")
 @RequiredArgsConstructor
@@ -35,12 +37,12 @@ public class OfferController
         return ResponseEntity.ok(offers);
     }
     @GetMapping("/buyer/{userID}")
-    public ResponseEntity<PagedModel<OfferDto>> getOffersByBuyerID(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<OfferDto>> getOffersByBuyerID(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByBuyerID(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
     @GetMapping("/product/{productID}")
-    public ResponseEntity<PagedModel<OfferDto>> getOffersByProductID(@PathVariable("productID") Long productID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<OfferDto>> getOffersByProductID(@PathVariable("productID") UUID productID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductID(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
@@ -57,12 +59,12 @@ public class OfferController
     }
 
     @GetMapping("/product/{productID}/status/{status}")
-    public ResponseEntity<PagedModel<OfferDto>> getOffersByProductIDAndStatus(@PathVariable("productID") Long productID,@PathVariable("status") OfferStatus status,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<OfferDto>> getOffersByProductIDAndStatus(@PathVariable("productID") UUID productID,@PathVariable("status") OfferStatus status,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductIDAndStatus(productID,status,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
     @DeleteMapping("{offerID}")
-    public ResponseEntity<Void> deleteOffer(@PathVariable("offerID") Long offerID) {
+    public ResponseEntity<Void> deleteOffer(@PathVariable("offerID") UUID offerID) {
         this.offerService.deleteOffer(offerID);
         return ResponseEntity.noContent().build();
     }

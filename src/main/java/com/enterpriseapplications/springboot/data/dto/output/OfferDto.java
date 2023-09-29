@@ -12,6 +12,7 @@ import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 @Relation(collectionRelation = "content")
 public class OfferDto extends GenericOutput<OfferDto>
 {
+    private UUID id;
     private UserRef buyer;
     private ProductRef product;
     private String description;

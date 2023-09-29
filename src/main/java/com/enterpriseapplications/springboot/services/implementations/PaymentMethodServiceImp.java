@@ -15,6 +15,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,31 +34,31 @@ public class PaymentMethodServiceImp implements PaymentMethodService
         this.modelAssembler = new GenericModelAssembler<>(PaymentMethod.class,PaymentMethodDto.class,modelMapper);
     }
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethods(Long ownerID, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethods(UUID ownerID, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethods(ownerID,pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(Long ownerID, String brand, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(UUID ownerID, String brand, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByBrand(ownerID,brand,pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(Long ownerID, String country, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(UUID ownerID, String country, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByCountry(ownerID,country,pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(Long ownerID, String name, Pageable pageable) {
+    public PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(UUID ownerID, String name, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByHolderName(ownerID,name,pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
     }
 
     @Override
-    public void deletePaymentMethod(Long paymentMethodID) {
+    public void deletePaymentMethod(UUID paymentMethodID) {
         this.paymentMethodDao.findById(paymentMethodID).orElseThrow();
         this.paymentMethodDao.deleteById(paymentMethodID);
     }

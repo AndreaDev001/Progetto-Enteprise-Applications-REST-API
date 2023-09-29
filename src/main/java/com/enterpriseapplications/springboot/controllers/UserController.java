@@ -16,6 +16,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class UserController
     private final UserService userService;
 
     @GetMapping("{userID}/details")
-    public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("userID") Long userID) {
+    public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.userService.getUserDetails(userID));
 
     }
@@ -52,7 +54,7 @@ public class UserController
         return ResponseEntity.ok(this.userService.getVisibilities());
     }
     @DeleteMapping("{userID}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("userID") Long userID) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("userID") UUID userID) {
         this.userService.deleteUser(userID);
         return ResponseEntity.noContent().build();
     }

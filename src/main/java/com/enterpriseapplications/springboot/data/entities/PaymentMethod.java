@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Table(name = "PAYMENT_METHODS")
 @Entity
@@ -22,8 +23,8 @@ import java.time.LocalDate;
 public class PaymentMethod
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "HOLDER_NAME",unique = false)
     private String holderName;

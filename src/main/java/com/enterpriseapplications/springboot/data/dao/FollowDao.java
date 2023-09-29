@@ -10,14 +10,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface FollowDao extends JpaRepository<Follow,Long> {
+public interface FollowDao extends JpaRepository<Follow, UUID> {
 
     @Query("select f from Follow f where f.followed.id = :requiredID")
-    Page<Follow> findAllFollowers(@Param("requiredID") Long id, Pageable pageable);
+    Page<Follow> findAllFollowers(@Param("requiredID") UUID id, Pageable pageable);
     @Query("select f from Follow f where f.follower.id = :requiredID")
-    Page<Follow> findAllFollows(@Param("requiredID") Long id,Pageable pageable);
+    Page<Follow> findAllFollows(@Param("requiredID") UUID id,Pageable pageable);
     @Query("select f from Follow f where f.follower.id = :requiredFollowerID and f.follower.id = :requiredFollowedID")
-    Optional<Follow> findFollow(@Param("requiredFollowerID") Long followerID,@Param("requiredFollowedID") Long followedID);
+    Optional<Follow> findFollow(@Param("requiredFollowerID") UUID followerID,@Param("requiredFollowedID") UUID followedID);
 }

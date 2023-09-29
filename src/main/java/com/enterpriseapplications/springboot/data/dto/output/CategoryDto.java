@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 
 @EqualsAndHashCode(callSuper = false)
 @Data
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDto
 {
-    private Long id;
+    private UUID id;
     private String primary;
     private String secondary;
     private String tertiary;

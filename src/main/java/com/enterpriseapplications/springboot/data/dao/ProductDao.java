@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 
 @Repository
-public interface ProductDao extends JpaRepository<Product,Long>, JpaSpecificationExecutor<Product>
+public interface ProductDao extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product>
 {
     @Query("select p from PRODUCTS p where p.seller.id = :requiredID")
-    Page<Product> getProductsBySeller(@Param("requiredID") Long sellerID, Pageable pageable);
+    Page<Product> getProductsBySeller(@Param("requiredID") UUID sellerID, Pageable pageable);
 }

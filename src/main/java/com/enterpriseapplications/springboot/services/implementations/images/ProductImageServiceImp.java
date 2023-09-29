@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -30,7 +31,7 @@ public class ProductImageServiceImp implements ProductImageService
     private final ModelMapper modelMapper;
 
     @Override
-    public List<ProductImageDto> getProductImages(Long productID) {
+    public List<ProductImageDto> getProductImages(UUID productID) {
         List<ProductImage> productImages = this.productImageDao.getProductImages(productID);
         return productImages.stream().map(productImage -> {
             ProductImageDto productImageDto = this.modelMapper.map(productImage,ProductImageDto.class);
@@ -56,18 +57,18 @@ public class ProductImageServiceImp implements ProductImageService
     }
 
     @Override
-    public ProductImageDto getFirstProductImage(Long productID) {
+    public ProductImageDto getFirstProductImage(UUID productID) {
         return this.getProductImage(productID,0);
     }
 
     @Override
-    public ProductImageDto getLastProductImage(Long productID) {
+    public ProductImageDto getLastProductImage(UUID productID) {
         List<ProductImage> productImages = this.productImageDao.getProductImages(productID);
         return this.getProductImage(productID,productImages.size() - 1);
     }
 
     @Override
-    public ProductImageDto getProductImage(Long productID, Integer index) {
+    public ProductImageDto getProductImage(UUID productID, Integer index) {
         List<ProductImage> productImages = this.productImageDao.getProductImages(productID);
         if(productImages.isEmpty())
             throw new InvalidFormat("error.productImage.emptySet");
@@ -81,7 +82,7 @@ public class ProductImageServiceImp implements ProductImageService
 
     @Override
     @Transactional
-    public void deleteProductImages(Long productID) {
+    public void deleteProductImages(UUID productID) {
         Product requiredProduct = this.productDao.findById(productID).orElseThrow();
         List<ProductImage> productImages = this.productImageDao.getProductImages(productID);
         for(ProductImage productImage : productImages)

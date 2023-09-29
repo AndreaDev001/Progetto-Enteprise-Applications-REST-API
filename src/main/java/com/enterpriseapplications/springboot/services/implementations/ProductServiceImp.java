@@ -20,6 +20,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,14 +40,14 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
-    public PagedModel<ProductDto> getProductsBySeller(Long sellerID, Pageable pageable) {
+    public PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable) {
         Page<Product> products = this.productDao.getProductsBySeller(sellerID,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
     @Transactional
-    public ProductDto getProductDetails(Long productID) {
+    public ProductDto getProductDetails(UUID productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
         productDto.addLinks();
@@ -76,7 +77,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
-    public void deleteProduct(Long productID) {
+    public void deleteProduct(UUID productID) {
         this.productDao.findById(productID);
         this.productDao.deleteById(productID);
     }

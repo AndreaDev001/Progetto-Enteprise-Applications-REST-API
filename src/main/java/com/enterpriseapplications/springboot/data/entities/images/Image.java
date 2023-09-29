@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "IMAGES")
@@ -25,8 +26,8 @@ import java.time.LocalDate;
 public class Image
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected UUID id;
 
     @Column(name = "NAME",unique = false)
     protected String name;

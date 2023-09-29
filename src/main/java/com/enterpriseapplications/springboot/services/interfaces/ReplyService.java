@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface ReplyService
 {
-    ReplyDto getReply(Long reviewID);
+    ReplyDto getReply(UUID reviewID);
     ReplyDto createReply(CreateReplyDto createReplyDto);
     ReplyDto updateReply(UpdateReplyDto updateReplyDto);
-    PagedModel<ReplyDto> getWrittenReplies(Long userID, Pageable pageable);
-    void deleteReply(Long replyID);
+    PagedModel<ReplyDto> getWrittenReplies(UUID userID, Pageable pageable);
+    void deleteReply(UUID replyID);
 }

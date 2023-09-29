@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface MessageService {
-    PagedModel<MessageDto> getSentMessages(Long userID, Pageable pageable);
-    PagedModel<MessageDto> getReceivedMessages(Long userID,Pageable pageable);
-    PagedModel<MessageDto> getMessagesBetween(Long senderID,Long receiverID,Pageable pageable);
+    PagedModel<MessageDto> getSentMessages(UUID userID, Pageable pageable);
+    PagedModel<MessageDto> getReceivedMessages(UUID userID,Pageable pageable);
+    PagedModel<MessageDto> getMessagesBetween(UUID senderID,UUID receiverID,Pageable pageable);
     MessageDto createMessage(CreateMessageDto createMessageDto);
-    void deleteMessage(Long messageID);
+    void deleteMessage(UUID messageID);
 }

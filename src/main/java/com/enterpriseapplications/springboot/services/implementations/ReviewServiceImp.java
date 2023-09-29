@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -44,25 +45,25 @@ public class ReviewServiceImp implements ReviewService {
     }
 
     @Override
-    public PagedModel<ReviewDto> findAllWrittenReviews(Long writerID, Pageable pageable) {
+    public PagedModel<ReviewDto> findAllWrittenReviews(UUID writerID, Pageable pageable) {
         Page<Review> reviews = this.reviewDao.findAllWrittenReviews(writerID,pageable);
         return this.pagedResourcesAssembler.toModel(reviews,modelAssembler);
     }
     @Override
-    public PagedModel<ReviewDto> findAllReceivedReviews(Long receiverID,Pageable pageable) {
+    public PagedModel<ReviewDto> findAllReceivedReviews(UUID receiverID,Pageable pageable) {
         Page<Review> reviews = this.reviewDao.findAllReviewsReceived(receiverID,pageable);
         return this.pagedResourcesAssembler.toModel(reviews,modelAssembler);
     }
 
     @Override
-    public ReviewDto findReview(Long writerID, Long receiverID) {
+    public ReviewDto findReview(UUID writerID, UUID receiverID) {
         return this.modelMapper.map(this.reviewDao.findReview(writerID,receiverID).orElseThrow(),ReviewDto.class);
     }
 
     @Override
     @Transactional
     public ReviewDto createReview(CreateReviewDto createReviewDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User reviewed = this.userDao.findById(createReviewDto.getReviewedID()).orElseThrow();
         if(requiredUser.getId().equals(reviewed.getId()))
             throw new InvalidFormat("errors.reviews.invalidReviewer");
@@ -89,7 +90,7 @@ public class ReviewServiceImp implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long reviewID) {
+    public void deleteReview(UUID reviewID) {
         this.reviewDao.findById(reviewID).orElseThrow();
         this.reviewDao.deleteById(reviewID);
     }

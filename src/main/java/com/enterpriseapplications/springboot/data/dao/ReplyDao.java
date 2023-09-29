@@ -10,12 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ReplyDao extends JpaRepository<Reply,Long>
+public interface ReplyDao extends JpaRepository<Reply,UUID>
 {
     @Query("select r from Reply r where r.review = :requiredID")
-    Optional<Reply> findByReview(@Param("requiredID") Long id);
+    Optional<Reply> findByReview(@Param("requiredID") UUID id);
     @Query("select r from Reply r where r.writer = :requiredID")
-    Page<Reply> findByWriter(@Param("requiredID") Long requiredID, Pageable pageable);
+    Page<Reply> findByWriter(@Param("requiredID") UUID requiredID, Pageable pageable);
 }

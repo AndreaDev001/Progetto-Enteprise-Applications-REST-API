@@ -15,6 +15,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/messageReports")
 @RequiredArgsConstructor
@@ -24,13 +26,13 @@ public class MessageReportController {
 
 
     @GetMapping("{messageID}")
-    public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") Long messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") UUID messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
     @PostMapping("{messageID}")
-    public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero Long messageID) {
+    public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero UUID messageID) {
         return ResponseEntity.ok(this.messageReportService.createMessageReport(createReportDto,messageID));
     }
 
@@ -40,7 +42,7 @@ public class MessageReportController {
     }
 
     @DeleteMapping("{messageReportID}")
-    public ResponseEntity<Void> deleteMessageReport(@PathVariable("messageReportID") Long messageReportID) {
+    public ResponseEntity<Void> deleteMessageReport(@PathVariable("messageReportID") UUID messageReportID) {
         this.messageReportService.deleteMessageReport(messageReportID);
         return ResponseEntity.noContent().build();
     }

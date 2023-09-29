@@ -8,16 +8,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 
 @Repository
-public interface MessageDao extends JpaRepository<Message,Long>
+public interface MessageDao extends JpaRepository<Message, UUID>
 {
     @Query("select m from Message m where m.sender.id = :requiredID order by m.createdDate desc")
-    Page<Message> getSentMessages(@Param("requiredID") Long senderID,Pageable pageable);
+    Page<Message> getSentMessages(@Param("requiredID") UUID senderID,Pageable pageable);
 
     @Query("select m from Message m where m.receiver.id = :requiredID order by m.createdDate desc")
-    Page<Message> getReceivedMessages(@Param("requiredID") Long receiverID, Pageable pageable);
+    Page<Message> getReceivedMessages(@Param("requiredID") UUID receiverID, Pageable pageable);
 
     @Query("select m from Message m where m.sender.id = :requiredSenderID and m.receiver.id = :requiredReceiverID order by m.createdDate desc")
-    Page<Message> getMessagesBetween(@Param("requiredSenderID") Long senderID,@Param("requiredReceiverID") Long receiverID,Pageable pageable);
+    Page<Message> getMessagesBetween(@Param("requiredSenderID") UUID senderID,@Param("requiredReceiverID") UUID receiverID,Pageable pageable);
 }

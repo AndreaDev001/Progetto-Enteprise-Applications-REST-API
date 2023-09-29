@@ -17,9 +17,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateUserImageDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long userID;
-    
-    @NotNull
     private MultipartFile file;
 }

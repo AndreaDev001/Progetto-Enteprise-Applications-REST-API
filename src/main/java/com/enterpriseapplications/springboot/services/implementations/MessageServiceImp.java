@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,19 +43,19 @@ public class MessageServiceImp implements MessageService
     }
 
     @Override
-    public PagedModel<MessageDto> getSentMessages(Long userID, Pageable pageable) {
+    public PagedModel<MessageDto> getSentMessages(UUID userID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getSentMessages(userID,pageable);
         return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
 
     @Override
-    public PagedModel<MessageDto> getReceivedMessages(Long userID, Pageable pageable) {
+    public PagedModel<MessageDto> getReceivedMessages(UUID userID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getReceivedMessages(userID,pageable);
         return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
 
     @Override
-    public PagedModel<MessageDto> getMessagesBetween(Long senderID, Long receiverID, Pageable pageable) {
+    public PagedModel<MessageDto> getMessagesBetween(UUID senderID, UUID receiverID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getMessagesBetween(senderID,receiverID,pageable);
         return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
     }
@@ -62,7 +63,7 @@ public class MessageServiceImp implements MessageService
     @Override
     @Transactional
     public MessageDto createMessage(CreateMessageDto createMessageDto) {
-        User requiredUser = this.userDao.findById(Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User receiver = this.userDao.findById(createMessageDto.getReceiverID()).orElseThrow();
         if(requiredUser.getId().equals(receiver.getId()))
             throw new InvalidFormat("errors.message.invalidSender");
@@ -76,7 +77,7 @@ public class MessageServiceImp implements MessageService
 
     @Override
     @Transactional
-    public void deleteMessage(Long messageID) {
+    public void deleteMessage(UUID messageID) {
         this.messageDao.findById(messageID).orElseThrow();
         this.messageDao.deleteById(messageID);
     }

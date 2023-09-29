@@ -19,6 +19,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/reports")
@@ -45,13 +47,13 @@ public class ReportController {
     }
 
     @GetMapping("reporter/{reporterID}")
-    public ResponseEntity<PagedModel<ReportDto>> getReportsByReporter(@PathVariable("reporterID") Long reporterID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ReportDto>> getReportsByReporter(@PathVariable("reporterID") UUID reporterID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getCreatedReports(reporterID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
     @GetMapping("reported/{reportedID}")
-    public ResponseEntity<PagedModel<ReportDto>> getReportsByReported(@PathVariable("reportedID") Long reportedID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<ReportDto>> getReportsByReported(@PathVariable("reportedID") UUID reportedID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReceivedReports(reportedID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
@@ -67,7 +69,7 @@ public class ReportController {
     }
 
     @PostMapping("/{userID}")
-    public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") @PositiveOrZero Long userID) {
+    public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.reportService.createReport(createReportDto,userID));
     }
 
@@ -77,7 +79,7 @@ public class ReportController {
     }
 
     @DeleteMapping("{reportID}")
-    public ResponseEntity<Void> deleteReport(@PathVariable("reportID") Long reportID) {
+    public ResponseEntity<Void> deleteReport(@PathVariable("reportID") UUID reportID) {
         this.reportService.deleteReport(reportID);
         return ResponseEntity.noContent().build();
     }

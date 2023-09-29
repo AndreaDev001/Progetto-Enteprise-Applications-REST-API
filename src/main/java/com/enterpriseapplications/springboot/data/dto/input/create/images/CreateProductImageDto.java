@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
@@ -21,8 +22,7 @@ public class CreateProductImageDto
 {
 
     @NotNull
-    @PositiveOrZero
-    private Long productID;
+    private UUID productID;
 
     @NotNull
     @Size(min = 1,max = 10)

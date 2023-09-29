@@ -14,6 +14,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/messages")
 @RequiredArgsConstructor
@@ -22,19 +24,19 @@ public class MessageController {
     private final MessageService messageService;
 
     @GetMapping("{userID}/sent")
-    public ResponseEntity<PagedModel<MessageDto>> getSentMessages(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<MessageDto>> getSentMessages(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getSentMessages(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
 
     @GetMapping("{userID}/received")
-    public ResponseEntity<PagedModel<MessageDto>> getReceivedMessages(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<MessageDto>> getReceivedMessages(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getReceivedMessages(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
 
     @GetMapping("{senderID}/{receiverID}/between")
-    public ResponseEntity<PagedModel<MessageDto>> getMessagesBetween(@PathVariable("senderID") Long senderID,@PathVariable("receiverID") Long receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<MessageDto>> getMessagesBetween(@PathVariable("senderID") UUID senderID,@PathVariable("receiverID") UUID receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getMessagesBetween(senderID,receiverID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
@@ -45,7 +47,7 @@ public class MessageController {
     }
 
     @DeleteMapping("{messageID}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable("messageID") Long messageID) {
+    public ResponseEntity<Void> deleteMessage(@PathVariable("messageID") UUID messageID) {
         this.messageService.deleteMessage(messageID);
         return ResponseEntity.noContent().build();
     }

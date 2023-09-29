@@ -7,10 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface MessageReportService
 {
-    PagedModel<MessageReportDto> getMessageReports(Long messageID, Pageable pageable);
-    MessageReportDto createMessageReport(CreateReportDto createReportDto,Long messageID);
+    PagedModel<MessageReportDto> getMessageReports(UUID messageID, Pageable pageable);
+    MessageReportDto createMessageReport(CreateReportDto createReportDto,UUID messageID);
     MessageReportDto updateMessageReport(UpdateReportDto updateReportDto);
-    void deleteMessageReport(Long messageID);
+    void deleteMessageReport(UUID messageID);
 }

@@ -8,14 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateMessageDto
 {
     @NotNull
-    @PositiveOrZero
-    private Long receiverID;
+    private UUID receiverID;
 
     @NotNull
     @NotBlank

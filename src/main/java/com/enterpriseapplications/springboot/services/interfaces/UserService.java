@@ -8,12 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.UUID;
+
 public interface UserService
 {
-    UserDetailsDto getUserDetails(Long userID);
+    UserDetailsDto getUserDetails(UUID userID);
     UserDetailsDto updateUser(UpdateUserDto updateUserDto);
     PagedModel<UserDetailsDto> getUsers(Pageable pageable);
     PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable);
     UserVisibility[] getVisibilities();
-    void deleteUser(Long userID);
+    void deleteUser(UUID userID);
 }

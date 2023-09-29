@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Table(name = "MESSAGES")
 @Entity
@@ -21,9 +22,8 @@ import java.time.LocalDateTime;
 public class Message
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Convert(converter = TrimConverter.class)
     @Column(name = "TEXT",unique = false)

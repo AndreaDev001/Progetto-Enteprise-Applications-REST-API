@@ -14,6 +14,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/follows")
 @RequiredArgsConstructor
@@ -23,29 +25,29 @@ public class FollowController {
     private final FollowService followService;
 
     @GetMapping("{userID}/followers")
-    public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") Long userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> pagedModel = this.followService.findAllFollowers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(pagedModel);
     }
 
     @GetMapping("{userID}/followed")
-    public ResponseEntity<PagedModel<FollowDto>> getFollowed(@PathVariable("userID") Long userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<PagedModel<FollowDto>> getFollowed(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> pagedModel = this.followService.findAllFollowed(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(pagedModel);
     }
 
     @GetMapping("/follow")
-    public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") Long followerID,@RequestParam("followedID") Long followedID) {
+    public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") UUID followerID,@RequestParam("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.findFollow(followerID,followedID));
     }
 
     @PostMapping("{followedID}")
-    public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") Long followedID) {
+    public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.createFollow(followedID));
     }
 
     @DeleteMapping("{followID}")
-    public ResponseEntity<Void> deleteFollow(@PathVariable("followID") Long followID) {
+    public ResponseEntity<Void> deleteFollow(@PathVariable("followID") UUID followID) {
         this.followService.deleteFollows(followID);
         return ResponseEntity.noContent().build();
     }
