@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.controllers.reports.ReportControlle
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import lombok.*;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Relation(collectionRelation = "content")
 public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
 
     private Long id;
