@@ -3,10 +3,7 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -54,7 +51,10 @@ public class ProductSpecifications
 
     public static Specification<Product> withFilter(Filter filter) {
         return (Root<Product> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
+
             List<Predicate> requiredPredicates = new ArrayList<>();
+            List<Order> requiredOrders = new ArrayList<>();
+
             if(filter.primaryCat != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("category").get("primaryCat"),filter.primaryCat));
             if(filter.secondaryCat != null)
@@ -71,11 +71,14 @@ public class ProductSpecifications
                 requiredPredicates.add(criteriaBuilder.ge(root.get("price"),filter.minPrice));
             if(filter.maxPrice != null && filter.maxPrice > 0)
                 requiredPredicates.add(criteriaBuilder.le(root.get("price"),filter.maxPrice));
+            if(filter.orderMode == null)
+                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
 
             Predicate requiredPredicate = criteriaBuilder.isNotNull(root.get("id"));
             requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("visibility"), ProductVisibility.PUBLIC));
             requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
-            return criteriaQuery.where(requiredPredicate).getRestriction();
+            requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
+            return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };
     }
 }

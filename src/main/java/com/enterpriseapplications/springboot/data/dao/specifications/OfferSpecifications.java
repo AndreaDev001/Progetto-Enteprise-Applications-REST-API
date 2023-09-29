@@ -2,17 +2,13 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +49,8 @@ public class OfferSpecifications
         return (Root<Offer> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
 
             List<Predicate> requiredPredicates = new ArrayList<>();
+            List<Order> requiredOrders = new ArrayList<>();
+
             if(filter.description != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("description"),SpecificationsUtils.likePattern(filter.description)));
             if(filter.price != null && filter.price > 0)
@@ -69,9 +67,12 @@ public class OfferSpecifications
                 requiredPredicates.add(criteriaBuilder.equal(root.get("status"),filter.status));
             if(filter.expired != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("expired"),filter.expired));
+            if(filter.orderMode == null)
+                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
-            return criteriaQuery.where(requiredPredicate).getRestriction();
+            requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
+            return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };
     }
 }

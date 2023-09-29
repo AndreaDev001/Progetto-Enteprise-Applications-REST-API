@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities.images;
 
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class ProductImage extends Image
 {
     public ProductImage(Product product,MultipartFile multipartFile) throws IOException {
         super(multipartFile);
+        this.setOwner(ImageOwner.PRODUCT);
         this.setProduct(product);
     }
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)

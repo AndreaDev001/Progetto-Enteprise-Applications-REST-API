@@ -32,7 +32,8 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private int amountOfFollowers = 0;
     private int amountOfFollowed = 0;
     private int amountOfProducts = 0;
-    private int amountOfOrders = 0;
+    private int amountOfReviews = 0;
+    private int amountOfReplies = 0;
     private LocalDate createdDate;
 
     @Override

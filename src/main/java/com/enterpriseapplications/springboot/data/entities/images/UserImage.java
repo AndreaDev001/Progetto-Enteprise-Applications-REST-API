@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities.images;
 
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -24,6 +25,7 @@ public class UserImage extends Image
 {
     public UserImage(User user, MultipartFile multipartFile) throws IOException {
         super(multipartFile);
+        this.setOwner(ImageOwner.USER);
         this.setUser(user);
     }
     @OneToOne(mappedBy = "userImage")

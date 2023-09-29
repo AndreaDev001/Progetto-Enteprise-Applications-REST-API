@@ -3,10 +3,7 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -48,6 +45,8 @@ public class ReportSpecifications
     public static Specification<Report> withFilter(Filter filter) {
         return (Root<Report> root, CriteriaQuery<?> criteriaQuery,CriteriaBuilder criteriaBuilder) -> {
             List<Predicate> requiredPredicates = new ArrayList<>();
+            List<Order> requiredOrders = new ArrayList<>();
+
             if(filter.reporterEmail != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("reporter").get("email"),SpecificationsUtils.likePattern(filter.reporterEmail)));
             if(filter.reportedEmail != null)
@@ -62,9 +61,12 @@ public class ReportSpecifications
                 requiredPredicates.add(criteriaBuilder.equal(root.get("reason"),filter.reason));
             if(filter.type != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("type"),filter.type));
+            if(filter.orderMode == null)
+                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
-            return criteriaQuery.where(requiredPredicate).getRestriction();
+            requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
+            return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };
     }
 }

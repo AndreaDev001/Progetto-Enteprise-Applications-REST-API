@@ -42,7 +42,8 @@ public class UserServiceImp implements UserService {
         userDetails.setAmountOfFollowers(requiredUser.getFollowers().size());
         userDetails.setAmountOfFollowed(requiredUser.getFollows().size());
         userDetails.setAmountOfProducts(requiredUser.getProducts().size());
-        userDetails.setAmountOfOrders(requiredUser.getOrders().size());
+        userDetails.setAmountOfReviews(requiredUser.getWrittenReviews().size());
+        userDetails.setAmountOfReplies(requiredUser.getWrittenReplies().size());
         userDetails.addLinks();
         return userDetails;
     }

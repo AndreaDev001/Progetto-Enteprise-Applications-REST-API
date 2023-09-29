@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.data.dto.output.images;
 
 import com.enterpriseapplications.springboot.controllers.images.ImageController;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,8 @@ public class ImageDto extends GenericOutput<ImageDto>
     protected String name;
     protected String type;
     protected LocalDate createdDate;
+    protected ImageOwner owner;
+
     @JsonIgnore
     protected byte[] image;
 

@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dto.input.create.images.Create
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateUserImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.services.interfaces.images.UserImageService;
 import jakarta.validation.Valid;
@@ -55,6 +56,7 @@ public class UserImageServiceImp implements UserImageService
         userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
         userImage.setName(createUserImageDto.getFile().getOriginalFilename());
         userImage.setType(createUserImageDto.getFile().getContentType());
+        userImage.setOwner(ImageOwner.USER);
         this.userImageDao.save(userImage);
         return this.modelMapper.map(userImage,UserImageDto.class);
     }

@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.images;
 
 
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,10 @@ public class Image
 
     @Column(name = "TYPE",unique = false)
     protected String type;
+
+    @Column(name = "OWNER",unique = false)
+    @Enumerated(EnumType.STRING)
+    protected ImageOwner owner;
 
     @Lob
     @Column(name = "IMAGE",unique = false,nullable = false)

@@ -2,10 +2,7 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 
 import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -49,6 +46,8 @@ public class BanSpecifications
         return (Root<Ban> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
 
             List<Predicate> requiredPredicates = new ArrayList<>();
+            List<Order> requiredOrders = new ArrayList<>();
+
             if(filter.bannerEmail != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("banner").get("email"),filter.bannerEmail));
             if(filter.bannedEmail != null)
@@ -63,7 +62,8 @@ public class BanSpecifications
                 requiredPredicates.add(criteriaBuilder.equal(root.get("expired"),filter.expired));
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
-            return criteriaQuery.where(requiredPredicate).getRestriction();
+            requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
+            return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
-@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTER","REPORTED"})})
+@Table(name = "REPORTS")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -33,9 +33,11 @@ public class Report
     protected String description;
 
     @Column(name = "REASON",unique = false)
+    @Enumerated(EnumType.STRING)
     protected ReportReason reason;
 
     @Column(name = "TYPE",unique = false)
+    @Enumerated(EnumType.STRING)
     protected ReportType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
