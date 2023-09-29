@@ -50,6 +50,12 @@ public class MessageReportServiceImp implements MessageReportService {
     }
 
     @Override
+    public MessageReportDto getReport(UUID reportID) {
+        MessageReport messageReport = this.messageReportDao.findById(reportID).orElseThrow();
+        return this.modelMapper.map(messageReport,MessageReportDto.class);
+    }
+
+    @Override
     public PagedModel<MessageReportDto> getReports(Pageable pageable) {
         Page<MessageReport> reports = this.messageReportDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);

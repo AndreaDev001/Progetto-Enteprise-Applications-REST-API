@@ -47,6 +47,12 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    public ReportDto getReport(UUID reportID) {
+        Report report = this.reportDao.findById(reportID).orElseThrow();
+        return this.modelMapper.map(report,ReportDto.class);
+    }
+
+    @Override
     public PagedModel<ReportDto> getReports(Pageable pageable) {
         Page<Report> reports = this.reportDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);

@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public interface OfferService
 {
+    OfferDto getOffer(UUID offerID);
     PagedModel<OfferDto> getOffers(Pageable pageable);
     PagedModel<OfferDto> getOffersByStatus(OfferStatus offerStatus, Pageable pageable);
     PagedModel<OfferDto> getOffersByExpired(boolean expired,Pageable pageable);

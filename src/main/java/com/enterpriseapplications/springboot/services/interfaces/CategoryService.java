@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface CategoryService
 {
+    CategoryDto getCategory(UUID categoryID);
     List<CategoryDto> getCategories();
     List<String> getPrimaryCategories();
     List<String> getCategoriesByPrimary(String primary);

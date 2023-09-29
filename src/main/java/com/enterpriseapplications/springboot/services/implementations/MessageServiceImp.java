@@ -43,6 +43,12 @@ public class MessageServiceImp implements MessageService
     }
 
     @Override
+    public MessageDto getMessage(UUID messageID) {
+        Message message = this.messageDao.findById(messageID).orElseThrow();
+        return this.modelMapper.map(message,MessageDto.class);
+    }
+
+    @Override
     public PagedModel<MessageDto> getMessages(Pageable pageable) {
         Page<Message> messages = this.messageDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(messages,modelAssembler);

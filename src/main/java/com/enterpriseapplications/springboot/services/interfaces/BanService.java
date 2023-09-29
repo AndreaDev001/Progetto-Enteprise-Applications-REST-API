@@ -22,6 +22,7 @@ public interface BanService
     PagedModel<BanDto> getReceivedBans(UUID userID,Pageable pageable);
     PagedModel<BanDto> getBansByReason(ReportReason reason,Pageable pageable);
     PagedModel<BanDto> getBansBySpec(Specification<Ban> specification,Pageable pageable);
+    BanDto getBan(UUID banID);
     BanDto getCurrentBan(UUID userID);
     BanDto createBan(CreateBanDto createBanDto);
     BanDto updateBan(UpdateBanDto updateBanDto);

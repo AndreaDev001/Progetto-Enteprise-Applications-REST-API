@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface PaymentMethodService
 {
+    PaymentMethodDto getPaymentMethod(UUID paymentMethodID);
     PagedModel<PaymentMethodDto> getPaymentMethods(Pageable pageable);
     PagedModel<PaymentMethodDto> getPaymentMethods(UUID ownerID, Pageable pageable);
     PagedModel<PaymentMethodDto> getPaymentMethodsByBrand(UUID ownerID,String brand,Pageable pageable);

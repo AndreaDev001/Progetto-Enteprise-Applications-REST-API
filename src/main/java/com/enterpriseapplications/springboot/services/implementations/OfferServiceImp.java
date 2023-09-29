@@ -48,6 +48,12 @@ public class OfferServiceImp implements OfferService
     }
 
     @Override
+    public OfferDto getOffer(UUID offerID) {
+        Offer offer = this.offerDao.findById(offerID).orElseThrow();
+        return this.modelMapper.map(offer,OfferDto.class);
+    }
+
+    @Override
     public PagedModel<OfferDto> getOffers(Pageable pageable) {
         Page<Offer> offers = this.offerDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);

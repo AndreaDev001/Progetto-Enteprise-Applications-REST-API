@@ -43,6 +43,13 @@ public class FollowServiceImp implements FollowService {
         this.modelAssembler = new GenericModelAssembler<>(Follow.class,FollowDto.class,modelMapper);
     }
 
+
+    @Override
+    public FollowDto getFollow(UUID followID) {
+        Follow follow = this.followDao.findById(followID).orElseThrow();
+        return this.modelMapper.map(follow,FollowDto.class);
+    }
+
     @Override
     public PagedModel<FollowDto> getFollows(Pageable pageable) {
         Page<Follow> follows = this.followDao.findAll(pageable);

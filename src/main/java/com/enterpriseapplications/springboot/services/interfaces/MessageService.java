@@ -9,6 +9,7 @@ import org.springframework.hateoas.PagedModel;
 import java.util.UUID;
 
 public interface MessageService {
+    MessageDto getMessage(UUID messageID);
     PagedModel<MessageDto> getMessages(Pageable pageable);
     PagedModel<MessageDto> getSentMessages(UUID userID, Pageable pageable);
     PagedModel<MessageDto> getReceivedMessages(UUID userID,Pageable pageable);

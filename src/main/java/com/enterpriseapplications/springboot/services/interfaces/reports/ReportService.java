@@ -14,6 +14,7 @@ import org.springframework.hateoas.PagedModel;
 import java.util.UUID;
 
 public interface ReportService {
+    ReportDto getReport(UUID reportID);
     PagedModel<ReportDto> getReports(Pageable pageable);
     PagedModel<ReportDto> getCreatedReports(UUID userID, Pageable pageable);
     PagedModel<ReportDto> getReceivedReports(UUID userID,Pageable pageable);

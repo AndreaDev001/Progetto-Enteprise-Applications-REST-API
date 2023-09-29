@@ -45,6 +45,12 @@ public class ReviewServiceImp implements ReviewService {
     }
 
     @Override
+    public ReviewDto getReview(UUID reviewID) {
+        Review review = this.reviewDao.findById(reviewID).orElseThrow();
+        return this.modelMapper.map(review,ReviewDto.class);
+    }
+
+    @Override
     public PagedModel<ReviewDto> getReviews(Pageable pageable) {
         Page<Review> reviews = this.reviewDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(reviews,modelAssembler);

@@ -48,6 +48,12 @@ public class ProductReportServiceImp implements ProductReportService {
     }
 
     @Override
+    public ProductReportDto getReport(UUID reportID) {
+        ProductReport productReport = this.productReportDao.findById(reportID).orElseThrow();
+        return this.modelMapper.map(productReport,ProductReportDto.class);
+    }
+
+    @Override
     public PagedModel<ProductReportDto> getReports(Pageable pageable) {
         Page<ProductReport> productReports = this.productReportDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(productReports,modelAssembler);

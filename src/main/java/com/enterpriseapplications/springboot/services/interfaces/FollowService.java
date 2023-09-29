@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface FollowService {
+
+    FollowDto getFollow(UUID followID);
     PagedModel<FollowDto> getFollows(Pageable pageable);
     PagedModel<FollowDto> findAllFollowers(UUID userID, Pageable pageable);
     PagedModel<FollowDto> findAllFollowed(UUID userID,Pageable pageable);

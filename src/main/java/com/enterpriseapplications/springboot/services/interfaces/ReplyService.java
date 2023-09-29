@@ -11,8 +11,9 @@ import java.util.UUID;
 
 public interface ReplyService
 {
+    ReplyDto getReply(UUID replyID);
     PagedModel<ReplyDto>  getReplies(Pageable pageable);
-    ReplyDto getReply(UUID reviewID);
+    ReplyDto getReplyByReview(UUID reviewID);
     ReplyDto createReply(CreateReplyDto createReplyDto);
     ReplyDto updateReply(UpdateReplyDto updateReplyDto);
     PagedModel<ReplyDto> getWrittenReplies(UUID userID, Pageable pageable);

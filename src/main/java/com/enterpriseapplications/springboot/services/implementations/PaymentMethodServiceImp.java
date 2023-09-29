@@ -35,6 +35,12 @@ public class PaymentMethodServiceImp implements PaymentMethodService
     }
 
     @Override
+    public PaymentMethodDto getPaymentMethod(UUID paymentMethodID) {
+        PaymentMethod paymentMethod = this.paymentMethodDao.findById(paymentMethodID).orElseThrow();
+        return this.modelMapper.map(paymentMethod,PaymentMethodDto.class);
+    }
+
+    @Override
     public PagedModel<PaymentMethodDto> getPaymentMethods(Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);

@@ -114,6 +114,12 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    public BanDto getBan(UUID banID) {
+        Ban ban = this.banDao.findBan(banID).orElseThrow();
+        return this.modelMapper.map(ban,BanDto.class);
+    }
+
+    @Override
     public void deleteBan(UUID id) {
         this.banDao.findById(id).orElseThrow();
         this.banDao.deleteById(id);

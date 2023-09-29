@@ -23,6 +23,12 @@ public class CategoryServiceImp implements CategoryService {
     private final ModelMapper modelMapper;
 
     @Override
+    public CategoryDto getCategory(UUID categoryID) {
+        Category category = this.categoryDao.findById(categoryID).orElseThrow();
+        return this.modelMapper.map(category,CategoryDto.class);
+    }
+
+    @Override
     public List<CategoryDto> getCategories() {
         List<Category> categories = this.categoryDao.findAll();
         return categories.stream().map(category -> this.modelMapper.map(category,CategoryDto.class)).collect(Collectors.toList());
