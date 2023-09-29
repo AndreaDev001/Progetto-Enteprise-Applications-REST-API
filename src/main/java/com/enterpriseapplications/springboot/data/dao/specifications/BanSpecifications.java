@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -16,6 +17,19 @@ import java.util.List;
 
 public class BanSpecifications
 {
+    @Getter
+    public enum OrderType
+    {
+        BANNER_USERNAME("banner.username"),
+        BANNED_USERNAME("banned.username"),
+        BANNER_EMAIL("banner.email"),
+        BANNED_EMAIL("banned.email");
+
+        private final String path;
+        OrderType(String path) {
+            this.path = path;
+        }
+    }
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -27,6 +41,8 @@ public class BanSpecifications
         private String bannedUsername;
         private ReportReason reason;
         private Boolean expired;
+        private List<OrderType> orderTypes;
+        private SpecificationsUtils.OrderMode orderMode;
     }
 
     public static Specification<Ban> withFilter(Filter filter) {

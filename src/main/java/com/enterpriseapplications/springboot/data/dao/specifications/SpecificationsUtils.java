@@ -7,6 +7,12 @@ import java.util.List;
 
 public abstract class SpecificationsUtils
 {
+    public enum OrderMode
+    {
+        DESCENDED,
+        ASCENDED
+    }
+
    public static String likePattern(String value) {
        return "%" + value + "%";
    }

@@ -7,9 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -18,6 +16,20 @@ import java.util.List;
 
 public class ReportSpecifications
 {
+
+    @Getter
+    public enum OrderType
+    {
+        REPORTER_USERNAME("reporter.username"),
+        REPORTED_USERNAME("reported.username"),
+        DESCRIPTION("description"),
+        CREATED_DATE("createdDate");
+
+        private final String path;
+        OrderType(String path) {
+            this.path = path;
+        }
+    }
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -30,6 +42,8 @@ public class ReportSpecifications
         private String description;
         private ReportReason reason;
         private ReportType type;
+        private List<OrderType> orderTypes;
+        private SpecificationsUtils.OrderMode orderMode;
     }
     public static Specification<Report> withFilter(Filter filter) {
         return (Root<Report> root, CriteriaQuery<?> criteriaQuery,CriteriaBuilder criteriaBuilder) -> {

@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -17,6 +18,23 @@ import java.util.List;
 
 public class UserSpecifications
 {
+
+    @Getter
+    public enum OrderType
+    {
+        EMAIL("email"),
+        USERNAME("username"),
+        NAME("name"),
+        SURNAME("surname"),
+        DESCRIPTION("description"),
+        RATING("rating");
+
+        private final String path;
+
+        OrderType(String path) {
+            this.path = path;
+        }
+    }
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -29,6 +47,8 @@ public class UserSpecifications
         private String description;
         private Integer minRating;
         private Integer maxRating;
+        private List<OrderType> orderTypes;
+        private SpecificationsUtils.OrderMode orderMode;
     }
     public static Specification<User> withFilter(Filter filter) {
         return (Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {

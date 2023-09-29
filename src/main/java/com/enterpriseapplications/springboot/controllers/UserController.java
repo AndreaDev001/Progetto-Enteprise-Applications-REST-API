@@ -1,6 +1,8 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
+import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
@@ -8,6 +10,9 @@ import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +28,18 @@ public class UserController
     public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("userID") Long userID) {
         return ResponseEntity.ok(this.userService.getUserDetails(userID));
 
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedModel<UserDetailsDto>> getUsers(@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<UserDetailsDto> users = this.userService.getUsers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/spec")
+    public ResponseEntity<PagedModel<UserDetailsDto>> getUsersBySpec(@ParameterObject @Valid UserSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<UserDetailsDto> users = this.userService.getUsersBySpec(UserSpecifications.withFilter(filter), PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(users);
     }
 
     @PutMapping

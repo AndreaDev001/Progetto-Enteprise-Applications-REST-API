@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -18,6 +19,22 @@ import java.util.List;
 
 public class ProductSpecifications
 {
+    @Getter
+    public enum OrderType
+    {
+
+        PRICE("price"),
+        NAME("name"),
+        DESCRIPTION("description"),
+        CREATED_DATE("createdDate");
+
+        private final String path;
+
+        OrderType(String path) {
+            this.path = path;
+        }
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -31,6 +48,8 @@ public class ProductSpecifications
         private ProductCondition condition;
         private Long minPrice;
         private Long maxPrice;
+        private List<OrderType> orderTypes;
+        private SpecificationsUtils.OrderMode orderMode;
     }
 
     public static Specification<Product> withFilter(Filter filter) {

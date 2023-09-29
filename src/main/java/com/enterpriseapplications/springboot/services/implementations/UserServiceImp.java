@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.UserDetailsDto;
@@ -9,17 +10,31 @@ import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImp implements UserService {
 
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<User,UserDetailsDto> modelAssembler;
+    private final PagedResourcesAssembler<User> pagedResourcesAssembler;
+
+
+    public UserServiceImp(UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<User> pagedResourcesAssembler) {
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(User.class, UserDetailsDto.class,modelMapper);
+    }
 
     @Override
     public UserDetailsDto getUserDetails(Long userID) {
@@ -49,6 +64,18 @@ public class UserServiceImp implements UserService {
         UserDetailsDto userDetailsDto = this.modelMapper.map(requiredUser,UserDetailsDto.class);
         userDetailsDto.addLinks();
         return userDetailsDto;
+    }
+
+    @Override
+    public PagedModel<UserDetailsDto> getUsers(Pageable pageable) {
+        Page<User> users = this.userDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(users,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable) {
+        Page<User> users = this.userDao.findAll(specification,pageable);
+        return this.pagedResourcesAssembler.toModel(users,modelAssembler);
     }
 
     @Override
