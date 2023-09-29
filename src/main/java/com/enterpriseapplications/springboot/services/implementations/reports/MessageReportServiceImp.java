@@ -12,6 +12,7 @@ import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.MessageReport;
+import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -46,6 +47,12 @@ public class MessageReportServiceImp implements MessageReportService {
         this.modelMapper = modelMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.modelAssembler = new GenericModelAssembler<>(MessageReport.class,MessageReportDto.class,modelMapper);
+    }
+
+    @Override
+    public PagedModel<MessageReportDto> getReports(Pageable pageable) {
+        Page<MessageReport> reports = this.messageReportDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(reports,modelAssembler);
     }
 
     @Override

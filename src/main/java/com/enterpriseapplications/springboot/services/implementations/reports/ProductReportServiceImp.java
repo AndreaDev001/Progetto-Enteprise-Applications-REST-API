@@ -46,6 +46,13 @@ public class ProductReportServiceImp implements ProductReportService {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.modelAssembler = new GenericModelAssembler<>(ProductReport.class,ProductReportDto.class,modelMapper);
     }
+
+    @Override
+    public PagedModel<ProductReportDto> getReports(Pageable pageable) {
+        Page<ProductReport> productReports = this.productReportDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(productReports,modelAssembler);
+    }
+
     @Override
     public PagedModel<ProductReportDto> getReports(UUID productID, Pageable pageable) {
         Page<ProductReport> productReports = this.productReportDao.getProductReports(productID,pageable);

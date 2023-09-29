@@ -40,6 +40,12 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    public PagedModel<ProductDto> getProducts(Pageable pageable) {
+        Page<Product> products = this.productDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
+    }
+
+    @Override
     public PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable) {
         Page<Product> products = this.productDao.getProductsBySeller(sellerID,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);

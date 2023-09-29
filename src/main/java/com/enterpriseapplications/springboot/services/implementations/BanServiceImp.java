@@ -46,6 +46,12 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    public PagedModel<BanDto> getBans(Pageable pageable) {
+        Page<Ban> bans = this.banDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
+    }
+
+    @Override
     public PagedModel<BanDto> getCreatedBans(UUID userID, Pageable pageable) {
         Page<Ban> bans = this.banDao.getCreatedBans(userID,pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public interface OrderService
 {
+    PagedModel<OrderDto> getOrders(Pageable pageable);
     PagedModel<OrderDto> getOrders(UUID userID, Pageable pageable);
     OrderDto getOrder(UUID productID);
     OrderDto createOrder(CreateOrderDto createOrderDto);

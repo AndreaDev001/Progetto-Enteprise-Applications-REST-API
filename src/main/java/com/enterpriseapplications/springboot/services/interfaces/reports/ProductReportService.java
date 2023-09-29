@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public interface ProductReportService
 {
+    PagedModel<ProductReportDto> getReports(Pageable pageable);
     PagedModel<ProductReportDto> getReports(UUID productID, Pageable pageable);
     ProductReportDto createProductReport(CreateReportDto createReportDto,UUID productID);
     ProductReportDto updateProductReport(UpdateReportDto updateReportDto);

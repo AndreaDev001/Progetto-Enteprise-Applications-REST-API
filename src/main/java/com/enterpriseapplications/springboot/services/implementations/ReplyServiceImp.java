@@ -50,6 +50,12 @@ public class ReplyServiceImp implements ReplyService
     }
 
     @Override
+    public PagedModel<ReplyDto> getReplies(Pageable pageable) {
+        Page<Reply> replies = this.replyDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(replies,modelAssembler);
+    }
+
+    @Override
     public ReplyDto getReply(UUID reviewID) {
         Reply reply = this.replyDao.findByReview(reviewID).orElseThrow();
         return this.modelMapper.map(reply,ReplyDto.class);

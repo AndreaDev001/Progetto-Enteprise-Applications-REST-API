@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public interface ProductService
 {
+    PagedModel<ProductDto> getProducts(Pageable pageable);
     PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable);
     PagedModel<ProductDto> getProductsBySpec(Specification<Product> specification, Pageable pageable);
     ProductDto getProductDetails(UUID productID);

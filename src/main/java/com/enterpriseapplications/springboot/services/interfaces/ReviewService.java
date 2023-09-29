@@ -10,6 +10,7 @@ import org.springframework.hateoas.PagedModel;
 import java.util.UUID;
 
 public interface ReviewService {
+    PagedModel<ReviewDto> getReviews(Pageable pageable);
     PagedModel<ReviewDto> findAllWrittenReviews(UUID writerID, Pageable pageable);
     PagedModel<ReviewDto> findAllReceivedReviews(UUID receiverID,Pageable pageable);
     ReviewDto findReview(UUID writerID, UUID receiverID);

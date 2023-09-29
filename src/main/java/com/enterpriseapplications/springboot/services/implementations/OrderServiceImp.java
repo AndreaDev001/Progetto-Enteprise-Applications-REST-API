@@ -46,6 +46,12 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public PagedModel<OrderDto> getOrders(Pageable pageable) {
+        Page<Order> orders = this.orderDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(orders,modelAssembler);
+    }
+
+    @Override
     public PagedModel<OrderDto> getOrders(UUID userID, Pageable pageable) {
         Page<Order> orders = this.orderDao.getOrders(userID,pageable);
         return this.pagedResourcesAssembler.toModel(orders,modelAssembler);

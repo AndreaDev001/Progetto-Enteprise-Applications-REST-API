@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public interface MessageReportService
 {
+    PagedModel<MessageReportDto> getReports(Pageable pageable);
     PagedModel<MessageReportDto> getMessageReports(UUID messageID, Pageable pageable);
     MessageReportDto createMessageReport(CreateReportDto createReportDto,UUID messageID);
     MessageReportDto updateMessageReport(UpdateReportDto updateReportDto);

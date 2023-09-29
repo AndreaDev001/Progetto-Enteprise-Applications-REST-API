@@ -33,6 +33,13 @@ public class PaymentMethodServiceImp implements PaymentMethodService
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.modelAssembler = new GenericModelAssembler<>(PaymentMethod.class,PaymentMethodDto.class,modelMapper);
     }
+
+    @Override
+    public PagedModel<PaymentMethodDto> getPaymentMethods(Pageable pageable) {
+        Page<PaymentMethod> paymentMethods = this.paymentMethodDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
+    }
+
     @Override
     public PagedModel<PaymentMethodDto> getPaymentMethods(UUID ownerID, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethods(ownerID,pageable);

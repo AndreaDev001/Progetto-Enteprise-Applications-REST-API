@@ -44,6 +44,12 @@ public class FollowServiceImp implements FollowService {
     }
 
     @Override
+    public PagedModel<FollowDto> getFollows(Pageable pageable) {
+        Page<Follow> follows = this.followDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(follows,modelAssembler);
+    }
+
+    @Override
     public PagedModel<FollowDto> findAllFollowers(UUID userID, Pageable pageable) {
         Page<Follow> follows = this.followDao.findAllFollowers(userID,pageable);
         return pagedResourcesAssembler.toModel(follows,modelAssembler);

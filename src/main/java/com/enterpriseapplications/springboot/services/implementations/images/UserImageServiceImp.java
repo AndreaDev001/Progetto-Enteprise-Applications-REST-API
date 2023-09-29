@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.UserImageDao;
@@ -14,6 +15,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +33,25 @@ import java.util.UUID;
 
 
 @Service
-@RequiredArgsConstructor
 public class UserImageServiceImp implements UserImageService
 {
     private final UserImageDao userImageDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<UserImage,UserImageDto> modelAssembler;
+    private final PagedResourcesAssembler<UserImage> pagedResourcesAssembler;
+
+    public UserImageServiceImp(UserImageDao userImageDao,ModelMapper modelMapper,PagedResourcesAssembler<UserImage> pagedResourcesAssembler) {
+        this.userImageDao = userImageDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(UserImage.class,UserImageDto.class,modelMapper);
+    }
+
+    @Override
+    public PagedModel<UserImageDto> getImages(Pageable pageable) {
+        Page<UserImage> userImages = this.userImageDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(userImages,modelAssembler);
+    }
 
     @Override
     public UserImageDto getUserImageDetails(UUID userID) {

@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
 
+import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.images.ImageDao;
@@ -14,6 +15,10 @@ import com.enterpriseapplications.springboot.services.interfaces.images.ImageSer
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +30,26 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ImageServiceImp implements ImageService
 {
     private final ImageDao imageDao;
     private final ModelMapper modelMapper;
+    private final GenericModelAssembler<Image,ImageDto> modelAssembler;
+    private final PagedResourcesAssembler<Image> pagedResourcesAssembler;
 
+
+    public ImageServiceImp(ImageDao imageDao,ModelMapper modelMapper,PagedResourcesAssembler<Image> pagedResourcesAssembler) {
+        this.imageDao = imageDao;
+        this.modelMapper = modelMapper;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.modelAssembler = new GenericModelAssembler<>(Image.class,ImageDto.class,modelMapper);
+    }
+
+    @Override
+    public PagedModel<ImageDto> getImages(Pageable pageable) {
+        Page<Image> images = this.imageDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(images,modelAssembler);
+    }
 
     @Override
     public ImageDto getImage(UUID imageID) {

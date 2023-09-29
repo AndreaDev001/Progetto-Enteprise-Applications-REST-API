@@ -17,6 +17,7 @@ import java.util.UUID;
 
 public interface BanService
 {
+    PagedModel<BanDto> getBans(Pageable pageable);
     PagedModel<BanDto> getCreatedBans(UUID userID, Pageable pageable);
     PagedModel<BanDto> getReceivedBans(UUID userID,Pageable pageable);
     PagedModel<BanDto> getBansByReason(ReportReason reason,Pageable pageable);

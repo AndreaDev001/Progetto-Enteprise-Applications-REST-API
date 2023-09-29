@@ -43,6 +43,12 @@ public class MessageServiceImp implements MessageService
     }
 
     @Override
+    public PagedModel<MessageDto> getMessages(Pageable pageable) {
+        Page<Message> messages = this.messageDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
+    }
+
+    @Override
     public PagedModel<MessageDto> getSentMessages(UUID userID, Pageable pageable) {
         Page<Message> messages = this.messageDao.getSentMessages(userID,pageable);
         return this.pagedResourcesAssembler.toModel(messages,modelAssembler);
