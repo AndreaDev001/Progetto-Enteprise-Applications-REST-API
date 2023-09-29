@@ -47,9 +47,11 @@ public class Product {
     private BigDecimal price;
 
     @Column(name = "CONDITION",unique = false)
+    @Enumerated(EnumType.STRING)
     private ProductCondition condition;
 
     @Column(name = "VISIBILITY",unique = false)
+    @Enumerated(EnumType.STRING)
     private ProductVisibility visibility;
 
     @ManyToMany

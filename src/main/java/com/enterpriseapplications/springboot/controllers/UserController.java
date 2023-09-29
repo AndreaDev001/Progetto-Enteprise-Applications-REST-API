@@ -4,7 +4,7 @@ package com.enterpriseapplications.springboot.controllers;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
-import com.enterpriseapplications.springboot.data.UserDetailsDto;
+import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

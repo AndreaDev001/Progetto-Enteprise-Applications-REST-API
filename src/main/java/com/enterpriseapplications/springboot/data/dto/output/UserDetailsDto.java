@@ -1,11 +1,10 @@
-package com.enterpriseapplications.springboot.data;
+package com.enterpriseapplications.springboot.data.dto.output;
 
 import com.enterpriseapplications.springboot.HateoasUtils;
 import com.enterpriseapplications.springboot.controllers.*;
 import com.enterpriseapplications.springboot.controllers.images.UserImageController;
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
-import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import lombok.*;
 
@@ -27,7 +26,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private String name;
     private String surname;
     private String description;
-    private UserVisibility userVisibility;
+    private UserVisibility visibility;
     private int amountOfFollowers = 0;
     private int amountOfFollowed = 0;
     private int amountOfProducts = 0;

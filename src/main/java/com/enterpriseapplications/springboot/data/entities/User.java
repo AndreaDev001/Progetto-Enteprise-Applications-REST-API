@@ -55,7 +55,8 @@ public class User
     private String description;
 
     @Column(name = "VISIBILITY",unique = false)
-    private UserVisibility userVisibility;
+    @Enumerated(EnumType.STRING)
+    private UserVisibility visibility;
 
     @Column(name = "RATING",unique = false)
     private Integer rating;

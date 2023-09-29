@@ -32,6 +32,7 @@ public class Offer
     private BigDecimal price;
 
     @Column(name = "STATUS",unique = false)
+    @Enumerated(EnumType.STRING)
     private OfferStatus status;
 
     @Column(name = "EXPIRATION_DATE",unique = false)

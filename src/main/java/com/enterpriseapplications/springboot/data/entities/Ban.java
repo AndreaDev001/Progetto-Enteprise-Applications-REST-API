@@ -36,6 +36,7 @@ public class Ban
     private String description;
 
     @Column(name = "REASON",unique = false)
+    @Enumerated(EnumType.STRING)
     private ReportReason reason;
 
     @Column(name = "EXPIRATION_DATE",unique = false)
