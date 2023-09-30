@@ -19,6 +19,12 @@ public class ReportSpecifications
     {
         REPORTER_USERNAME("reporter.username"),
         REPORTED_USERNAME("reported.username"),
+        REPORTER_NAME("reporter.name"),
+        REPORTED_NAME("reported.name"),
+        REPORTER_SURNAME("reporter.surname"),
+        REPORTED_SURNAME("reported.surname"),
+        REPORTER_EMAIL("reporter.email"),
+        REPORTED_EMAIL("reported.email"),
         DESCRIPTION("description"),
         CREATED_DATE("createdDate");
 

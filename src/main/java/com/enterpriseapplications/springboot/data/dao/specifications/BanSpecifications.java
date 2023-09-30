@@ -20,7 +20,12 @@ public class BanSpecifications
         BANNER_USERNAME("banner.username"),
         BANNED_USERNAME("banned.username"),
         BANNER_EMAIL("banner.email"),
-        BANNED_EMAIL("banned.email");
+        BANNED_EMAIL("banned.email"),
+        BANNER_NAME("banner.name"),
+        BANNED_NAME("banned.name"),
+        BANNER_SURNAME("banner.surname"),
+        BANNED_SURNAME("banned.surname"),
+        DESCRIPTION("description");
 
         private final String path;
         OrderType(String path) {

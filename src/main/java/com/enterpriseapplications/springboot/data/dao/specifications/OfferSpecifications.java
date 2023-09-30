@@ -21,8 +21,13 @@ public class OfferSpecifications
         DESCRIPTION("description"),
         PRICE("price"),
         BUYER_USERNAME("buyer.username"),
+        BUYER_EMAIL("buyer.email"),
+        BUYER_NAME("buyer.name"),
+        BUYER_SURNAME("buyer.surname"),
         PRODUCT_NAME("product.name"),
-        PRODUCT_DESCRIPTION("product.description");
+        PRODUCT_DESCRIPTION("product.description"),
+        PRODUCT_PRICE("product.price"),
+        PRODUCT_CREATED_DATE("product.createdDate");
 
         private final String path;
         OrderType(String path) {

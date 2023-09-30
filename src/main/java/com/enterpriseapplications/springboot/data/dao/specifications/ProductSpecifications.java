@@ -23,7 +23,10 @@ public class ProductSpecifications
         PRICE("price"),
         NAME("name"),
         DESCRIPTION("description"),
-        CREATED_DATE("createdDate");
+        CREATED_DATE("createdDate"),
+        SELLER_USERNAME("seller.username"),
+        SELLER_NAME("seller.name"),
+        SELLER_SURNAME("seller.surname");
 
         private final String path;
 

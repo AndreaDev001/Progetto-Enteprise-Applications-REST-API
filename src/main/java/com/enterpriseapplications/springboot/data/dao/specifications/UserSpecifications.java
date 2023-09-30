@@ -24,7 +24,8 @@ public class UserSpecifications
         NAME("name"),
         SURNAME("surname"),
         DESCRIPTION("description"),
-        RATING("rating");
+        RATING("rating"),
+        CREATED_DATE("createdDate");
 
         private final String path;
 
