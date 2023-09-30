@@ -10,6 +10,7 @@ import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,11 @@ public class ImageServiceImp implements ImageService
     public List<ImageDto> getImagesByType(String type) {
         List<Image> images = this.imageDao.getImagesByType(type);
         return images.stream().map(image -> this.modelMapper.map(image,ImageDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public ImageOwner[] getImageOwners() {
+        return ImageOwner.values();
     }
 
     @Override

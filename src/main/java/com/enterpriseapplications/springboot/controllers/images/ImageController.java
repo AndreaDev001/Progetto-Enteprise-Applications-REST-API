@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateProductImageDto;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateUserImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,11 @@ public class ImageController
     public ResponseEntity<PagedModel<ImageDto>> getImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ImageDto> images = this.imageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(images);
+    }
+
+    @GetMapping("/owners")
+    public ResponseEntity<ImageOwner[]> getImageOwners() {
+        return ResponseEntity.ok(this.imageService.getImageOwners());
     }
 
     @GetMapping("{imageID}")

@@ -15,6 +15,6 @@ public interface ImageService
     ImageDto getImage(UUID imageID);
     List<ImageDto> getImagesByName(String name);
     List<ImageDto> getImagesByType(String type);
-    ImageOwner getImageOwners();
+    ImageOwner[] getImageOwners();
     void deleteImage(UUID imageID);
 }
