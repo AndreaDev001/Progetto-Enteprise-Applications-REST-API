@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
+import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -22,4 +23,5 @@ public interface ProductService
     void deleteProduct(UUID productID);
     ProductCondition[] getConditions();
     ProductVisibility[] getVisibilities();
+    ProductSpecifications.OrderType[] getOrderTypes();
 }

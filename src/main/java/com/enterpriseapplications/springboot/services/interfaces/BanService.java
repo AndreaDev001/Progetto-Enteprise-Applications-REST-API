@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
 
+import com.enterpriseapplications.springboot.data.dao.specifications.BanSpecifications;
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
@@ -26,5 +27,7 @@ public interface BanService
     BanDto getCurrentBan(UUID userID);
     BanDto createBan(CreateBanDto createBanDto);
     BanDto updateBan(UpdateBanDto updateBanDto);
+
+    BanSpecifications.OrderType[] getOrderTypes();
     void deleteBan(UUID id);
 }

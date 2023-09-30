@@ -61,6 +61,11 @@ public class ProductController
         return ResponseEntity.ok(this.productService.getVisibilities());
     }
 
+    @GetMapping("orderTypes")
+    public ResponseEntity<ProductSpecifications.OrderType[]> getOrderTypes() {
+        return ResponseEntity.ok(this.productService.getOrderTypes());
+    }
+
     @PutMapping
     public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid UpdateProductDto updateProductDto) {
         return ResponseEntity.ok(this.productService.updateProduct(updateProductDto));

@@ -26,19 +26,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({NoSuchElementException.class,MissingItem.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> missingItemException(NoSuchElementException exception, HttpServletRequest request) {
-        return errorResponse(HttpStatus.NOT_FOUND,Date.from(Instant.now()),"error.generic.notFound",request.getRequestURI());
+        return errorResponse(HttpStatus.NOT_FOUND,Date.from(Instant.now()),"error.http.notFound",request.getRequestURI());
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, InvalidFormat.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> badRequestException(HttpMessageNotReadableException exception,HttpServletRequest request) {
-        return errorResponse(HttpStatus.BAD_REQUEST,Date.from(Instant.now()),exception.getLocalizedMessage(), request.getRequestURI());
+        return errorResponse(HttpStatus.BAD_REQUEST,Date.from(Instant.now()),"error.http.badRequest", request.getRequestURI());
     }
 
     @ExceptionHandler({HttpClientErrorException.TooManyRequests.class})
     @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
     public ResponseEntity<ErrorResponse> tooManyRequestException(HttpClientErrorException.TooManyRequests exception,HttpServletRequest request) {
-        return errorResponse(HttpStatus.TOO_MANY_REQUESTS,Date.from(Instant.now()),exception.getLocalizedMessage(),request.getRequestURI());
+        return errorResponse(HttpStatus.TOO_MANY_REQUESTS,Date.from(Instant.now()),"error.http.tooManyRequests",request.getRequestURI());
     }
 
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String code, String url) {

@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -43,6 +44,11 @@ public class ProductServiceImp implements ProductService
     public PagedModel<ProductDto> getProducts(Pageable pageable) {
         Page<Product> products = this.productDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
+    }
+
+    @Override
+    public ProductSpecifications.OrderType[] getOrderTypes() {
+        return ProductSpecifications.OrderType.values();
     }
 
     @Override

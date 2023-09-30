@@ -53,6 +53,12 @@ public class UserController
     public ResponseEntity<UserVisibility[]> getVisibilities() {
         return ResponseEntity.ok(this.userService.getVisibilities());
     }
+
+    @GetMapping("/orderTypes")
+    public ResponseEntity<UserSpecifications.OrderType[]> getOrderTypes() {
+        return ResponseEntity.ok(this.userService.getOrderTypes());
+    }
+
     @DeleteMapping("{userID}")
     public ResponseEntity<Void> deleteUser(@PathVariable("userID") UUID userID) {
         this.userService.deleteUser(userID);

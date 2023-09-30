@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.BanSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
@@ -111,6 +112,11 @@ public class BanServiceImp implements BanService {
     public PagedModel<BanDto> getBansBySpec(Specification<Ban> specification, Pageable pageable) {
         Page<Ban> bans = this.banDao.findAll(specification, pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
+    }
+
+    @Override
+    public BanSpecifications.OrderType[] getOrderTypes() {
+        return BanSpecifications.OrderType.values();
     }
 
     @Override

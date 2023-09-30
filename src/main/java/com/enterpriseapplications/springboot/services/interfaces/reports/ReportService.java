@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces.reports;
 
+import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
@@ -25,5 +26,6 @@ public interface ReportService {
     ReportDto updateReport(UpdateReportDto updateReportDto);
     ReportReason[] getReasons();
     ReportType[] getTypes();
+    ReportSpecifications.OrderType[] getOrderTypes();
     void deleteReport(UUID reportID);
 }

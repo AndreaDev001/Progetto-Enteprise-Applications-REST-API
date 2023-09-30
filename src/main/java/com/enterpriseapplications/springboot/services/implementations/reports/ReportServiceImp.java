@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
@@ -50,6 +51,11 @@ public class ReportServiceImp implements ReportService {
     public ReportDto getReport(UUID reportID) {
         Report report = this.reportDao.findById(reportID).orElseThrow();
         return this.modelMapper.map(report,ReportDto.class);
+    }
+
+    @Override
+    public ReportSpecifications.OrderType[] getOrderTypes() {
+        return ReportSpecifications.OrderType.values();
     }
 
     @Override

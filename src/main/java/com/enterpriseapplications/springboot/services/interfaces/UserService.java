@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
+import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -17,5 +18,6 @@ public interface UserService
     PagedModel<UserDetailsDto> getUsers(Pageable pageable);
     PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable);
     UserVisibility[] getVisibilities();
+    UserSpecifications.OrderType[] getOrderTypes();
     void deleteUser(UUID userID);
 }

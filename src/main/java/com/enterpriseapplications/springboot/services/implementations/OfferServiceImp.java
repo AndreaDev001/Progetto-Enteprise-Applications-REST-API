@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
@@ -51,6 +52,12 @@ public class OfferServiceImp implements OfferService
     public OfferDto getOffer(UUID offerID) {
         Offer offer = this.offerDao.findById(offerID).orElseThrow();
         return this.modelMapper.map(offer,OfferDto.class);
+    }
+
+
+    @Override
+    public OfferSpecifications.OrderType[] getOrderTypes() {
+        return OfferSpecifications.OrderType.values();
     }
 
     @Override

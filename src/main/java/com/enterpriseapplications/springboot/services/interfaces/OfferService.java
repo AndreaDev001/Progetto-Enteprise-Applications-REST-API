@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
+import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
@@ -22,5 +23,6 @@ public interface OfferService
     PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID,OfferStatus status,Pageable pageable);
     PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable);
     OfferDto createOffer(CreateOfferDto createOfferDto);
+    OfferSpecifications.OrderType[] getOrderTypes();
     void deleteOffer(UUID offerID);
 }

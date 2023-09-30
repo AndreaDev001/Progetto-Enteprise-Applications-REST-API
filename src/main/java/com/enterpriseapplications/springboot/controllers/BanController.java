@@ -39,6 +39,11 @@ public class BanController
         return ResponseEntity.ok(this.banService.getBan(banID));
     }
 
+    @GetMapping("/orderTypes")
+    public ResponseEntity<BanSpecifications.OrderType[]> getOrderTypes() {
+        return ResponseEntity.ok(this.banService.getOrderTypes());
+    }
+
     @GetMapping("/banner/{userID}")
     public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

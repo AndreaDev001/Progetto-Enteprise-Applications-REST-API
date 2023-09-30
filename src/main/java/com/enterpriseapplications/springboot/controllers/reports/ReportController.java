@@ -70,6 +70,11 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
+    @GetMapping("/orderTypes")
+    public ResponseEntity<ReportSpecifications.OrderType[]> getOrderTypes() {
+        return ResponseEntity.ok(this.reportService.getOrderTypes());
+    }
+    
     @GetMapping("reasons")
     public ResponseEntity<ReportReason[]> getReasons() {
         return ResponseEntity.ok(this.reportService.getReasons());

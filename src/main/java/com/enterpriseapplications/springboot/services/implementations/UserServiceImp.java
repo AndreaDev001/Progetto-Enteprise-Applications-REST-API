@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -83,6 +84,11 @@ public class UserServiceImp implements UserService {
     @Override
     public UserVisibility[] getVisibilities() {
         return UserVisibility.values();
+    }
+
+    @Override
+    public UserSpecifications.OrderType[] getOrderTypes() {
+        return UserSpecifications.OrderType.values();
     }
 
     @Override
