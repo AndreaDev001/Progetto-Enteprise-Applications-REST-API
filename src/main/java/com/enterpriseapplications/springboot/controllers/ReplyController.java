@@ -26,8 +26,8 @@ public class ReplyController
 {
     private final ReplyService replyService;
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReplyDto>> getReplies(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getReplies(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
@@ -44,6 +44,7 @@ public class ReplyController
     }
 
     @GetMapping("/writer/{writerID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#id)")
     public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") UUID id, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getWrittenReplies(id, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
@@ -55,11 +56,13 @@ public class ReplyController
     }
 
     @PutMapping
+    @PreAuthorize("@permissionHandler.hasAccess(@replyDao,#updateReplyDto.replyID)")
     public ResponseEntity<ReplyDto> updateReply(@RequestBody @Valid UpdateReplyDto updateReplyDto) {
         return ResponseEntity.ok(this.replyService.updateReply(updateReplyDto));
     }
 
     @DeleteMapping("{replyID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@replyDao,#replyID)")
     public ResponseEntity<Void> deleteReply(@PathVariable("replyID") UUID replyID) {
         this.replyService.deleteReply(replyID);
         return ResponseEntity.noContent().build();

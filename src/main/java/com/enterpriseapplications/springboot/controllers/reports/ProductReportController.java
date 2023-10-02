@@ -27,19 +27,21 @@ public class ProductReportController {
     private final ProductReportService productReportService;
 
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(productReports);
     }
 
     @GetMapping("{reportID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#reportID)")
     public ResponseEntity<ProductReportDto> getProductReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.productReportService.getReport(reportID));
     }
 
     @GetMapping("{productID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(productID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(productReports);
@@ -51,11 +53,13 @@ public class ProductReportController {
     }
 
     @PutMapping
+    @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#updateReportDto.reportID)")
     public ResponseEntity<ProductReportDto> updateProductReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
         return ResponseEntity.ok(this.productReportService.updateProductReport(updateReportDto));
     }
 
     @DeleteMapping("{productReportID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#productReportID)")
     public ResponseEntity<Void> deleteProductReport(@PathVariable("productReportID") UUID productReportID) {
         this.productReportService.deleteProductReport(productReportID);
         return ResponseEntity.noContent().build();

@@ -27,8 +27,8 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReviewDto>> getAll(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReviewDto> reviews = this.reviewService.getReviews(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
@@ -63,11 +63,13 @@ public class ReviewController {
     }
 
     @PutMapping
+    @PreAuthorize("@permissionHandler.hasAccess(@reviewDao,#updateReviewDto.reviewID)")
     public ResponseEntity<ReviewDto> updateReview(@RequestBody @Valid UpdateReviewDto updateReviewDto) {
         return ResponseEntity.ok(this.reviewService.updateReview(updateReviewDto));
     }
 
     @DeleteMapping("{reviewID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@reviewDao,#reviewID)")
     public ResponseEntity<Void> deleteReview(@PathVariable("reviewID") UUID reviewID) {
         this.reviewService.deleteReview(reviewID);
         return ResponseEntity.noContent().build();

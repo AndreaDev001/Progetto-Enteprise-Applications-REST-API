@@ -22,34 +22,38 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Authorization")
 public class MessageController {
+
     private final MessageService messageService;
 
-
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageDto>> getMessages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getMessages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
 
     @GetMapping("{messageID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@messageDao,#messageID)")
     public ResponseEntity<MessageDto> getMessage(@PathVariable("messageID") UUID messageID) {
         return ResponseEntity.ok(this.messageService.getMessage(messageID));
     }
 
     @GetMapping("{userID}/sent")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<MessageDto>> getSentMessages(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getSentMessages(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
 
     @GetMapping("{userID}/received")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<MessageDto>> getReceivedMessages(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getReceivedMessages(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
     }
 
     @GetMapping("{senderID}/{receiverID}/between")
+    @PreAuthorize("@permissionHandler.hasAccess(#senderID) or @permissionHandler.hasAccess(#receiverID)")
     public ResponseEntity<PagedModel<MessageDto>> getMessagesBetween(@PathVariable("senderID") UUID senderID,@PathVariable("receiverID") UUID receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getMessagesBetween(senderID,receiverID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(messages);
@@ -61,6 +65,7 @@ public class MessageController {
     }
 
     @DeleteMapping("{messageID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@messageDao,#messageID)")
     public ResponseEntity<Void> deleteMessage(@PathVariable("messageID") UUID messageID) {
         this.messageService.deleteMessage(messageID);
         return ResponseEntity.noContent().build();

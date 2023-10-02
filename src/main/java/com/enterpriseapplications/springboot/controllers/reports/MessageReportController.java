@@ -25,15 +25,15 @@ public class MessageReportController {
 
     private final MessageReportService messageReportService;
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
     @GetMapping("{reportID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.messageReportService.getReport(reportID));
     }
@@ -51,12 +51,13 @@ public class MessageReportController {
     }
 
     @PutMapping
+    @PreAuthorize("@permissionHandler.hasAccess(@messageReportDao,#updateReportDto.reportID)")
     public ResponseEntity<MessageReportDto> updateMessageReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
         return ResponseEntity.ok(this.messageReportService.updateMessageReport(updateReportDto));
     }
 
     @DeleteMapping("{messageReportID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@permissionHandler.hasAccess(@messageReportDao,#messageReportID)")
     public ResponseEntity<Void> deleteMessageReport(@PathVariable("messageReportID") UUID messageReportID) {
         this.messageReportService.deleteMessageReport(messageReportID);
         return ResponseEntity.noContent().build();

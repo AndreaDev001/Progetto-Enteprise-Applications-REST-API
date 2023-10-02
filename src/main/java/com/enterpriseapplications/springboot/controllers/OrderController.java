@@ -26,19 +26,21 @@ public class OrderController
 {
     private final OrderService orderService;
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("{orderID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@orderDao,#orderID)")
     public ResponseEntity<OrderDto> getOrder(@PathVariable("orderID") UUID orderID) {
         return ResponseEntity.ok(this.orderService.getOrder(orderID));
     }
 
     @GetMapping("/buyer/{userID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
@@ -50,6 +52,7 @@ public class OrderController
     }
 
     @DeleteMapping("{orderID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<OrderDto> deleteOrder(@PathVariable("orderID") UUID orderID) {
         this.orderService.deleteOrder(orderID);
         return ResponseEntity.noContent().build();

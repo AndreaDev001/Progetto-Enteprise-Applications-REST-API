@@ -30,12 +30,12 @@ public class ProductController
     
     
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductDto>> getProducts(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
-    
-    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
+
     @GetMapping("{productID}/details")
     public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productService.getProductDetails(productID));
@@ -69,11 +69,13 @@ public class ProductController
     }
 
     @PutMapping
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#updateProductDto.productID)")
     public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid UpdateProductDto updateProductDto) {
         return ResponseEntity.ok(this.productService.updateProduct(updateProductDto));
     }
 
     @DeleteMapping("{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<Void> deleteProduct(@PathVariable("productID") UUID productID) {
         this.productService.deleteProduct(productID);
         return ResponseEntity.noContent().build();

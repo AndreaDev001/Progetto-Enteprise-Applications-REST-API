@@ -62,6 +62,7 @@ public class UserController
     }
 
     @DeleteMapping("{userID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<Void> deleteUser(@PathVariable("userID") UUID userID) {
         this.userService.deleteUser(userID);
         return ResponseEntity.noContent().build();

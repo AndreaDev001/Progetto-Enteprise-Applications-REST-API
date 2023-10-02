@@ -54,4 +54,15 @@ public class PermissionHandler
         }
         return false;
     }
+    public boolean hasAccess(UUID userID) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+                String sub = (String)jwtAuthenticationToken.getTokenAttributes().get("sub");
+                UUID id = UUID.fromString(sub);
+                return userID.equals(id);
+            }
+        }
+        return false;
+    }
 }
