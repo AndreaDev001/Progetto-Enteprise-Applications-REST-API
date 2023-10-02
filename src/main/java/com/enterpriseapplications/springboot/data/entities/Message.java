@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message
+public class Message implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,4 +40,9 @@ public class Message
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
     private LocalDateTime createdDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return this.getSender().getId();
+    }
 }

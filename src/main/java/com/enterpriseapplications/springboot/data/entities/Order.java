@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order
+public class Order implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,4 +43,9 @@ public class Order
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return buyer.getId();
+    }
 }

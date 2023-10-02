@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ImageController
 {
     private final ImageService imageService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<ImageDto>> getImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ImageDto> images = this.imageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

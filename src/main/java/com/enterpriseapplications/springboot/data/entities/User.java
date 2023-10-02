@@ -31,7 +31,7 @@ public class User
     @Column(name = "ID")
     private UUID id;
 
-    @Column(name = "EMAIL",unique = true)
+    @Column(name = "EMAIL",unique = false)
     @Convert(converter = TrimConverter.class)
     private String email;
 

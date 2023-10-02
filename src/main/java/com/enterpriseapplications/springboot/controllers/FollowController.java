@@ -13,6 +13,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -25,6 +26,8 @@ public class FollowController {
 
     private final FollowService followService;
 
+
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<FollowDto>> getFollows(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> follows = this.followService.getFollows(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

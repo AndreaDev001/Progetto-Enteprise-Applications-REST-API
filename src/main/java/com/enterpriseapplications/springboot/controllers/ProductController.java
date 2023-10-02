@@ -15,6 +15,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -26,14 +27,15 @@ import java.util.UUID;
 public class ProductController
 {
     private final ProductService productService;
-
-
+    
+    
     @GetMapping
     public ResponseEntity<PagedModel<ProductDto>> getProducts(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
-
+    
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     @GetMapping("{productID}/details")
     public ResponseEntity<ProductDto> getProductDetails(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productService.getProductDetails(productID));

@@ -13,6 +13,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class MessageReportController {
 
     private final MessageReportService messageReportService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
@@ -31,11 +33,13 @@ public class MessageReportController {
     }
 
     @GetMapping("{reportID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.messageReportService.getReport(reportID));
     }
 
     @GetMapping("{messageID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") UUID messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
@@ -52,6 +56,7 @@ public class MessageReportController {
     }
 
     @DeleteMapping("{messageReportID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteMessageReport(@PathVariable("messageReportID") UUID messageReportID) {
         this.messageReportService.deleteMessageReport(messageReportID);
         return ResponseEntity.noContent().build();

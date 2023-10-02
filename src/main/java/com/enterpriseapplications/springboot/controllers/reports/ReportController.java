@@ -17,6 +17,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class ReportController {
 
 
     @GetMapping
+    @PreAuthorize("@permissionHandler.hasRole('ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);

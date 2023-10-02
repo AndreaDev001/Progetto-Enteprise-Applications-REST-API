@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.reports;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.OwnableEntity;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Report
+public class Report implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,4 +57,9 @@ public class Report
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     protected LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return this.getReporter().getId();
+    }
 }

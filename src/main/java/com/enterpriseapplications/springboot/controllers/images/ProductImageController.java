@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ProductImageController
 {
     private final ProductImageService productImageService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<ProductImageDto>> getProductImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductImageDto> products = this.productImageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

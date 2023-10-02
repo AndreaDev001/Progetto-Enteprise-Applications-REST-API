@@ -14,6 +14,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<ReviewDto>> getAll(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReviewDto> reviews = this.reviewService.getReviews(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

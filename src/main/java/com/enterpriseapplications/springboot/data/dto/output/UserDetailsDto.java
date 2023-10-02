@@ -33,7 +33,9 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private int amountOfFollowers = 0;
     private int amountOfFollowed = 0;
     private int amountOfProducts = 0;
-    private int amountOfReviews = 0;
+    private int amountOfWrittenReviews = 0;
+    private int amountOfReceivedReviews = 0;
+    private int amountOfReceivedBans = 0;
     private int amountOfReplies = 0;
     private LocalDate createdDate;
 
@@ -42,7 +44,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     public void addLinks(Object... params) {
         PaginationRequest paginationRequest = new PaginationRequest(0,20);
         String paginationQuery = HateoasUtils.convert(paginationRequest);
-        System.out.println(paginationQuery);
+        this.add(linkTo(methodOn(ProductController.class).getProducts(id,paginationRequest)).slash(paginationQuery).withRel("products").withName("products"));
         this.add(linkTo(methodOn(FollowController.class).getFollowers(id,paginationRequest)).slash(paginationQuery).withRel("followers").withName("followers"));
         this.add(linkTo(methodOn(FollowController.class).getFollowed(id,paginationRequest)).slash(paginationQuery).withRel("followed").withName("followed"));
         this.add(linkTo(methodOn(ReportController.class).getReportsByReporter(id,paginationRequest)).slash(paginationQuery).withRel("created_reports").withName("createdReports"));

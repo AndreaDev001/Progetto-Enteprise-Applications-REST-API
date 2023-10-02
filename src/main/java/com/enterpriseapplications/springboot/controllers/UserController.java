@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.config.PermissionHandler;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
@@ -14,6 +15,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

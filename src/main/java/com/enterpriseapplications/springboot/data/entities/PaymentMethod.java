@@ -20,7 +20,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentMethod
+public class PaymentMethod implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -55,4 +55,9 @@ public class PaymentMethod
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return this.owner.getId();
+    }
 }

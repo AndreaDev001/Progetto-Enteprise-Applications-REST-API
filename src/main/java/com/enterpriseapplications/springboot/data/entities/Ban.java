@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ban
+public class Ban implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -53,4 +53,9 @@ public class Ban
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return banner.getId();
+    }
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review
+public class Review implements OwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -50,4 +50,9 @@ public class Review
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return this.writer.getId();
+    }
 }

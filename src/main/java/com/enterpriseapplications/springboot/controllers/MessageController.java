@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class MessageController {
     private final MessageService messageService;
 
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<MessageDto>> getMessages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageDto> messages = this.messageService.getMessages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

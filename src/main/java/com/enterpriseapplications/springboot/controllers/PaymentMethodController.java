@@ -11,6 +11,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class PaymentMethodController
 {
     private final PaymentMethodService paymentMethodService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethods(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

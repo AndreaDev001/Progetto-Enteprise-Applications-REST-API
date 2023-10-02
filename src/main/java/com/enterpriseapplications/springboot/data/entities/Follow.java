@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Follow {
+public class Follow implements OwnableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,4 +40,9 @@ public class Follow {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private LocalDate lastModifiedDate;
+
+    @Override
+    public UUID getOwnerID() {
+        return follower.getId();
+    }
 }

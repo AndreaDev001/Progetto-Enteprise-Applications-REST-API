@@ -14,6 +14,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class ReplyController
 {
     private final ReplyService replyService;
 
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<ReplyDto>> getReplies(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getReplies(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
