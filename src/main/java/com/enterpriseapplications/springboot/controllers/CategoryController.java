@@ -1,8 +1,10 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateCategoryDto;
 import com.enterpriseapplications.springboot.data.dto.output.CategoryDto;
 import com.enterpriseapplications.springboot.services.interfaces.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,11 @@ public class CategoryController
     @GetMapping("/primaries")
     public ResponseEntity<List<String>> getPrimaryCategories() {
         return ResponseEntity.ok(this.categoryService.getPrimaryCategories());
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
+        return ResponseEntity.ok(this.categoryService.createCategory(createCategoryDto));
     }
 
     @GetMapping("/secondaries/{primary}")

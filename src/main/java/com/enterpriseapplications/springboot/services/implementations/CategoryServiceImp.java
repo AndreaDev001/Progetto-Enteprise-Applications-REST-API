@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 
 import com.enterpriseapplications.springboot.data.dao.CategoryDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateCategoryDto;
 import com.enterpriseapplications.springboot.data.dto.output.CategoryDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.services.interfaces.CategoryService;
@@ -47,6 +48,15 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public List<String> getCategoriesBySecondary(String primary,String secondary) {
         return this.categoryDao.getCategoriesBySecondary(primary,secondary);
+    }
+
+    @Override
+    public CategoryDto createCategory(CreateCategoryDto createCategoryDto) {
+        Category category = new Category();
+        category.setPrimaryCat(createCategoryDto.getPrimary());
+        category.setSecondaryCat(createCategoryDto.getSecondary());
+        category.setTertiaryCat(createCategoryDto.getTertiary());
+        return this.modelMapper.map(category,CategoryDto.class);
     }
 
     @Override
