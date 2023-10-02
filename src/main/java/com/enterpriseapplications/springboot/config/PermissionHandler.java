@@ -43,6 +43,8 @@ public class PermissionHandler
     }
 
     public boolean hasAccess(JpaRepository<OwnableEntity,UUID> repository, UUID resourceID) {
+        if(hasRole("ROLE_ADMIN"))
+            return true;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
@@ -55,6 +57,8 @@ public class PermissionHandler
         return false;
     }
     public boolean hasAccess(UUID userID) {
+        if(hasRole("ROLE_ADMIN"))
+            return true;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {

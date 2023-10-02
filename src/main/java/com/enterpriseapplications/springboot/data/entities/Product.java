@@ -47,6 +47,9 @@ public class Product implements OwnableEntity {
     @Column(name = "PRICE",unique = false)
     private BigDecimal price;
 
+    @Column(name = "MIN_PRICE",unique = false)
+    private BigDecimal minPrice;
+
     @Column(name = "CONDITION",unique = false)
     @Enumerated(EnumType.STRING)
     private ProductCondition condition;

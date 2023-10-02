@@ -27,38 +27,38 @@ public class ProductReportController {
     private final ProductReportService productReportService;
 
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(productReports);
     }
 
-    @GetMapping("{reportID}")
+    @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#reportID)")
     public ResponseEntity<ProductReportDto> getProductReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.productReportService.getReport(reportID));
     }
 
-    @GetMapping("{productID}")
+    @GetMapping("/private/{productID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(productID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(productReports);
     }
 
-    @PostMapping("{productID}")
+    @PostMapping("/private/{productID}")
     public ResponseEntity<ProductReportDto> createProductReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productReportService.createProductReport(createReportDto,productID));
     }
 
-    @PutMapping
+    @PutMapping("/private")
     @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#updateReportDto.reportID)")
     public ResponseEntity<ProductReportDto> updateProductReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
         return ResponseEntity.ok(this.productReportService.updateProductReport(updateReportDto));
     }
 
-    @DeleteMapping("{productReportID}")
+    @DeleteMapping("/private/{productReportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#productReportID)")
     public ResponseEntity<Void> deleteProductReport(@PathVariable("productReportID") UUID productReportID) {
         this.productReportService.deleteProductReport(productReportID);

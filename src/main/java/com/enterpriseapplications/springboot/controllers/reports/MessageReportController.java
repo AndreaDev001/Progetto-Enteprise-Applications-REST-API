@@ -25,38 +25,38 @@ public class MessageReportController {
 
     private final MessageReportService messageReportService;
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("{reportID}")
+    @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.messageReportService.getReport(reportID));
     }
 
-    @GetMapping("{messageID}")
+    @GetMapping("/private/{messageID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") UUID messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @PostMapping("{messageID}")
+    @PostMapping("/private/{messageID}")
     public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero UUID messageID) {
         return ResponseEntity.ok(this.messageReportService.createMessageReport(createReportDto,messageID));
     }
 
-    @PutMapping
+    @PutMapping("/private")
     @PreAuthorize("@permissionHandler.hasAccess(@messageReportDao,#updateReportDto.reportID)")
     public ResponseEntity<MessageReportDto> updateMessageReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
         return ResponseEntity.ok(this.messageReportService.updateMessageReport(updateReportDto));
     }
 
-    @DeleteMapping("{messageReportID}")
+    @DeleteMapping("/private/{messageReportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@messageReportDao,#messageReportID)")
     public ResponseEntity<Void> deleteMessageReport(@PathVariable("messageReportID") UUID messageReportID) {
         this.messageReportService.deleteMessageReport(messageReportID);

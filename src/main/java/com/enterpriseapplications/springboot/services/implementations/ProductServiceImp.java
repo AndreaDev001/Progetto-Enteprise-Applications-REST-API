@@ -2,14 +2,22 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 
 import com.enterpriseapplications.springboot.GenericModelAssembler;
+import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
+import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateProductImageDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
+import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
+import com.enterpriseapplications.springboot.services.interfaces.images.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -18,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +36,18 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImp implements ProductService
 {
+    private final UserDao userDao;
     private final ProductDao productDao;
+    private final CategoryDao categoryDao;
     private final ModelMapper modelMapper;
     private final GenericModelAssembler<Product,ProductDto> modelAssembler;
     private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
 
-    public ProductServiceImp(ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Product> pagedResourcesAssembler) {
+    public ProductServiceImp(ProductDao productDao,UserDao userDao,CategoryDao categoryDao,ModelMapper modelMapper,PagedResourcesAssembler<Product> pagedResourcesAssembler) {
         this.productDao = productDao;
+        this.userDao = userDao;
+        this.categoryDao = categoryDao;
         this.modelMapper = modelMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.modelAssembler = new GenericModelAssembler<>(Product.class,ProductDto.class,modelMapper);
@@ -62,6 +75,29 @@ public class ProductServiceImp implements ProductService
     public ProductDto getProductDetails(UUID productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
+        productDto.addLinks();
+        return productDto;
+    }
+
+    @Override
+    @Transactional
+    public ProductDto createProduct(CreateProductDto createProductDto) {
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        Category requiredCategory = this.categoryDao.getCategory(createProductDto.getPrimaryCat(), createProductDto.getSecondaryCat(), createProductDto.getTertiaryCat()).orElseThrow();
+        Product requiredProduct = new Product();
+        if(createProductDto.getPrice().compareTo(createProductDto.getMinPrice()) < 0)
+            throw new InvalidFormat("error.product.invalidMinPrice");
+        requiredProduct.setName(createProductDto.getName());
+        requiredProduct.setDescription(createProductDto.getDescription());
+        requiredProduct.setBrand(createProductDto.getBrand());
+        requiredProduct.setCondition(createProductDto.getCondition());
+        requiredProduct.setVisibility(createProductDto.getVisibility());
+        requiredProduct.setPrice(createProductDto.getPrice());
+        requiredProduct.setMinPrice(createProductDto.getMinPrice());
+        requiredProduct.setCategory(requiredCategory);
+        requiredProduct.setSeller(requiredUser);
+        this.productDao.save(requiredProduct);
+        ProductDto productDto = this.modelMapper.map(requiredProduct, ProductDto.class);
         productDto.addLinks();
         return productDto;
     }

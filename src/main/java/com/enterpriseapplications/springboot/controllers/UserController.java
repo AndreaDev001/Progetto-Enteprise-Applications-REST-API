@@ -28,40 +28,39 @@ public class UserController
 {
     private final UserService userService;
 
-    @GetMapping("{userID}/details")
+    @GetMapping("/public/{userID}/details")
     public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.userService.getUserDetails(userID));
 
     }
 
-    @GetMapping
+    @GetMapping("/private")
     public ResponseEntity<PagedModel<UserDetailsDto>> getUsers(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<UserDetailsDto> users = this.userService.getUsers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/spec")
+    @GetMapping("/public/spec")
     public ResponseEntity<PagedModel<UserDetailsDto>> getUsersBySpec(@ParameterObject @Valid UserSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<UserDetailsDto> users = this.userService.getUsersBySpec(UserSpecifications.withFilter(filter), PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping
+    @PutMapping("/private")
     public ResponseEntity<UserDetailsDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(this.userService.updateUser(updateUserDto));
-
     }
-    @GetMapping("/visibilities")
+    @GetMapping("/public/visibilities")
     public ResponseEntity<UserVisibility[]> getVisibilities() {
         return ResponseEntity.ok(this.userService.getVisibilities());
     }
 
-    @GetMapping("/orderTypes")
+    @GetMapping("/public/orderTypes")
     public ResponseEntity<UserSpecifications.OrderType[]> getOrderTypes() {
         return ResponseEntity.ok(this.userService.getOrderTypes());
     }
 
-    @DeleteMapping("{userID}")
+    @DeleteMapping("/private/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<Void> deleteUser(@PathVariable("userID") UUID userID) {
         this.userService.deleteUser(userID);

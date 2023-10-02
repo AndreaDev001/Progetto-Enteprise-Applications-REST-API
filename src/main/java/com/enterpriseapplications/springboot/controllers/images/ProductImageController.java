@@ -28,37 +28,37 @@ public class ProductImageController
 {
     private final ProductImageService productImageService;
 
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    @GetMapping
     public ResponseEntity<PagedModel<ProductImageDto>> getProductImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductImageDto> products = this.productImageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("{productID}")
+    @GetMapping("/public/{productID}")
     public ResponseEntity<List<ProductImageDto>> getProductImages(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productImageService.getProductImages(productID));
     }
-    @GetMapping("{productID}/first")
+    @GetMapping("/public/{productID}/first")
     public ResponseEntity<byte[]> getFirstImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getFirstProductImage(productID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
-    @GetMapping("{productID}/last")
+    @GetMapping("/public/{productID}/last")
     public ResponseEntity<byte[]> getLastImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getLastProductImage(productID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
-    @GetMapping("{productID}/{index}")
+    @GetMapping("/public/{productID}/{index}")
     public ResponseEntity<byte[]> getImageByIndex(@PathVariable("productID") UUID productID,@PathVariable("index") Integer index) {
         ProductImageDto productImageDto = this.productImageService.getProductImage(productID,index);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<List<ProductImageDto>> uploadProductImages(@ModelAttribute @Valid CreateProductImageDto productImageDto) {
         return ResponseEntity.ok(this.productImageService.uploadImages(productImageDto));
     }
-    @DeleteMapping("{productID}")
+    @DeleteMapping("/private/{productID}")
     public ResponseEntity<Void> deleteProductImages(@PathVariable("productID") UUID productID) {
         this.productImageService.deleteProductImages(productID);
         return ResponseEntity.noContent().build();

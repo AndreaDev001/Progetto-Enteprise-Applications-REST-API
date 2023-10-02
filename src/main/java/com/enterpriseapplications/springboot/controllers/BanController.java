@@ -29,8 +29,6 @@ public class BanController
 {
     private final BanService banService;
 
-
-
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid PaginationRequest paginationRequest) {

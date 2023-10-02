@@ -30,81 +30,81 @@ public class ReportController {
     private final ReportService reportService;
 
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReports(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReports(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("{reportID}")
+    @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<ReportDto> getReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.reportService.getReport(reportID));
     }
 
-    @GetMapping("reason/{reason}")
+    @GetMapping("/private/reason/{reason}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByReason(@PathVariable("reason") ReportReason reason, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReportsByReason(reason, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("/spec")
+    @GetMapping("/private/spec")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReportsBySpec(@ParameterObject @Valid ReportSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReportsBySpec(ReportSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("type/{type}")
+    @GetMapping("/private/type/{type}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByType(@PathVariable("type") ReportType type,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReportsByType(type,PageRequest.of(paginationRequest.getPage(), paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("reporter/{reporterID}")
+    @GetMapping("/private/reporter/{reporterID}")
     @PreAuthorize("@permissionHandler.hasAccess(#reporterID)")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByReporter(@PathVariable("reporterID") UUID reporterID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getCreatedReports(reporterID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("reported/{reportedID}")
+    @GetMapping("/private/reported/{reportedID}")
     @PreAuthorize("@permissionHandler.hasAccess(#reporterID)")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByReported(@PathVariable("reportedID") UUID reportedID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReceivedReports(reportedID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("/orderTypes")
+    @GetMapping("/public/orderTypes")
     public ResponseEntity<ReportSpecifications.OrderType[]> getOrderTypes() {
         return ResponseEntity.ok(this.reportService.getOrderTypes());
     }
     
-    @GetMapping("reasons")
+    @GetMapping("/public/reasons")
     public ResponseEntity<ReportReason[]> getReasons() {
         return ResponseEntity.ok(this.reportService.getReasons());
     }
 
-    @GetMapping("types")
+    @GetMapping("/public/types")
     public ResponseEntity<ReportType[]> getTypes() {
         return ResponseEntity.ok(this.reportService.getTypes());
     }
 
-    @PostMapping("/{userID}")
+    @PostMapping("/private/{userID}")
     public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.reportService.createReport(createReportDto,userID));
     }
 
-    @PutMapping
+    @PutMapping("/private")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#updateReportDto.reportID)")
     public ResponseEntity<ReportDto> updateReport(@RequestBody @Valid UpdateReportDto updateReportDto) {
         return ResponseEntity.ok(this.reportService.updateReport(updateReportDto));
     }
 
-    @DeleteMapping("{reportID}")
+    @DeleteMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<Void> deleteReport(@PathVariable("reportID") UUID reportID) {
         this.reportService.deleteReport(reportID);

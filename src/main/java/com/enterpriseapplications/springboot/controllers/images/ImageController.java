@@ -27,35 +27,38 @@ public class ImageController
 {
     private final ImageService imageService;
 
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    @GetMapping
     public ResponseEntity<PagedModel<ImageDto>> getImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ImageDto> images = this.imageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(images);
     }
 
-    @GetMapping("/owners")
+    @GetMapping("/public/owners")
     public ResponseEntity<ImageOwner[]> getImageOwners() {
         return ResponseEntity.ok(this.imageService.getImageOwners());
     }
 
-    @GetMapping("{imageID}")
+    @GetMapping("/public/{imageID}")
     public ResponseEntity<byte[]> getImage(@PathVariable("imageID") UUID imageID) {
         ImageDto imageDto = this.imageService.getImage(imageID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(imageDto.getType())).body(imageDto.getImage());
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/private/name/{name}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ImageDto>> getImagesByName(@PathVariable("name") String name) {
         return ResponseEntity.ok(this.imageService.getImagesByName(name));
     }
 
-    @GetMapping("/type/{type}")
+    @GetMapping("/private/type/{type}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ImageDto>> getImagesByType(@PathVariable("type") String type) {
         return ResponseEntity.ok(this.imageService.getImagesByType(type));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/private/{id}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteImage(@PathVariable("id") UUID imageID) {
         this.imageService.deleteImage(imageID);
         return ResponseEntity.noContent().build();

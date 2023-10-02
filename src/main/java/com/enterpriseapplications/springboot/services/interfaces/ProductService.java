@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.interfaces;
 
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -19,6 +20,7 @@ public interface ProductService
     PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable);
     PagedModel<ProductDto> getProductsBySpec(Specification<Product> specification, Pageable pageable);
     ProductDto getProductDetails(UUID productID);
+    ProductDto createProduct(CreateProductDto createProductDto);
     ProductDto updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(UUID productID);
     ProductCondition[] getConditions();

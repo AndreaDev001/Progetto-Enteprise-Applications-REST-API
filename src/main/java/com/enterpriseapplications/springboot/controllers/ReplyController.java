@@ -26,42 +26,42 @@ public class ReplyController
 {
     private final ReplyService replyService;
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReplyDto>> getReplies(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getReplies(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
     }
 
-    @GetMapping("{replyID}")
+    @GetMapping("/public/{replyID}")
     public ResponseEntity<ReplyDto> getReply(@PathVariable("replyID") UUID replyID) {
         return ResponseEntity.ok(this.replyService.getReply(replyID));
     }
 
-    @GetMapping("/review/{reviewID}")
+    @GetMapping("/public/review/{reviewID}")
     public ResponseEntity<ReplyDto> getReplyByReviews(@PathVariable("reviewID") UUID reviewID) {
         return ResponseEntity.ok(this.replyService.getReplyByReview(reviewID));
     }
 
-    @GetMapping("/writer/{writerID}")
+    @GetMapping("/private/writer/{writerID}")
     @PreAuthorize("@permissionHandler.hasAccess(#id)")
     public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") UUID id, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReplyDto> replies = this.replyService.getWrittenReplies(id, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
     }
 
-    @PostMapping
+    @PostMapping("/private")
     public ResponseEntity<ReplyDto> createReply(@RequestBody @Valid CreateReplyDto createReplyDto) {
         return ResponseEntity.ok(this.replyService.createReply(createReplyDto));
     }
 
-    @PutMapping
+    @PutMapping("/private")
     @PreAuthorize("@permissionHandler.hasAccess(@replyDao,#updateReplyDto.replyID)")
     public ResponseEntity<ReplyDto> updateReply(@RequestBody @Valid UpdateReplyDto updateReplyDto) {
         return ResponseEntity.ok(this.replyService.updateReply(updateReplyDto));
     }
 
-    @DeleteMapping("{replyID}")
+    @DeleteMapping("/private/{replyID}")
     @PreAuthorize("@permissionHandler.hasAccess(@replyDao,#replyID)")
     public ResponseEntity<Void> deleteReply(@PathVariable("replyID") UUID replyID) {
         this.replyService.deleteReply(replyID);

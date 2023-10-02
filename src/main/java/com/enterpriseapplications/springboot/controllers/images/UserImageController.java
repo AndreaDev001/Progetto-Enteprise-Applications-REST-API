@@ -28,23 +28,24 @@ public class UserImageController {
     private final UserImageService userImageService;
 
 
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    @GetMapping
     public ResponseEntity<PagedModel<UserImageDto>> getImages(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<UserImageDto> userImages = this.userImageService.getImages(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(userImages);
     }
 
-    @GetMapping("{userID}/details")
+    @GetMapping("/private/{userID}/details")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserImageDto> getUserImageDetails(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.userImageService.getUserImageDetails(userID));
     }
-    @GetMapping("{userID}")
+    @GetMapping("/public/{userID}")
     public ResponseEntity<byte[]> getUserImage(@PathVariable("userID") UUID userID) {
         UserImageDto userImageDto = this.userImageService.getUserImage(userID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(userImageDto.getType())).body(userImageDto.getImage());
     }
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserImageDto> uploadImage(@ModelAttribute @Valid CreateUserImageDto createUserImageDto) {
         return ResponseEntity.ok(this.userImageService.uploadImage(createUserImageDto));
     }

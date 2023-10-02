@@ -24,48 +24,48 @@ public class PaymentMethodController
 {
     private final PaymentMethodService paymentMethodService;
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethods(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
 
-    @GetMapping("{paymentMethodID}")
+    @GetMapping("/private/{paymentMethodID}")
     @PreAuthorize("@permissionHandler.hasAccess(@paymentMethodDao,#paymentMethodID)")
     public ResponseEntity<PaymentMethodDto> getPaymentMethod(@PathVariable("paymentMethodID") UUID paymentMethodID) {
         return ResponseEntity.ok(this.paymentMethodService.getPaymentMethod(paymentMethodID));
     }
 
-    @GetMapping("/owner/{userID}")
+    @GetMapping("/private/owner/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethods(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
 
-    @GetMapping("/owner/{userID}/country/{country}")
+    @GetMapping("/private/owner/{userID}/country/{country}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethodsByCountry(@PathVariable("userID") UUID userID,@PathVariable("country") String country,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethodsByCountry(userID,country,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
 
-    @GetMapping("/owner/{userID}/brand/{brand}")
+    @GetMapping("/private/owner/{userID}/brand/{brand}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethodsByBrand(@PathVariable("userID") UUID userID, @PathVariable("brand") String brand, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethodsByBrand(userID,brand,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
 
-    @GetMapping("/owner/{userID}/name/{name}")
+    @GetMapping("/private/owner/{userID}/name/{name}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethodsByName(@PathVariable("userID") UUID userID,@PathVariable("name") String name,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethodsByHolderName(userID,name,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
 
-    @DeleteMapping("{paymentMethodID}")
+    @DeleteMapping("/private/{paymentMethodID}")
     @PreAuthorize("@permissionHandler.hasAccess(@paymentMethodDao,#paymentMethodID)")
     public ResponseEntity<Void> deletePaymentMethod(UUID paymentMethodID) {
         this.paymentMethodService.deletePaymentMethod(paymentMethodID);

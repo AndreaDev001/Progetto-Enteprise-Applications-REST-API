@@ -27,48 +27,48 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReviewDto>> getAll(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReviewDto> reviews = this.reviewService.getReviews(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("{reviewID}")
+    @GetMapping("/public/{reviewID}")
     public ResponseEntity<ReviewDto> getReview(@PathVariable("reviewID") UUID reviewID) {
         return ResponseEntity.ok(this.reviewService.getReview(reviewID));
     }
 
-    @GetMapping("{userID}/writer")
+    @GetMapping("/public/{userID}/writer")
     public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") UUID userID, @Parameter @Valid PaginationRequest paginationRequest)
     {
         PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("{userID}/received")
+    @GetMapping("/public/{userID}/received")
     public ResponseEntity<PagedModel<ReviewDto>> findAllReceivedReviews(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/review")
+    @GetMapping("/public/review")
     public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") UUID writerID,@RequestParam("receiverID") UUID receiverID) {
         return ResponseEntity.ok(this.reviewService.findReview(writerID,receiverID));
     }
 
-    @PostMapping
+    @PostMapping("/private")
     public ResponseEntity<ReviewDto> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) {
         return ResponseEntity.ok(this.reviewService.createReview(createReviewDto));
     }
 
-    @PutMapping
+    @PutMapping("/private")
     @PreAuthorize("@permissionHandler.hasAccess(@reviewDao,#updateReviewDto.reviewID)")
     public ResponseEntity<ReviewDto> updateReview(@RequestBody @Valid UpdateReviewDto updateReviewDto) {
         return ResponseEntity.ok(this.reviewService.updateReview(updateReviewDto));
     }
 
-    @DeleteMapping("{reviewID}")
+    @DeleteMapping("/private/{reviewID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reviewDao,#reviewID)")
     public ResponseEntity<Void> deleteReview(@PathVariable("reviewID") UUID reviewID) {
         this.reviewService.deleteReview(reviewID);

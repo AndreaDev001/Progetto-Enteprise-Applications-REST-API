@@ -35,7 +35,7 @@ public class CategoryController
         return ResponseEntity.ok(this.categoryService.getPrimaryCategories());
     }
 
-    @PostMapping
+    @PostMapping("private")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(this.categoryService.createCategory(createCategoryDto));
     }
@@ -50,7 +50,7 @@ public class CategoryController
         return ResponseEntity.ok(this.categoryService.getCategoriesBySecondary(primary,secondary));
     }
 
-    @DeleteMapping("{categoryID}")
+    @DeleteMapping("private/{categoryID}")
     public ResponseEntity<Void> deleteCategory(@PathVariable("categoryID") UUID categoryID) {
         this.categoryService.deleteCategory(categoryID);
         return ResponseEntity.noContent().build();

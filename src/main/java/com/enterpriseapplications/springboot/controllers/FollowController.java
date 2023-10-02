@@ -27,42 +27,42 @@ public class FollowController {
     private final FollowService followService;
 
 
-    @GetMapping
+    @GetMapping("private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<FollowDto>> getFollows(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> follows = this.followService.getFollows(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(follows);
     }
 
-    @GetMapping("{followID}")
+    @GetMapping("public/{followID}")
     @PreAuthorize("@permissionHandler.hasAccess(@followDao,#followID)")
     public ResponseEntity<FollowDto> getFollow(@PathVariable("followID") UUID followID) {
         return ResponseEntity.ok(this.followService.getFollow(followID));
     }
 
-    @GetMapping("{userID}/followers")
+    @GetMapping("public/{userID}/followers")
     public ResponseEntity<PagedModel<FollowDto>> getFollowers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> pagedModel = this.followService.findAllFollowers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(pagedModel);
     }
 
-    @GetMapping("{userID}/followed")
+    @GetMapping("public/{userID}/followed")
     public ResponseEntity<PagedModel<FollowDto>> getFollowed(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> pagedModel = this.followService.findAllFollowed(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(pagedModel);
     }
 
-    @GetMapping("/follow")
+    @GetMapping("public/follow")
     public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") UUID followerID,@RequestParam("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.findFollow(followerID,followedID));
     }
 
-    @PostMapping("{followedID}")
+    @PostMapping("public/{followedID}")
     public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.createFollow(followedID));
     }
 
-    @DeleteMapping("{followID}")
+    @DeleteMapping("private/{followID}")
     @PreAuthorize("@permissionHandler.hasAccess(@followDao,#followID)")
     public ResponseEntity<Void> deleteFollow(@PathVariable("followID") UUID followID) {
         this.followService.deleteFollows(followID);

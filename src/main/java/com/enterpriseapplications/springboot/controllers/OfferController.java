@@ -27,44 +27,44 @@ public class OfferController
 {
     private final OfferService offerService;
 
-    @GetMapping
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OfferDto>> getOffers(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("{offerID}")
+    @GetMapping("private/{offerID}")
     @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#offerID)")
     public ResponseEntity<OfferDto> getOffer(@PathVariable("offerID") UUID offerID) {
         return ResponseEntity.ok(this.offerService.getOffer(offerID));
     }
 
-    @GetMapping("orderTypes")
+    @GetMapping("/public/orderTypes")
     public ResponseEntity<OfferSpecifications.OrderType[]> getOrderTypes()
     {
         return ResponseEntity.ok(this.offerService.getOrderTypes());
     }
 
-    @GetMapping("/status/{status}")
+    @GetMapping("/private/status/{status}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByStatus(@PathVariable("status") OfferStatus status, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByStatus(status, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @GetMapping("/expired/{expired}")
+    @GetMapping("/private/expired/{expired}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByExpired(@PathVariable("expired") boolean expired, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByExpired(expired,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @GetMapping("/buyer/{userID}")
+    @GetMapping("/private/buyer/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByBuyerID(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByBuyerID(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @GetMapping("/product/{productID}")
+    @GetMapping("/private/product/{productID}")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByProductID(@PathVariable("productID") UUID productID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductID(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
@@ -75,19 +75,19 @@ public class OfferController
         return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
     }
 
-    @GetMapping("/spec")
+    @GetMapping("/private/spec")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<PagedModel<OfferDto>> getOffersBySpec(@ParameterObject @Valid OfferSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersBySpec(OfferSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("/product/{productID}/status/{status}")
+    @GetMapping("private/product/{productID}/status/{status}")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByProductIDAndStatus(@PathVariable("productID") UUID productID,@PathVariable("status") OfferStatus status,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductIDAndStatus(productID,status,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @DeleteMapping("{offerID}")
+    @DeleteMapping("private/{offerID}")
     @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#offerID)")
     public ResponseEntity<Void> deleteOffer(@PathVariable("offerID") UUID offerID) {
         this.offerService.deleteOffer(offerID);
