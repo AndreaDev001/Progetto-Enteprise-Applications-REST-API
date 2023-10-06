@@ -25,6 +25,7 @@ public class ReportDto extends GenericOutput<ReportDto>
     protected UUID id;
     protected UserRef reporter;
     protected UserRef reported;
+    protected String description;
     protected ReportReason reason;
     protected ReportType type;
     protected LocalDate createdDate;

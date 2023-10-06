@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.controllers.*;
 import com.enterpriseapplications.springboot.controllers.images.UserImageController;
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
@@ -29,6 +30,8 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private String name;
     private String surname;
     private String description;
+    private Long rating;
+    private Gender gender;
     private UserVisibility visibility;
     private int amountOfFollowers = 0;
     private int amountOfFollowed = 0;

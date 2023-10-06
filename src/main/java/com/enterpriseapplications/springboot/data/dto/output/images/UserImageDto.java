@@ -15,6 +15,5 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 public class UserImageDto extends ImageDto
 {
-    private UUID id;
     private UserRef user;
 }

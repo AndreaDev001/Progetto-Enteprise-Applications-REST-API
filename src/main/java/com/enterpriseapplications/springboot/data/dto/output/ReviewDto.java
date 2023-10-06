@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = false)
@@ -22,4 +23,5 @@ public class ReviewDto extends GenericOutput<ReviewDto>
     private UserRef receiver;
     private Integer rating;
     private String text;
+    private LocalDate createdDate;
 }

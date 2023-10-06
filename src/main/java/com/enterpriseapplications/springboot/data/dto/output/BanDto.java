@@ -22,6 +22,7 @@ public class BanDto extends GenericOutput<BanDto>
     private UUID id;
     private UserRef banner;
     private UserRef banned;
+    private String description;
     private ReportReason reason;
     private boolean expired;
     private LocalDate createdDate;

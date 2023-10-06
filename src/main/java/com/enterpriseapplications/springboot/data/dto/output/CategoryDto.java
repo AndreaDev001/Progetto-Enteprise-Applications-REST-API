@@ -19,4 +19,5 @@ public class CategoryDto
     private String primary;
     private String secondary;
     private String tertiary;
+    private LocalDate createdDate;
 }

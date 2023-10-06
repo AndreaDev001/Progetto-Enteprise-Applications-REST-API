@@ -42,7 +42,7 @@ public class SecurityConfig
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint));
         http.authorizeHttpRequests(authorize ->
                 authorize.requestMatchers("/documentation/**").permitAll()
-                        .requestMatchers("/products/public/**").authenticated()
+                        .requestMatchers("/products/public/**").permitAll()
                         .requestMatchers("/orders/public/**").permitAll()
                         .requestMatchers("/reviews/public/**").permitAll()
                         .requestMatchers("/reports/public/**").permitAll()

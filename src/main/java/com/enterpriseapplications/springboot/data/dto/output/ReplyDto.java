@@ -22,5 +22,6 @@ public class ReplyDto extends GenericOutput<ReplyDto>
     private UUID id;
     private String text;
     private UserRef writer;
+    private UUID reviewID;
     private LocalDate createdDate;
 }
