@@ -46,6 +46,11 @@ public class OfferController
         return ResponseEntity.ok(this.offerService.getOrderTypes());
     }
 
+    @GetMapping("/public/statuses")
+    public ResponseEntity<OfferStatus[]> getStatuses() {
+        return ResponseEntity.ok(this.offerService.getStatuses());
+    }
+
     @GetMapping("/private/status/{status}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByStatus(@PathVariable("status") OfferStatus status, @ParameterObject @Valid PaginationRequest paginationRequest) {

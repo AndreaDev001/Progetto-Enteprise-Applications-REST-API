@@ -23,6 +23,7 @@ public interface OfferService
     PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID,OfferStatus status,Pageable pageable);
     PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable);
     OfferDto createOffer(CreateOfferDto createOfferDto);
+    OfferStatus[] getStatuses();
     OfferSpecifications.OrderType[] getOrderTypes();
     void deleteOffer(UUID offerID);
 }

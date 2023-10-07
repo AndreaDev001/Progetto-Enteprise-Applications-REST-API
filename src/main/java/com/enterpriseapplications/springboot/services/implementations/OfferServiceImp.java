@@ -120,6 +120,11 @@ public class OfferServiceImp implements OfferService
     }
 
     @Override
+    public OfferStatus[] getStatuses() {
+        return OfferStatus.values();
+    }
+
+    @Override
     @Transactional
     public void deleteOffer(UUID offerID) {
         this.offerDao.findById(offerID).orElseThrow();
