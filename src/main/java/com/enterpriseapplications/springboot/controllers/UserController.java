@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifi
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -54,7 +55,10 @@ public class UserController
     public ResponseEntity<UserVisibility[]> getVisibilities() {
         return ResponseEntity.ok(this.userService.getVisibilities());
     }
-
+    @GetMapping("/public/genders")
+    public ResponseEntity<Gender[]> getGenders() {
+        return ResponseEntity.ok(this.userService.getGenders());
+    }
     @GetMapping("/public/orderTypes")
     public ResponseEntity<UserSpecifications.OrderType[]> getOrderTypes() {
         return ResponseEntity.ok(this.userService.getOrderTypes());

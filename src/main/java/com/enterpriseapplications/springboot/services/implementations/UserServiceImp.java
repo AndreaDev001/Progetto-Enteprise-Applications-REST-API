@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifi
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import org.modelmapper.ModelMapper;
@@ -81,6 +82,11 @@ public class UserServiceImp implements UserService {
     public PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable) {
         Page<User> users = this.userDao.findAll(specification,pageable);
         return this.pagedResourcesAssembler.toModel(users,modelAssembler);
+    }
+
+    @Override
+    public Gender[] getGenders() {
+        return Gender.values();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifi
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +18,7 @@ public interface UserService
     UserDetailsDto updateUser(UpdateUserDto updateUserDto);
     PagedModel<UserDetailsDto> getUsers(Pageable pageable);
     PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable);
+    Gender[] getGenders();
     UserVisibility[] getVisibilities();
     UserSpecifications.OrderType[] getOrderTypes();
     void deleteUser(UUID userID);
