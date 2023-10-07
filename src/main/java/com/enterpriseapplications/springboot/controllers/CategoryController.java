@@ -20,17 +20,17 @@ public class CategoryController
     private final CategoryService categoryService;
 
 
-    @GetMapping
+    @GetMapping("/public")
     public ResponseEntity<List<CategoryDto>> getCategories() {
         return ResponseEntity.ok(this.categoryService.getCategories());
     }
 
-    @GetMapping("{categoryID}")
+    @GetMapping("/public/{categoryID}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable("categoryID") UUID categoryID) {
         return ResponseEntity.ok(this.categoryService.getCategory(categoryID));
     }
 
-    @GetMapping("/primaries")
+    @GetMapping("/public/primaries")
     public ResponseEntity<List<String>> getPrimaryCategories() {
         return ResponseEntity.ok(this.categoryService.getPrimaryCategories());
     }
@@ -40,12 +40,12 @@ public class CategoryController
         return ResponseEntity.ok(this.categoryService.createCategory(createCategoryDto));
     }
 
-    @GetMapping("/secondaries/{primary}")
+    @GetMapping("/public/secondaries/{primary}")
     public ResponseEntity<List<String>> getCategoriesByPrimary(@PathVariable("primary") String primary) {
         return ResponseEntity.ok(this.categoryService.getCategoriesByPrimary(primary));
     }
 
-    @GetMapping("/tertiaries/{primary}/{secondary}")
+    @GetMapping("/public/tertiaries/{primary}/{secondary}")
     public ResponseEntity<List<String>> getCategoriesBySecondary(@PathVariable("primary") String primary,@PathVariable("secondary") String secondary) {
         return ResponseEntity.ok(this.categoryService.getCategoriesBySecondary(primary,secondary));
     }
