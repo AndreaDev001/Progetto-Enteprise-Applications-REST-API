@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public interface ProductImageService
 {
+    ProductImageDto getProductImage(UUID id);
     PagedModel<ProductImageDto> getImages(Pageable pageable);
     List<ProductImageDto> getProductImages(UUID productID);
     List<ProductImageDto> uploadImages(CreateProductImageDto createProductImageDto);

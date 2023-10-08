@@ -75,6 +75,7 @@ public class ProductServiceImp implements ProductService
     public ProductDto getProductDetails(UUID productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
+        productDto.setAmountOfLikes(product.getLikes().size());
         productDto.addLinks();
         return productDto;
     }

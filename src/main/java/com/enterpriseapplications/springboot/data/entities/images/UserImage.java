@@ -6,10 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,6 +20,15 @@ import java.io.IOException;
 @EqualsAndHashCode(callSuper = false)
 public class UserImage extends Image
 {
+    public UserImage(Image image) {
+        this.setId(image.getId());
+        this.setName(image.getName());
+        this.setType(image.getType());
+        this.setOwner(ImageOwner.USER);
+        this.setImage(image.getImage());
+        this.setCreatedDate(image.getCreatedDate());
+        this.setLastModifiedDate(image.getLastModifiedDate());
+    }
     public UserImage(User user, MultipartFile multipartFile) throws IOException {
         super(multipartFile);
         this.setOwner(ImageOwner.USER);

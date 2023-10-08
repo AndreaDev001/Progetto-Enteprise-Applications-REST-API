@@ -21,6 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Relation(collectionRelation = "content")
 public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
 

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public interface UserImageService
 {
+    UserImageDto getImage(UUID id);
     PagedModel<UserImageDto> getImages(Pageable pageable);
     UserImageDto getUserImageDetails(UUID userID);
     UserImageDto getUserImage(UUID userID);

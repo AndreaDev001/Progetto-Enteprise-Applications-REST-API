@@ -59,13 +59,13 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderDto getOrderByProduct(UUID productID) {
-        Order order = this.orderDao.findById(productID).orElseThrow();
+        Order order = this.orderDao.findOrder(productID).orElseThrow();
         return this.modelMapper.map(order,OrderDto.class);
     }
 
     @Override
-    public OrderDto getOrder(UUID productID) {
-        Order order = this.orderDao.findOrder(productID).orElseThrow();
+    public OrderDto getOrder(UUID orderID) {
+        Order order = this.orderDao.findById(orderID).orElseThrow();
         return this.modelMapper.map(order,OrderDto.class);
     }
 

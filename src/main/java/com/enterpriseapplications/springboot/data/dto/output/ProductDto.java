@@ -4,10 +4,8 @@ package com.enterpriseapplications.springboot.data.dto.output;
 import com.enterpriseapplications.springboot.controllers.images.ProductImageController;
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
+import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
@@ -21,6 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Relation(collectionRelation = "content")
 public class ProductDto extends GenericOutput<ProductDto>
 {
@@ -30,9 +29,11 @@ public class ProductDto extends GenericOutput<ProductDto>
     private String brand;
     private UserRef seller;
     private ProductCondition condition;
+    private ProductVisibility visibility;
     private BigDecimal price;
     private BigDecimal minPrice;
     private CategoryDto category;
+    private int amountOfLikes = 0;
     private LocalDate createdDate;
 
     @Override

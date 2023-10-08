@@ -28,6 +28,12 @@ public class UserImageController {
     private final UserImageService userImageService;
 
 
+    @GetMapping("/private/{id}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    public ResponseEntity<UserImageDto> getImage(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(this.userImageService.getImage(id));
+    }
+
     @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<UserImageDto>> getImages(@ParameterObject @Valid PaginationRequest paginationRequest) {

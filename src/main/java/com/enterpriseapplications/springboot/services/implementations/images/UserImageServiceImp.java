@@ -48,6 +48,11 @@ public class UserImageServiceImp implements UserImageService
     }
 
     @Override
+    public UserImageDto getImage(UUID id) {
+        return this.modelMapper.map(this.userImageDao.findById(id).orElseThrow(),UserImageDto.class);
+    }
+
+    @Override
     public PagedModel<UserImageDto> getImages(Pageable pageable) {
         Page<UserImage> userImages = this.userImageDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(userImages,modelAssembler);

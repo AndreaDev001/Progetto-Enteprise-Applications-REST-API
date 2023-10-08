@@ -1,11 +1,10 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.server.core.Relation;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 
@@ -13,7 +12,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto
+@Builder
+@Relation(collectionRelation = "content")
+public class CategoryDto extends GenericOutput<CategoryDto>
 {
     private UUID id;
     private String primary;

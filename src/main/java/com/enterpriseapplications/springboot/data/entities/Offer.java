@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.data.entities;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Offer implements OwnableEntity
 {
     @Id

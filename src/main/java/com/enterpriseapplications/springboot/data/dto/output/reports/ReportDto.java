@@ -5,10 +5,7 @@ import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
@@ -19,6 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Relation(collectionRelation = "content")
 public class ReportDto extends GenericOutput<ReportDto>
 {

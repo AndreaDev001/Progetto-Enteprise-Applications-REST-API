@@ -23,6 +23,7 @@ import java.util.UUID;
 @Table(name = "USERS")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User
@@ -60,7 +61,7 @@ public class User
     private UserVisibility visibility;
 
     @Column(name = "RATING",unique = false)
-    private Integer rating;
+    private Long rating;
 
     @Column(name = "STRIPE_ID",unique = false)
     private String stripeID;
@@ -93,10 +94,10 @@ public class User
     private Set<Reply> writtenReplies = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "followed",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Follow> followers;
+    private Set<Follow> followers = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "follower",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Follow> follows;
+    private Set<Follow> follows = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "sender",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Message> sentMessages = new HashSet<>();

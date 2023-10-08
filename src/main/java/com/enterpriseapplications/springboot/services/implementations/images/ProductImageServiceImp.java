@@ -45,6 +45,11 @@ public class ProductImageServiceImp implements ProductImageService
     }
 
     @Override
+    public ProductImageDto getProductImage(UUID id) {
+        return this.modelMapper.map(this.productImageDao.findById(id).orElseThrow(),ProductImageDto.class);
+    }
+
+    @Override
     public PagedModel<ProductImageDto> getImages(Pageable pageable) {
         Page<ProductImage> productImages = this.productImageDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(productImages,modelAssembler);

@@ -3,10 +3,7 @@ package com.enterpriseapplications.springboot.data.dto.output.refs;
 
 import com.enterpriseapplications.springboot.controllers.ProductController;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -18,6 +15,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductRef extends GenericOutput<ProductRef>
 {
     private UUID id;
