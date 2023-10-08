@@ -1,4 +1,4 @@
-package com.enterpriseapplications.progettoentepriseapplicationsspringboot;
+package com.enterpriseapplications.springboot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
