@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.reports.ProductReport;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
+import com.enterpriseapplications.springboot.services.implementations.GenericTestImp;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,14 +32,9 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ProductReportServiceImpTest {
+class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductReportDto> {
 
     private ProductReportServiceImp productReportServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<ProductReport> pagedResourcesAssembler;
-    private ProductReport firstReport;
-    private ProductReport secondReport;
-
     @Mock
     private ProductReportDao productReportDao;
     @Mock
@@ -44,50 +43,58 @@ class ProductReportServiceImpTest {
     private ProductDao productDao;
 
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+    @Override
+    protected void init() {
+        super.init();
         productReportServiceImp = new ProductReportServiceImp(productReportDao,userDao,productDao,modelMapper,pagedResourcesAssembler);
         List<Report> reports = ReportServiceImpTest.createReports();
         Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
         Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
-        this.firstReport = new ProductReport(reports.get(0));
-        this.secondReport = new ProductReport(reports.get(1));
-        this.firstReport.setProduct(firstProduct);
-        this.secondReport.setProduct(secondProduct);
+        this.firstElement = new ProductReport(reports.get(0));
+        this.secondElement = new ProductReport(reports.get(1));
+        this.firstElement.setProduct(firstProduct);
+        this.secondElement.setProduct(secondProduct);
+        this.elements = List.of(firstElement,secondElement);
+    }
 
+    @BeforeEach
+    public void before() {
+        init();
     }
 
 
-    boolean valid(ProductReport productReport, ProductReportDto productReportDto) {
-        Assert.assertTrue(ReportServiceImpTest.valid(productReport,productReportDto));
+    public boolean valid(ProductReport productReport, ProductReportDto productReportDto) {
+        Assert.assertTrue(ReportServiceImpTest.baseValid(productReport,productReportDto));
         Assert.assertEquals(productReport.getProduct().getId(),productReportDto.getProduct().getId());
         return true;
     }
 
     @Test
     void getReport() {
-        given(this.productReportDao.findById(this.firstReport.getId())).willReturn(Optional.of(firstReport));
-        given(this.productReportDao.findById(this.secondReport.getId())).willReturn(Optional.of(secondReport));
-        ProductReportDto firstReport = this.productReportServiceImp.getReport(this.firstReport.getId());
-        ProductReportDto secondReport = this.productReportServiceImp.getReport(this.secondReport.getId());
-        Assert.assertTrue(valid(this.firstReport,firstReport));
-        Assert.assertTrue(valid(this.secondReport,secondReport));
+        given(this.productReportDao.findById(this.firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.productReportDao.findById(this.secondElement.getId())).willReturn(Optional.of(secondElement));
+        ProductReportDto firstReport = this.productReportServiceImp.getReport(this.firstElement.getId());
+        ProductReportDto secondReport = this.productReportServiceImp.getReport(this.secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstReport));
+        Assert.assertTrue(valid(this.secondElement,secondReport));
     }
 
     @Test
     void getReports() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productReportDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductReportDto> productReports = this.productReportServiceImp.getReports(pageRequest);
+        Assert.assertTrue(compare(elements,productReports.getContent().stream().toList()));
     }
 
     @Test
-    void testGetReports() {
+    void getProductReports() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productReportDao.getProductReports(product.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductReportDto> productReports = this.productReportServiceImp.getReports(product.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,productReports.getContent().stream().toList()));
     }
-
-    @Test
-    void createProductReport() {
-    }
-
     @Test
     void updateProductReport() {
     }

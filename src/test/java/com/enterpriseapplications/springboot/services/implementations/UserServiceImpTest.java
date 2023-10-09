@@ -17,9 +17,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,40 +33,29 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class UserServiceImpTest {
+class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
 
     private UserServiceImp userServiceImp;
-    private User firstUser;
-    private User secondUser;
-    private PagedResourcesAssembler<User> pagedResourcesAssembler;
-    private ModelMapper modelMapper;
-
     @Mock
     private UserDao userDao;
 
+
+    @Override
+    protected void init() {
+        super.init();
+        userServiceImp = new UserServiceImp(this.userDao,modelMapper,pagedResourcesAssembler);
+        firstElement = User.builder().id(UUID.randomUUID()).email("marchioandrea02@gmail.com").username("andrea").name("andrea").surname("marchio").gender(Gender.MALE).build();
+        secondElement = User.builder().id(UUID.randomUUID()).email("andreamarchio01@gmail.com").username("andrea").name("andrea").surname("marchio").gender(Gender.MALE).build();
+        elements = List.of(firstElement,secondElement);
+    }
+
     @BeforeEach
     public void before() {
-        firstUser = new User();
-        secondUser = new User();
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
-        userServiceImp = new UserServiceImp(this.userDao,modelMapper,pagedResourcesAssembler);
-        firstUser.setId(UUID.randomUUID());
-        firstUser.setEmail("marchioandrea02@gmail.com");
-        firstUser.setUsername("andrea");
-        firstUser.setName("andrea");
-        firstUser.setSurname("marchio");
-        firstUser.setGender(Gender.MALE);
-        secondUser.setId(UUID.randomUUID());
-        secondUser.setEmail("andreamarchio01@gmail.com");
-        secondUser.setUsername("andrea1");
-        secondUser.setName("andrea");
-        secondUser.setSurname("marchio");
-        secondUser.setGender(Gender.MALE);
+        init();
     }
 
 
-    boolean valid(User user, UserDetailsDto userDetails) {
+   public boolean valid(User user, UserDetailsDto userDetails) {
         Assert.assertNotNull(userDetails);
         Assert.assertEquals(user.getId(),userDetails.getId());
         Assert.assertEquals(user.getEmail(),userDetails.getEmail());
@@ -84,12 +77,12 @@ class UserServiceImpTest {
     }
     @Test
     void getUserDetails() {
-        given(this.userDao.findById(this.firstUser.getId())).willReturn(Optional.of(firstUser));
-        given(this.userDao.findById(this.secondUser.getId())).willReturn(Optional.of(secondUser));
-        UserDetailsDto firstDetails = this.userServiceImp.getUserDetails(firstUser.getId());
-        UserDetailsDto secondDetails = this.userServiceImp.getUserDetails(secondUser.getId());
-        Assert.assertTrue(valid(firstUser,firstDetails));
-        Assert.assertTrue(valid(secondUser,secondDetails));
+        given(this.userDao.findById(this.firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.userDao.findById(this.secondElement.getId())).willReturn(Optional.of(secondElement));
+        UserDetailsDto firstDetails = this.userServiceImp.getUserDetails(firstElement.getId());
+        UserDetailsDto secondDetails = this.userServiceImp.getUserDetails(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstDetails));
+        Assert.assertTrue(valid(secondElement,secondDetails));
     }
 
     @Test
@@ -99,6 +92,10 @@ class UserServiceImpTest {
 
     @Test
     void getUsers() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.userDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<UserDetailsDto> pagedModel = this.userServiceImp.getUsers(pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 
     @Test

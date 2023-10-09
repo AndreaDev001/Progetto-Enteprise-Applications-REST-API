@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -18,9 +19,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,14 +35,9 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ProductServiceImpTest {
+class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
 
     private ProductServiceImp productServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<Product> pagedResourcesAssembler;
-    private Product firstProduct;
-    private Product secondProduct;
-
 
     @Mock
     public UserDao userDao;
@@ -46,19 +46,25 @@ class ProductServiceImpTest {
     @Mock
     public CategoryDao categoryDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+
+    @Override
+    protected void init() {
+        super.init();
         this.productServiceImp = new ProductServiceImp(productDao,userDao,categoryDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
         Category category = Category.builder().id(UUID.randomUUID()).build();
-        firstProduct = Product.builder().id(UUID.randomUUID()).category(category).name("name").description("description").brand("brand").condition(ProductCondition.NEW).visibility(ProductVisibility.PUBLIC).seller(firstUser).price(BigDecimal.valueOf(100)).build();
-        secondProduct = Product.builder().id(UUID.randomUUID()).category(category).name("name").description("description").brand("brand").condition(ProductCondition.ALMOST_NEW).visibility(ProductVisibility.PRIVATE).seller(secondUser).price(BigDecimal.valueOf(200)).build();
+        firstElement = Product.builder().id(UUID.randomUUID()).category(category).name("name").description("description").brand("brand").condition(ProductCondition.NEW).visibility(ProductVisibility.PUBLIC).seller(firstUser).price(BigDecimal.valueOf(100)).build();
+        secondElement = Product.builder().id(UUID.randomUUID()).category(category).name("name").description("description").brand("brand").condition(ProductCondition.ALMOST_NEW).visibility(ProductVisibility.PRIVATE).seller(secondUser).price(BigDecimal.valueOf(200)).build();
+        elements = List.of(firstElement,secondElement);
     }
 
-    boolean valid(Product product, ProductDto productDto) {
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    public boolean valid(Product product, ProductDto productDto) {
         Assert.assertNotNull(productDto);
         Assert.assertEquals(product.getId(),productDto.getId());
         Assert.assertEquals(product.getName(),productDto.getName());
@@ -75,29 +81,34 @@ class ProductServiceImpTest {
 
     @Test
     void getProducts() {
-
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> products = this.productServiceImp.getProducts(pageRequest);
+        Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
     }
 
     @Test
     void getProductsBySeller() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.getProductsBySeller(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> products = this.productServiceImp.getProductsBySeller(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
     }
 
     @Test
     void getProductDetails() {
-        given(this.productDao.findById(firstProduct.getId())).willReturn(Optional.of(firstProduct));
-        given(this.productDao.findById(secondProduct.getId())).willReturn(Optional.of(secondProduct));
-        ProductDto firstProductDto = this.productServiceImp.getProductDetails(firstProduct.getId());
-        ProductDto secondProductDto = this.productServiceImp.getProductDetails(secondProduct.getId());
-        Assert.assertTrue(valid(firstProduct,firstProductDto));
-        Assert.assertTrue(valid(secondProduct,secondProductDto));
-    }
-
-    @Test
-    void createProduct() {
+        given(this.productDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.productDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        ProductDto firstProductDto = this.productServiceImp.getProductDetails(firstElement.getId());
+        ProductDto secondProductDto = this.productServiceImp.getProductDetails(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstProductDto));
+        Assert.assertTrue(valid(secondElement,secondProductDto));
     }
 
     @Test
     void getProductsBySpec() {
+
     }
 
     @Test

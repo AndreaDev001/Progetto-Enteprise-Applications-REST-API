@@ -6,6 +6,8 @@ import com.enterpriseapplications.springboot.data.dto.output.images.ProductImage
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
+import com.enterpriseapplications.springboot.data.entities.images.UserImage;
+import com.enterpriseapplications.springboot.services.implementations.GenericTestImp;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +17,17 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,54 +35,63 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ProductImageServiceImpTest {
-
+class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImageDto>
+{
     private ProductImageServiceImp productImageServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<ProductImage> pagedResourcesAssembler;
-    private ProductImage firstProductImage;
-    private ProductImage secondProductImage;
-
     @Mock
     private ProductDao productDao;
     @Mock
     private ProductImageDao productImageDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+
+    @Override
+    protected void init() {
+        super.init();
         productImageServiceImp = new ProductImageServiceImp(productDao,productImageDao,modelMapper,pagedResourcesAssembler);
         List<Image> images = ImageServiceImpTest.createImages();
         Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
         Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
-        firstProductImage = new ProductImage(images.get(0));
-        secondProductImage = new ProductImage(images.get(1));
-        firstProductImage.setProduct(firstProduct);
-        secondProductImage.setProduct(secondProduct);
+        firstElement = new ProductImage(images.get(0));
+        secondElement = new ProductImage(images.get(1));
+        firstElement.setProduct(firstProduct);
+        secondElement.setProduct(secondProduct);
+        elements = List.of(firstElement,secondElement);
     }
 
-    boolean valid(ProductImage productImage, ProductImageDto productImageDto) {
-        Assert.assertTrue(ImageServiceImpTest.valid(productImage,productImageDto));
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    public boolean valid(ProductImage productImage, ProductImageDto productImageDto) {
+        Assert.assertTrue(ImageServiceImpTest.baseValid(productImage,productImageDto));
         Assert.assertEquals(productImage.getProduct().getId(),productImageDto.getProduct().getId());
         return true;
     }
 
     @Test
-    void getImage() {
-        given(this.productImageDao.findById(firstProductImage.getId())).willReturn(Optional.of(firstProductImage));
-        given(this.productImageDao.findById(secondProductImage.getId())).willReturn(Optional.of(secondProductImage));
-        ProductImageDto firstImage = this.productImageServiceImp.getProductImage(firstProductImage.getId());
-        ProductImageDto secondImage = this.productImageServiceImp.getProductImage(secondProductImage.getId());
-        Assert.assertTrue(valid(this.firstProductImage,firstImage));
-        Assert.assertTrue(valid(this.secondProductImage,secondImage));
+    void getProductImage() {
+        given(this.productImageDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.productImageDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        ProductImageDto firstImage = this.productImageServiceImp.getProductImage(firstElement.getId());
+        ProductImageDto secondImage = this.productImageServiceImp.getProductImage(secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstImage));
+        Assert.assertTrue(valid(this.secondElement,secondImage));
     }
     @Test
     void getImages() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productImageDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductImageDto> productImages = this.productImageServiceImp.getImages(pageRequest);
+        Assert.assertTrue(compare(elements,productImages.getContent().stream().toList()));
     }
 
     @Test
     void getProductImages() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productImageDao.getProductImages(product.getId())).willReturn(elements);
+        List<ProductImageDto> productImages = this.productImageServiceImp.getProductImages(product.getId());
+        Assert.assertTrue(compare(elements,productImages));
     }
 
     @Test
@@ -82,13 +100,18 @@ class ProductImageServiceImpTest {
 
     @Test
     void getFirstProductImage() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productImageDao.getProductImages(product.getId())).willReturn(elements);
+        ProductImageDto productImageDto = this.productImageServiceImp.getFirstProductImage(product.getId());
+        Assert.assertTrue(valid(firstElement,productImageDto));
     }
 
     @Test
     void getLastProductImage() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productImageDao.getProductImages(product.getId())).willReturn(elements);
+        ProductImageDto productImageDto = this.productImageServiceImp.getLastProductImage(product.getId());
+        Assert.assertTrue(valid(secondElement,productImageDto));
     }
 
-    @Test
-    void getProductImage() {
-    }
 }

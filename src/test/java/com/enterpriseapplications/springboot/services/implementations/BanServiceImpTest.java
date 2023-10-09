@@ -15,8 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,31 +29,32 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class BanServiceImpTest {
+class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
 
     private BanServiceImp banServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<Ban> pagedResourcesAssembler;
-    private Ban firstBan;
-    private Ban secondBan;
 
     @Mock
     private BanDao banDao;
     @Mock
     private UserDao userDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+    @Override
+    protected void init() {
+        super.init();
         banServiceImp = new BanServiceImp(banDao,userDao,modelMapper,pagedResourcesAssembler);
         User banner = User.builder().id(UUID.randomUUID()).build();
         User banned = User.builder().id(UUID.randomUUID()).build();
-        firstBan = Ban.builder().id(UUID.randomUUID()).expired(false).banner(banner).banned(banned).description("description").reason(ReportReason.RACISM).build();
-        secondBan = Ban.builder().id(UUID.randomUUID()).expired(false).banner(banned).banned(banner).description("description").reason(ReportReason.NUDITY).build();
+        firstElement = Ban.builder().id(UUID.randomUUID()).expired(false).banner(banner).banned(banned).description("description").reason(ReportReason.RACISM).build();
+        secondElement = Ban.builder().id(UUID.randomUUID()).expired(false).banner(banned).banned(banner).description("description").reason(ReportReason.NUDITY).build();
+        elements = List.of(firstElement,secondElement);
     }
 
-    boolean valid(Ban ban, BanDto banDto) {
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    public boolean valid(Ban ban, BanDto banDto) {
         Assert.assertNotNull(banDto);
         Assert.assertEquals(ban.getId(),banDto.getId());
         Assert.assertEquals(ban.getDescription(),banDto.getDescription());
@@ -64,10 +69,19 @@ class BanServiceImpTest {
 
     @Test
     void getBans() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.banDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> bans = this.banServiceImp.getBans(pageRequest);
+        Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
     }
 
     @Test
     void getCreatedBans() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.banDao.getCreatedBans(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> bans = this.banServiceImp.getCreatedBans(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
     }
 
     @Test
@@ -76,6 +90,10 @@ class BanServiceImpTest {
 
     @Test
     void getBansByReason() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.banDao.getBansByReason(ReportReason.RACISM,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> bans = this.banServiceImp.getBansByReason(ReportReason.RACISM,pageRequest);
+        Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
     }
 
     @Test
@@ -84,11 +102,11 @@ class BanServiceImpTest {
 
     @Test
     void getBan() {
-        given(this.banDao.findById(firstBan.getId())).willReturn(Optional.of(firstBan));
-        given(this.banDao.findById(secondBan.getId())).willReturn(Optional.of(secondBan));
-        BanDto firstBan = this.banServiceImp.getBan(this.firstBan.getId());
-        BanDto secondBan = this.banServiceImp.getBan(this.secondBan.getId());
-        Assert.assertTrue(valid(this.firstBan,firstBan));
-        Assert.assertTrue(valid(this.secondBan,secondBan));
+        given(this.banDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.banDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        BanDto firstBan = this.banServiceImp.getBan(this.firstElement.getId());
+        BanDto secondBan = this.banServiceImp.getBan(this.secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstBan));
+        Assert.assertTrue(valid(this.secondElement,secondBan));
     }
 }

@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
+import com.enterpriseapplications.springboot.services.implementations.GenericTestImp;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,27 +30,29 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ReportServiceImpTest {
+class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
 
     private ReportServiceImp reportServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<Report> pagedResourcesAssembler;
-    private Report firstReport;
-    private Report secondReport;
 
     @Mock
     private UserDao userDao;
     @Mock
     private ReportDao reportDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+
+    @Override
+    public void init() {
+        super.init();
         this.reportServiceImp = new ReportServiceImp(reportDao,userDao,modelMapper,pagedResourcesAssembler);
         List<Report> reports = createReports();
-        this.firstReport = reports.get(0);
-        this.secondReport = reports.get(1);
+        this.firstElement = reports.get(0);
+        this.secondElement = reports.get(1);
+        elements = List.of(firstElement,secondElement);
+    }
+
+    @BeforeEach
+    public void before() {
+        init();
     }
 
     static List<Report> createReports() {
@@ -56,8 +62,7 @@ class ReportServiceImpTest {
         Report secondReport = Report.builder().id(UUID.randomUUID()).description("description").reporter(reported).reported(reporter).reason(ReportReason.NUDITY).type(ReportType.USER).build();
         return List.of(firstReport,secondReport);
     }
-
-    static boolean valid(Report report, ReportDto reportDto) {
+    static boolean baseValid(Report report, ReportDto reportDto) {
         Assert.assertNotNull(reportDto);
         Assert.assertEquals(report.getId(),reportDto.getId());
         Assert.assertEquals(report.getDescription(),reportDto.getDescription());
@@ -68,34 +73,63 @@ class ReportServiceImpTest {
         Assert.assertEquals(report.getCreatedDate(),reportDto.getCreatedDate());
         return true;
     }
+
+    @Override
+    protected boolean valid(Report entity, ReportDto dto) {
+        return baseValid(entity,dto);
+    }
+
     @Test
     void getReport() {
-        given(this.reportDao.findById(firstReport.getId())).willReturn(Optional.of(firstReport));
-        given(this.reportDao.findById(secondReport.getId())).willReturn(Optional.of(secondReport));
-        ReportDto firstReport = this.reportServiceImp.getReport(this.firstReport.getId());
-        ReportDto secondReport = this.reportServiceImp.getReport(this.secondReport.getId());
-        Assert.assertTrue(valid(this.firstReport,firstReport));
-        Assert.assertTrue(valid(this.secondReport,secondReport));
+        given(this.reportDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.reportDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        ReportDto firstReport = this.reportServiceImp.getReport(this.firstElement.getId());
+        ReportDto secondReport = this.reportServiceImp.getReport(this.secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstReport));
+        Assert.assertTrue(valid(this.secondElement,secondReport));
     }
 
     @Test
     void getReports() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getReports(pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
     }
 
     @Test
     void getCreatedReports() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.getCreatedReports(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports =  this.reportServiceImp.getCreatedReports(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
     }
 
     @Test
     void getReceivedReports() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.getReceivedReports(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getReceivedReports(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
     }
 
     @Test
     void getReportsByReason() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.getReportsByReason(ReportReason.RACISM,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getReportsByReason(ReportReason.RACISM,pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
     }
 
     @Test
     void getReportsByType() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.getReportsByType(ReportType.USER,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getReportsByType(ReportType.USER,pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
     }
 
     @Test

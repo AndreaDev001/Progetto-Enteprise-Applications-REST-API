@@ -1,21 +1,50 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
+import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dto.output.CategoryDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class CategoryServiceImpTest {
+class CategoryServiceImpTest extends GenericTestImp<Category,CategoryDto>
+{
+    private CategoryServiceImp categoryServiceImp;
 
-    boolean valid(Category category, CategoryDto categoryDto) {
+    @Mock
+    public CategoryDao categoryDao;
+
+    @Override
+    protected void init() {
+        super.init();
+        categoryServiceImp = new CategoryServiceImp(categoryDao,modelMapper);
+        firstElement = Category.builder().id(UUID.randomUUID()).primaryCat("Primary").secondaryCat("Secondary").tertiaryCat("Tertiary").build();
+        secondElement = Category.builder().id(UUID.randomUUID()).primaryCat("Tertiary").secondaryCat("Secondary").tertiaryCat("Primary").build();
+        elements = List.of(firstElement,secondElement);
+    }
+
+
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    @Override
+    public boolean valid(Category category, CategoryDto categoryDto) {
         Assert.assertNotNull(categoryDto);
         Assert.assertEquals(category.getId(),categoryDto.getId());
         Assert.assertEquals(category.getPrimaryCat(),categoryDto.getPrimary());
@@ -31,10 +60,14 @@ class CategoryServiceImpTest {
 
     @Test
     void getCategories() {
+        given(this.categoryDao.findAll()).willReturn(elements);
+        List<CategoryDto> categories = this.categoryServiceImp.getCategories();
+        Assert.assertTrue(compare(elements,categories));
     }
 
     @Test
     void getPrimaryCategories() {
+
     }
 
     @Test

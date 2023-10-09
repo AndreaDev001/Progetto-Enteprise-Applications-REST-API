@@ -14,74 +14,101 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class FollowServiceImpTest {
+class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
 
     private FollowServiceImp followServiceImp;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<Follow> pagedResourcesAssembler;
-    private Follow firstFollow;
-    private Follow secondFollow;
-
     @Mock
     private FollowDao followDao;
     @Mock
     private UserDao userDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+    @Override
+    protected void init() {
+        super.init();
         followServiceImp = new FollowServiceImp(followDao,userDao,modelMapper,pagedResourcesAssembler);
         User follower = User.builder().id(UUID.randomUUID()).build();
         User followed = User.builder().id(UUID.randomUUID()).build();
-        firstFollow = Follow.builder().id(UUID.randomUUID()).follower(follower).followed(followed).build();
-        secondFollow = Follow.builder().id(UUID.randomUUID()).follower(followed).followed(follower).build();
+        firstElement = Follow.builder().id(UUID.randomUUID()).follower(follower).followed(followed).build();
+        secondElement = Follow.builder().id(UUID.randomUUID()).follower(followed).followed(follower).build();
+        elements = List.of(firstElement,secondElement);
     }
-    boolean valid(Follow follow, FollowDto followDto) {
+
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    @Test
+    void getFollow() {
+        given(this.followDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.followDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        FollowDto firstFollow = this.followServiceImp.getFollow(this.firstElement.getId());
+        FollowDto secondFollow = this.followServiceImp.getFollow(this.secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstFollow));
+        Assert.assertTrue(valid(this.secondElement,secondFollow));
+    }
+
+    @Test
+    void getFollows() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.followDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<FollowDto> pagedModel = this.followServiceImp.getFollows(pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+    }
+
+    @Test
+    void findAllFollowers() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.followDao.findAllFollowers(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<FollowDto> pagedModel = this.followServiceImp.findAllFollowers(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+    }
+
+    @Test
+    void findAllFollowed() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.followDao.findAllFollows(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<FollowDto> pagedModel = this.followServiceImp.findAllFollowed(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+    }
+
+    @Test
+    void findFollow() {
+        User follower = User.builder().id(UUID.randomUUID()).build();
+        User followed = User.builder().id(UUID.randomUUID()).build();
+        given(this.followDao.findFollow(follower.getId(),followed.getId())).willReturn(Optional.of(firstElement));
+        Assert.assertTrue(valid(firstElement,this.followServiceImp.findFollow(follower.getId(),followed.getId())));
+    }
+
+    @Test
+    void createFollow() {
+    }
+
+    @Override
+    public boolean valid(Follow follow, FollowDto followDto) {
         Assert.assertNotNull(followDto);
         Assert.assertEquals(follow.getId(),followDto.getId());
         Assert.assertEquals(follow.getFollowed().getId(),followDto.getFollowed().getId());
         Assert.assertEquals(follow.getFollower().getId(),followDto.getFollower().getId());
         Assert.assertEquals(follow.getCreatedDate(),followDto.getCreatedDate());
         return true;
-    }
-    @Test
-    void getFollow() {
-        given(this.followDao.findById(firstFollow.getId())).willReturn(Optional.of(firstFollow));
-        given(this.followDao.findById(secondFollow.getId())).willReturn(Optional.of(secondFollow));
-        FollowDto firstFollow = this.followServiceImp.getFollow(this.firstFollow.getId());
-        FollowDto secondFollow = this.followServiceImp.getFollow(this.secondFollow.getId());
-        Assert.assertTrue(valid(this.firstFollow,firstFollow));
-        Assert.assertTrue(valid(this.secondFollow,secondFollow));
-    }
-
-    @Test
-    void getFollows() {
-    }
-
-    @Test
-    void findAllFollowers() {
-    }
-
-    @Test
-    void findAllFollowed() {
-    }
-
-    @Test
-    void findFollow() {
-    }
-
-    @Test
-    void createFollow() {
     }
 }

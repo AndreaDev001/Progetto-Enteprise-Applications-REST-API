@@ -14,9 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.ui.ModelMap;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,42 +29,44 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ReviewServiceImpTest {
+class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
 
     private ReviewServiceImp reviewServiceImp;
-    private Review firstReview;
-    private Review secondReview;
-    private PagedResourcesAssembler<Review> pagedResourcesAssembler;
-    private ModelMapper modelMapper;
     @Mock
     public ReviewDao reviewDao;
     @Mock
     public UserDao userDao;
 
 
-    @BeforeEach
-    public void before()
-    {
-        modelMapper = new ModelMapper();
+    @Override
+    protected void init() {
+        super.init();
         reviewServiceImp = new ReviewServiceImp(reviewDao,userDao,modelMapper,pagedResourcesAssembler);
         User writer = User.builder().id(UUID.randomUUID()).username("andrea").email("marchioandrea02@gmail.com").description("Description").name("andrea").surname("Marchio").build();
         User receiver = User.builder().id(UUID.randomUUID()).username("andrea1").email("andrea@gmail.com").description("Description").name("andrea").surname("Marchio").build();
-        firstReview = Review.builder().text("test").rating(10).writer(writer).receiver(receiver).build();
-        secondReview = Review.builder().text("text").rating(5).writer(receiver).receiver(writer).build();
+        firstElement = Review.builder().text("test").rating(10).writer(writer).receiver(receiver).build();
+        secondElement = Review.builder().text("text").rating(5).writer(receiver).receiver(writer).build();
+        elements = List.of(firstElement,secondElement);
+    }
+
+    @BeforeEach
+    public void before()
+    {
+        init();
     }
 
     @Test
     void getReview() {
-        given(this.reviewDao.findById(firstReview.getId())).willReturn(Optional.of(firstReview));
-        given(this.reviewDao.findById(secondReview.getId())).willReturn(Optional.of(secondReview));
-        ReviewDto firstReviewDto = this.reviewServiceImp.getReview(firstReview.getId());
-        ReviewDto secondReviewDto = this.reviewServiceImp.getReview(secondReview.getId());
-        Assert.assertTrue(valid(firstReview,firstReviewDto));
-        Assert.assertTrue(valid(secondReview,secondReviewDto));
+        given(this.reviewDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.reviewDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        ReviewDto firstReviewDto = this.reviewServiceImp.getReview(firstElement.getId());
+        ReviewDto secondReviewDto = this.reviewServiceImp.getReview(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstReviewDto));
+        Assert.assertTrue(valid(secondElement,secondReviewDto));
     }
 
-
-    boolean valid(Review review, ReviewDto reviewDto) {
+    @Override
+    public boolean valid(Review review, ReviewDto reviewDto) {
         Assert.assertNotNull(reviewDto);
         Assert.assertEquals(review.getId(),reviewDto.getId());
         Assert.assertEquals(review.getText(),reviewDto.getText());
@@ -73,18 +79,34 @@ class ReviewServiceImpTest {
 
     @Test
     void getReviews() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reviewDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.getReviews(pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 
     @Test
     void findAllWrittenReviews() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reviewDao.findAllWrittenReviews(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.findAllWrittenReviews(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
+
 
     @Test
     void findAllReceivedReviews() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reviewDao.findAllReviewsReceived(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.findAllReceivedReviews(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 
     @Test
     void findReview() {
+
     }
 
     @Test

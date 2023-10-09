@@ -14,8 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,31 +28,32 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class MessageServiceImpTest {
+class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
 
     private MessageServiceImp messageServiceImp;
-    private Message firstMessage;
-    private Message secondMessage;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<Message> pagedResourcesAssembler;
-
     @Mock
     public MessageDao messageDao;
     @Mock
     public UserDao userDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+
+    @Override
+    protected void init() {
+        super.init();
         messageServiceImp = new MessageServiceImp(messageDao,userDao,modelMapper,pagedResourcesAssembler);
         User sender = User.builder().id(UUID.randomUUID()).build();
         User receiver = User.builder().id(UUID.randomUUID()).build();
-        firstMessage = Message.builder().id(UUID.randomUUID()).sender(sender).receiver(receiver).text("text").build();
-        secondMessage = Message.builder().id(UUID.randomUUID()).sender(receiver).receiver(sender).text("text").build();
+        firstElement = Message.builder().id(UUID.randomUUID()).sender(sender).receiver(receiver).text("text").build();
+        secondElement = Message.builder().id(UUID.randomUUID()).sender(receiver).receiver(sender).text("text").build();
+        elements = List.of(firstElement,secondElement);
     }
 
-    boolean valid(Message message, MessageDto messageDto) {
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    public boolean valid(Message message, MessageDto messageDto) {
         Assert.assertNotNull(messageDto);
         Assert.assertEquals(message.getId(),messageDto.getId());
         Assert.assertEquals(message.getText(),messageDto.getText());
@@ -60,28 +65,48 @@ class MessageServiceImpTest {
 
     @Test
     void getMessage() {
-        given(this.messageDao.findById(this.firstMessage.getId())).willReturn(Optional.of(firstMessage));
-        given(this.messageDao.findById(this.secondMessage.getId())).willReturn(Optional.of(secondMessage));
-        MessageDto firstMessage = this.messageServiceImp.getMessage(this.firstMessage.getId());
-        MessageDto secondMessage = this.messageServiceImp.getMessage(this.secondMessage.getId());
-        Assert.assertTrue(valid(this.firstMessage,firstMessage));
-        Assert.assertTrue(valid(this.secondMessage,secondMessage));
+        given(this.messageDao.findById(this.firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.messageDao.findById(this.secondElement.getId())).willReturn(Optional.of(secondElement));
+        MessageDto firstMessage = this.messageServiceImp.getMessage(this.firstElement.getId());
+        MessageDto secondMessage = this.messageServiceImp.getMessage(this.secondElement.getId());
+        Assert.assertTrue(valid(this.firstElement,firstMessage));
+        Assert.assertTrue(valid(this.secondElement,secondMessage));
     }
 
     @Test
     void getMessages() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.messageDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<MessageDto> messages = this.messageServiceImp.getMessages(pageRequest);
+        Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
     }
 
     @Test
     void getSentMessages() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.messageDao.getSentMessages(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<MessageDto> messages = this.messageServiceImp.getSentMessages(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
     }
 
     @Test
     void getReceivedMessages() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.messageDao.getReceivedMessages(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<MessageDto> messages = this.messageServiceImp.getReceivedMessages(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
     }
 
     @Test
     void getMessagesBetween() {
+        User sender = User.builder().id(UUID.randomUUID()).build();
+        User receiver = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.messageDao.getMessagesBetween(sender.getId(),receiver.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<MessageDto> messages = this.messageServiceImp.getMessagesBetween(sender.getId(),receiver.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
     }
 
     @Test

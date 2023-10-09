@@ -14,8 +14,16 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,30 +32,30 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class PaymentMethodServiceImpTest {
+class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMethodDto> {
 
-    private PaymentMethod firstPaymentMethod;
-    private PaymentMethod secondPaymentMethod;
-    private ModelMapper modelMapper;
-    private PagedResourcesAssembler<PaymentMethod> pagedResourcesAssembler;
     private PaymentMethodServiceImp paymentMethodServiceImp;
-
     @Mock
     private PaymentMethodDao paymentMethodDao;
 
-    @BeforeEach
-    public void before() {
-        modelMapper = new ModelMapper();
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
+
+    @Override
+    protected void init() {
+        super.init();
+        paymentMethodServiceImp = new PaymentMethodServiceImp(paymentMethodDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        paymentMethodServiceImp = new PaymentMethodServiceImp(paymentMethodDao,modelMapper,pagedResourcesAssembler);
-        firstPaymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("Italy").owner(firstUser).number("234568279102").holderName("Holder Name").build();
-        secondPaymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("UK").owner(secondUser).number("37238393910").holderName("Holder Name").build();
-
+        firstElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("Italy").owner(firstUser).number("234568279102").holderName("Holder Name").build();
+        secondElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("UK").owner(secondUser).number("37238393910").holderName("Holder Name").build();
+        elements = List.of(firstElement,secondElement);
     }
 
-    boolean valid(PaymentMethod paymentMethod, PaymentMethodDto paymentMethodDto) {
+    @BeforeEach
+    public void before() {
+        init();
+    }
+
+    public boolean valid(PaymentMethod paymentMethod, PaymentMethodDto paymentMethodDto) {
         Assert.assertNotNull(paymentMethodDto);
         Assert.assertEquals(paymentMethod.getId(),paymentMethodDto.getId());
         Assert.assertEquals(paymentMethod.getNumber(),paymentMethod.getNumber());
@@ -58,33 +66,52 @@ class PaymentMethodServiceImpTest {
         Assert.assertEquals(paymentMethod.getCreatedDate(),paymentMethod.getCreatedDate());
         return true;
     }
+
     @Test
     void getPaymentMethod() {
-        given(this.paymentMethodDao.findById(firstPaymentMethod.getId())).willReturn(Optional.of(firstPaymentMethod));
-        given(this.paymentMethodDao.findById(secondPaymentMethod.getId())).willReturn(Optional.of(secondPaymentMethod));
-        PaymentMethodDto firstPaymentMethodDto = this.paymentMethodServiceImp.getPaymentMethod(firstPaymentMethod.getId());
-        PaymentMethodDto secondPaymentMethodDto = this.paymentMethodServiceImp.getPaymentMethod(secondPaymentMethod.getId());
-        Assert.assertTrue(valid(firstPaymentMethod,firstPaymentMethodDto));
-        Assert.assertTrue(valid(secondPaymentMethod,secondPaymentMethodDto));
+        given(this.paymentMethodDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.paymentMethodDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        PaymentMethodDto firstPaymentMethodDto = this.paymentMethodServiceImp.getPaymentMethod(firstElement.getId());
+        PaymentMethodDto secondPaymentMethodDto = this.paymentMethodServiceImp.getPaymentMethod(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstPaymentMethodDto));
+        Assert.assertTrue(valid(secondElement,secondPaymentMethodDto));
     }
 
     @Test
     void getPaymentMethods() {
-    }
-
-    @Test
-    void testGetPaymentMethods() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.paymentMethodDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethods(pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 
     @Test
     void getPaymentMethodsByBrand() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        String brand = "brand";
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.paymentMethodDao.getPaymentMethodsByBrand(user.getId(),brand,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByBrand(user.getId(),brand,pageRequest);
+        Assert.assertTrue(compare(elements, pagedModel.getContent().stream().toList()));
     }
 
     @Test
     void getPaymentMethodsByCountry() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        String country = "country";
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.paymentMethodDao.getPaymentMethodsByCountry(user.getId(),country,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByCountry(user.getId(),country,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 
     @Test
     void getPaymentMethodsByHolderName() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        String holderName = "Holder Name";
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.paymentMethodDao.getPaymentMethodsByHolderName(user.getId(),holderName,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByHolderName(user.getId(),holderName,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 }

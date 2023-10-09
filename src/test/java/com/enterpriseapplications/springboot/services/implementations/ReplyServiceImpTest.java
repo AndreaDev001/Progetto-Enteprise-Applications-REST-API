@@ -16,8 +16,16 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,13 +34,9 @@ import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ReplyServiceImpTest {
+class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
 
-    private Reply firstReply;
-    private Reply secondReply;
     private ReplyServiceImp replyServiceImp;
-    private PagedResourcesAssembler<Reply> pagedResourcesAssembler;
-    private ModelMapper modelMapper;
 
     @Mock
     private ReplyDao replyDao;
@@ -42,19 +46,25 @@ class ReplyServiceImpTest {
     private UserDao userDao;
 
 
-    @BeforeEach
-    public void before() {
-        pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
-        modelMapper = new ModelMapper();
+    @Override
+    protected void init() {
+        super.init();
         this.replyServiceImp = new ReplyServiceImp(replyDao,reviewDao,userDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
         Review firstReview = Review.builder().id(UUID.randomUUID()).build();
         Review secondReview = Review.builder().id(UUID.randomUUID()).build();
-        firstReply = Reply.builder().id(UUID.randomUUID()).text("text").writer(firstUser).review(firstReview).build();
-        secondReply = Reply.builder().id(UUID.randomUUID()).text("text").writer(secondUser).review(secondReview).build();
+        firstElement = Reply.builder().id(UUID.randomUUID()).text("text").writer(firstUser).review(firstReview).build();
+        secondElement = Reply.builder().id(UUID.randomUUID()).text("text").writer(secondUser).review(secondReview).build();
+        elements = List.of(firstElement,secondElement);
+
     }
-    boolean valid(Reply reply, ReplyDto replyDto) {
+
+    @BeforeEach
+    public void before() {
+        init();
+    }
+    public boolean valid(Reply reply, ReplyDto replyDto) {
         Assert.assertNotNull(replyDto);
         Assert.assertEquals(reply.getId(),replyDto.getId());
         Assert.assertEquals(reply.getText(),replyDto.getText());
@@ -70,16 +80,20 @@ class ReplyServiceImpTest {
 
     @Test
     void getReplies() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.replyDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReplyDto> replies = this.replyServiceImp.getReplies(pageRequest);
+        Assert.assertTrue(compare(elements,replies.getContent().stream().toList()));
     }
 
     @Test
     void getReply() {
-        given(this.replyDao.findById(firstReply.getId())).willReturn(Optional.of(firstReply));
-        given(this.replyDao.findById(secondReply.getId())).willReturn(Optional.of(secondReply));
-        ReplyDto firstReplyDto = this.replyServiceImp.getReply(firstReply.getId());
-        ReplyDto secondReplyDto = this.replyServiceImp.getReply(secondReply.getId());
-        Assert.assertTrue(valid(firstReply,firstReplyDto));
-        Assert.assertTrue(valid(secondReply,secondReplyDto));
+        given(this.replyDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.replyDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        ReplyDto firstReplyDto = this.replyServiceImp.getReply(firstElement.getId());
+        ReplyDto secondReplyDto = this.replyServiceImp.getReply(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstReplyDto));
+        Assert.assertTrue(valid(secondElement,secondReplyDto));
     }
 
     @Test
@@ -92,5 +106,10 @@ class ReplyServiceImpTest {
 
     @Test
     void getWrittenReplies() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        User user = User.builder().id(UUID.randomUUID()).build();
+        given(this.replyDao.findByWriter(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReplyDto> pagedModel = this.replyServiceImp.getWrittenReplies(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
     }
 }
