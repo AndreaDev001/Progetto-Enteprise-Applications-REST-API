@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.services.implementations;
+package com.enterpriseapplications.springboot.services;
 
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import lombok.SneakyThrows;
