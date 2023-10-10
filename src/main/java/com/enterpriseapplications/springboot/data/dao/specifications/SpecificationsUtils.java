@@ -28,6 +28,8 @@ public abstract class SpecificationsUtils
    public static<T> List<Order> generateOrders(Root<T> root, CriteriaBuilder criteriaBuilder, List<? extends Enum<?>> paths, OrderMode orderMode) {
         if(orderMode == null)
             orderMode = OrderMode.DESCENDED;
+        if(paths == null || paths.isEmpty())
+            return null;
         List<Order> requiredOrders = new ArrayList<>();
         boolean desc = orderMode == OrderMode.DESCENDED;
         for(Object current : paths) {

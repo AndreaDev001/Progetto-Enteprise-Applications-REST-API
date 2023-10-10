@@ -68,6 +68,8 @@ public class UserSpecifications
                 requiredPredicates.add(criteriaBuilder.ge(root.get("rating"),filter.minRating));
             if(filter.maxRating != null  && filter.maxRating > 0)
                 requiredPredicates.add(criteriaBuilder.le(root.get("rating"),filter.maxRating));
+            if(filter.orderTypes == null || filter.orderTypes.isEmpty())
+                filter.orderTypes = List.of(OrderType.CREATED_DATE);
             if(filter.orderMode == null)
                 filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
 
