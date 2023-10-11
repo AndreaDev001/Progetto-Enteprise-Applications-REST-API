@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.reports;
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
@@ -14,6 +15,8 @@ import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ReportService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -92,6 +95,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_REPORTS,allEntries = true)
     @Transactional
     public ReportDto createReport(CreateReportDto createReportDto,UUID reportedID) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -109,6 +113,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_REPORTS,allEntries = true)
     @Transactional
     public ReportDto updateReport(UpdateReportDto updateReportDto) {
         Report requiredReport = this.reportDao.findById(updateReportDto.getReportID()).orElseThrow();
@@ -132,6 +137,7 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_REPORTS},allEntries = true)
     public void deleteReport(UUID reportID) {
         this.reportDao.findById(reportID).orElseThrow();
         this.reportDao.deleteById(reportID);

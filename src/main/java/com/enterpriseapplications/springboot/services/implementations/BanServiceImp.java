@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
@@ -14,6 +15,8 @@ import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.services.interfaces.BanService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -66,6 +69,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
     @Transactional
     public BanDto createBan(CreateBanDto createBanDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -86,6 +90,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
     @Transactional
     public BanDto updateBan(UpdateBanDto updateBanDto) {
         Ban requiredBan = this.banDao.findBan(updateBanDto.getBannedID()).orElseThrow();
@@ -123,6 +128,8 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
     public void deleteBan(UUID id) {
         this.banDao.findById(id).orElseThrow();
         this.banDao.deleteById(id);

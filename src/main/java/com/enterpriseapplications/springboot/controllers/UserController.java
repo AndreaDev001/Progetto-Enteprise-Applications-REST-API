@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.controllers;
 
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.PermissionHandler;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +44,9 @@ public class UserController
         return ResponseEntity.ok(users);
     }
 
+
     @GetMapping("/public/spec")
+    @Cacheable(value = CacheConfig.CACHE_SEARCH_USERS,key = "{#filter.toString(),#paginationRequest.toString()}")
     public ResponseEntity<PagedModel<UserDetailsDto>> getUsersBySpec(@ParameterObject @Valid UserSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<UserDetailsDto> users = this.userService.getUsersBySpec(UserSpecifications.withFilter(filter), PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(users);

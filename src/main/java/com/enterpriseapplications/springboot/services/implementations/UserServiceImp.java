@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
@@ -11,6 +12,8 @@ import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -56,6 +59,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_USERS,allEntries = true)
     public UserDetailsDto updateUser(UpdateUserDto updateUserDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         if(updateUserDto.getName() != null)
@@ -80,7 +84,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable) {
-        Page<User> users = this.userDao.findAll(specification,pageable);
+        Page<User> users = userDao.findAll(specification,pageable);
         return this.pagedResourcesAssembler.toModel(users,modelAssembler);
     }
 
@@ -101,6 +105,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_USERS,allEntries = true)
     public void deleteUser(UUID userID) {
         this.userDao.findById(userID).orElseThrow();
         this.userDao.deleteById(userID);

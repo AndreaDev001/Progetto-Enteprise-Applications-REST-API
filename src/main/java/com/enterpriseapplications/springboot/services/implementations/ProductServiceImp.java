@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.CategoryDao;
@@ -17,6 +18,8 @@ import com.enterpriseapplications.springboot.data.entities.enums.ProductConditio
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -76,6 +79,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
     @Transactional
     public ProductDto createProduct(CreateProductDto createProductDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -105,6 +109,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
     @Transactional
     public ProductDto updateProduct(UpdateProductDto updateProductDto) {
         Product requiredProduct =  this.productDao.findById(updateProductDto.getProductID()).orElseThrow();
@@ -121,6 +126,8 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
     public void deleteProduct(UUID productID) {
         this.productDao.findById(productID);
         this.productDao.deleteById(productID);
