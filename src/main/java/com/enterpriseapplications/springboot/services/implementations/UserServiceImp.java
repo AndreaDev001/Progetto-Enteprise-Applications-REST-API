@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
-import com.enterpriseapplications.springboot.GenericModelAssembler;
+import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;

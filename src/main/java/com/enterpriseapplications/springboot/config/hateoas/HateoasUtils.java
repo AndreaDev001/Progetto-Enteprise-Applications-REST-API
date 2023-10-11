@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot;
+package com.enterpriseapplications.springboot.config.hateoas;
 
 
 import org.modelmapper.ModelMapper;

@@ -43,6 +43,12 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.BAD_REQUEST,Date.from(Instant.now()),"error.http.badRequest", request.getRequestURI());
     }
 
+    @ExceptionHandler({BannedException.class})
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> bannedException(BannedException exception,HttpServletRequest request) {
+        return errorResponse(HttpStatus.UNAUTHORIZED,Date.from(Instant.now()),"error.bans.banned",request.getRequestURI());
+    }
+
     @ExceptionHandler({HttpClientErrorException.class})
     @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
     public ResponseEntity<ErrorResponse> tooManyRequestException(HttpClientErrorException exception,HttpServletRequest request) {

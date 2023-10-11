@@ -1,6 +1,6 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
-import com.enterpriseapplications.springboot.HateoasUtils;
+import com.enterpriseapplications.springboot.config.hateoas.HateoasUtils;
 import com.enterpriseapplications.springboot.controllers.*;
 import com.enterpriseapplications.springboot.controllers.images.UserImageController;
 import com.enterpriseapplications.springboot.controllers.reports.ReportController;

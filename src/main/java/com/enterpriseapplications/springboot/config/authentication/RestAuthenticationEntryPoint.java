@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.config;
+package com.enterpriseapplications.springboot.config.authentication;
 
 
 import jakarta.servlet.ServletException;

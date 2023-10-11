@@ -1,6 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
-import com.enterpriseapplications.springboot.GenericModelAssembler;
+import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
@@ -10,7 +10,6 @@ import com.enterpriseapplications.springboot.data.dto.output.images.ProductImage
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import com.enterpriseapplications.springboot.services.interfaces.images.ProductImageService;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;

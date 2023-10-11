@@ -1,7 +1,9 @@
-package com.enterpriseapplications.springboot.config;
+package com.enterpriseapplications.springboot.config.authentication;
 
 
+import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class AuthenticationHandler
 {
     private final UserDao userDao;
+    private final BanDao banDao;
 
 
     @Transactional
@@ -32,7 +35,18 @@ public class AuthenticationHandler
             this.userDao.save(requiredUser);
         }
     }
+
     public void handleFailure(Authentication authentication) {
 
+    }
+
+    boolean isBanned(JwtAuthenticationToken jwtAuthenticationToken) {
+        UUID userID = UUID.fromString((String)jwtAuthenticationToken.getTokenAttributes().get("sub"));
+        Optional<User> userOptional = this.userDao.findById(userID);
+        if(userOptional.isPresent()) {
+            Optional<Ban> banOptional = this.banDao.findBan(userID);
+            return banOptional.isPresent();
+        }
+        return false;
     }
 }
