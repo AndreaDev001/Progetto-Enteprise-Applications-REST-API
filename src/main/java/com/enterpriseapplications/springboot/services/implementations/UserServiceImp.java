@@ -77,6 +77,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Cacheable(value = CacheConfig.CACHE_ALL_USERS)
     public PagedModel<UserDetailsDto> getUsers(Pageable pageable) {
         Page<User> users = this.userDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(users,modelAssembler);

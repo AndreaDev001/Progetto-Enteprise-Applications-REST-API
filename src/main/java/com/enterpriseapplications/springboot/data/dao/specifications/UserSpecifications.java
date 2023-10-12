@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dao.specifications;
 
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,7 @@ public class UserSpecifications
         private String name;
         private String surname;
         private String description;
+        private Gender gender;
         private Integer minRating;
         private Integer maxRating;
         private List<OrderType> orderTypes;
@@ -63,7 +65,9 @@ public class UserSpecifications
             if(filter.surname != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("surname"),SpecificationsUtils.likePattern(filter.surname)));
             if(filter.description != null)
-                requiredPredicates.add(criteriaBuilder.like(root.get("email"),SpecificationsUtils.likePattern(filter.email)));
+                requiredPredicates.add(criteriaBuilder.like(root.get("email"),SpecificationsUtils.likePattern(filter.description)));
+            if(filter.gender != null)
+                requiredPredicates.add(criteriaBuilder.equal(root.get("gender"),filter.gender));
             if(filter.minRating != null && filter.minRating > 0)
                 requiredPredicates.add(criteriaBuilder.ge(root.get("rating"),filter.minRating));
             if(filter.maxRating != null  && filter.maxRating > 0)

@@ -52,6 +52,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @Cacheable(value = {CacheConfig.CACHE_ALL_PRODUCTS})
     public PagedModel<ProductDto> getProducts(Pageable pageable) {
         Page<Product> products = this.productDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
@@ -105,6 +106,18 @@ public class ProductServiceImp implements ProductService
     @Override
     public PagedModel<ProductDto> getProductsBySpec(Specification<Product> specification, Pageable pageable) {
         Page<Product> products = this.productDao.findAll(specification,pageable);
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<ProductDto> getRecentlyCreatedProducts(Pageable pageable) {
+        Page<Product> products = this.productDao.getRecentlyCreatedProducts(pageable);
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<ProductDto> getMostLikedProducts(Pageable pageable) {
+        Page<Product> products = this.productDao.getMostLikedProducts(pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 

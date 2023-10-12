@@ -25,6 +25,10 @@ public class CacheConfig
     public static final String CACHE_SEARCH_USERS = "SEARCH_USERS";
     public static final String CACHE_SEARCH_REPORTS = "SEARCH_REPORTS";
     public static final String CACHE_SEARCH_BANS = "SEARCH_BANS";
+    public static final String CACHE_ALL_PRODUCTS = "ALL_PRODUCTS";
+    public static final String CACHE_ALL_USERS = "ALL_USERS";
+    public static final String CACHE_ALL_REPORTS = "ALL_REPORTS";
+    public static final String CACHE_ALL_BANS = "ALL_PRODUCTS";
 
 
     @Bean
@@ -34,25 +38,41 @@ public class CacheConfig
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_PRODUCTS})
     @Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 1000)
-    public void productCacheEvict() {
+    public void productSearchCacheEvict() {
         log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_SEARCH_PRODUCTS,dateTimeFormatter.format(LocalDateTime.now())));
     }
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_USERS})
     @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
-    public void userCacheEvict() {
+    public void userSearchCacheEvict() {
         log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_SEARCH_USERS,dateTimeFormatter.format(LocalDateTime.now())));
     }
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_REPORTS})
     @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
-    public void reportsCacheEvict() {
+    public void reportsSearchCacheEvict() {
         log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_SEARCH_REPORTS,dateTimeFormatter.format(LocalDateTime.now())));
     }
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_BANS})
     @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
-    public void banCacheEvict() {
+    public void banSearchCacheEvict() {
         log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_SEARCH_BANS,dateTimeFormatter.format(LocalDateTime.now())));
+    }
+
+    @CacheEvict(allEntries = true,value = {CACHE_ALL_PRODUCTS})
+    @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
+    public void allReportsCacheEvict() {
+        log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_ALL_REPORTS,dateTimeFormatter.format(LocalDateTime.now())));
+    }
+    @CacheEvict(allEntries = true,value = {CACHE_ALL_PRODUCTS})
+    @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
+    public void allBansCacheEvict() {
+        log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_ALL_BANS,dateTimeFormatter.format(LocalDateTime.now())));
+    }
+    @CacheEvict(allEntries = true,value = {CACHE_ALL_PRODUCTS})
+    @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
+    public void allUsersCacheEvict() {
+        log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_ALL_USERS,dateTimeFormatter.format(LocalDateTime.now())));
     }
 }

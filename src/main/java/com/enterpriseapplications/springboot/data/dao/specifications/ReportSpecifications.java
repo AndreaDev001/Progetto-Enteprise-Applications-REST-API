@@ -67,8 +67,8 @@ public class ReportSpecifications
                 requiredPredicates.add(criteriaBuilder.equal(root.get("reason"),filter.reason));
             if(filter.type != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("type"),filter.type));
-            if(filter.orderMode == null)
-                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
+            if(filter.orderTypes == null)
+                filter.orderTypes = List.of(OrderType.CREATED_DATE);
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);

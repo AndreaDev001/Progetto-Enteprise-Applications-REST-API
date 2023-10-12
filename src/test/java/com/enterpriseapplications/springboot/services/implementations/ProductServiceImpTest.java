@@ -104,6 +104,22 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     }
 
     @Test
+    void getRecentlyCreatedProducts() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.getRecentlyCreatedProducts(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> products = this.productServiceImp.getRecentlyCreatedProducts(pageRequest);
+        Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+    }
+
+    @Test
+    void getMostLikedProducts() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.getMostLikedProducts(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> products = this.productServiceImp.getMostLikedProducts(pageRequest);
+        Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+    }
+
+    @Test
     void getProductsBySpec() {
 
     }

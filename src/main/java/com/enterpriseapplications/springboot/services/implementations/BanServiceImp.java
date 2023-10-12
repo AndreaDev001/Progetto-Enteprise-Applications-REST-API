@@ -47,6 +47,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
+    @Cacheable(value = CacheConfig.CACHE_ALL_BANS)
     public PagedModel<BanDto> getBans(Pageable pageable) {
         Page<Ban> bans = this.banDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);

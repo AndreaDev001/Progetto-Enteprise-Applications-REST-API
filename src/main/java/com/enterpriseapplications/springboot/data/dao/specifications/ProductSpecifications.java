@@ -74,8 +74,8 @@ public class ProductSpecifications
                 requiredPredicates.add(criteriaBuilder.ge(root.get("price"),filter.minPrice));
             if(filter.maxPrice != null && filter.maxPrice > 0)
                 requiredPredicates.add(criteriaBuilder.le(root.get("price"),filter.maxPrice));
-            if(filter.orderMode == null)
-                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
+            if(filter.orderTypes == null)
+                filter.orderTypes = List.of(OrderType.PRICE);
 
             Predicate requiredPredicate = criteriaBuilder.isNotNull(root.get("id"));
             requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("visibility"), ProductVisibility.PUBLIC));

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -56,6 +57,18 @@ public class ProductController
     @Cacheable(value = CacheConfig.CACHE_SEARCH_PRODUCTS,key = "{#filter.toString(),#paginationRequest.toString()}")
     public ResponseEntity<PagedModel<ProductDto>> getProductsBySpec(@ParameterObject @Valid ProductSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProductsBySpec(ProductSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/public/created")
+    public ResponseEntity<PagedModel<ProductDto>> getMostRecentlyCreatedProducts(@Valid @ParameterObject PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getRecentlyCreatedProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/public/liked")
+    public ResponseEntity<PagedModel<ProductDto>> getMostLikedProducts(@Valid @ParameterObject PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getMostLikedProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(products);
     }
 

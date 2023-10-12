@@ -31,6 +31,6 @@ public class AuthenticationFilter extends OncePerRequestFilter
         if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken && authenticationHandler.isBanned(jwtAuthenticationToken))
             handlerExceptionResolver.resolveException(request,response,null,new BannedException());
         else
-            this.doFilter(request,response,filterChain);
+            filterChain.doFilter(request,response);
     }
 }

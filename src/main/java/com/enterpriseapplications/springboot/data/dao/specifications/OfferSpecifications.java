@@ -27,7 +27,8 @@ public class OfferSpecifications
         PRODUCT_NAME("product.name"),
         PRODUCT_DESCRIPTION("product.description"),
         PRODUCT_PRICE("product.price"),
-        PRODUCT_CREATED_DATE("product.createdDate");
+        PRODUCT_CREATED_DATE("product.createdDate"),
+        CREATED_DATE("createdDate");
 
         private final String path;
         OrderType(String path) {
@@ -72,8 +73,8 @@ public class OfferSpecifications
                 requiredPredicates.add(criteriaBuilder.equal(root.get("status"),filter.status));
             if(filter.expired != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("expired"),filter.expired));
-            if(filter.orderMode == null)
-                filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
+            if(filter.orderTypes == null)
+                filter.orderTypes = List.of(OrderType.CREATED_DATE);
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);

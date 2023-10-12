@@ -25,7 +25,8 @@ public class BanSpecifications
         BANNED_NAME("banned.name"),
         BANNER_SURNAME("banner.surname"),
         BANNED_SURNAME("banned.surname"),
-        DESCRIPTION("description");
+        DESCRIPTION("description"),
+        CREATED_DATE("createdDate");
 
         private final String path;
         OrderType(String path) {
@@ -41,6 +42,7 @@ public class BanSpecifications
         private String bannedEmail;
         private String bannerUsername;
         private String bannedUsername;
+        private String description;
         private ReportReason reason;
         private Boolean expired;
         private List<OrderType> orderTypes;
@@ -61,10 +63,14 @@ public class BanSpecifications
                 requiredPredicates.add(criteriaBuilder.like(root.get("banner").get("username"),filter.bannerUsername));
             if(filter.bannedUsername != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("banned").get("username"),filter.bannedUsername));
+            if(filter.description != null)
+                requiredPredicates.add(criteriaBuilder.like(root.get("description"),filter.description));
             if(filter.reason != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("reason"),filter.reason));
             if(filter.expired != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("expired"),filter.expired));
+            if(filter.orderTypes == null)
+                filter.orderTypes = List.of(OrderType.CREATED_DATE);
 
             Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);

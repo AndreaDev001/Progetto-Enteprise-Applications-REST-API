@@ -59,6 +59,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    @Cacheable(value = CacheConfig.CACHE_ALL_REPORTS)
     public PagedModel<ReportDto> getReports(Pageable pageable) {
         Page<Report> reports = this.reportDao.findAll(pageable);
         return this.pagedResourcesAssembler.toModel(reports,modelAssembler);

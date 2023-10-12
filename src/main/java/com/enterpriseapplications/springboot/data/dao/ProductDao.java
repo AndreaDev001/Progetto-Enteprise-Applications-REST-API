@@ -17,4 +17,8 @@ public interface ProductDao extends JpaRepository<Product, UUID>, JpaSpecificati
 {
     @Query("select p from PRODUCTS p where p.seller.id = :requiredID")
     Page<Product> getProductsBySeller(@Param("requiredID") UUID sellerID, Pageable pageable);
+    @Query("select p from PRODUCTS p order by p.createdDate desc")
+    Page<Product> getRecentlyCreatedProducts(Pageable pageable);
+    @Query("select p from PRODUCTS p order by p.likes.size desc")
+    Page<Product> getMostLikedProducts(Pageable pageable);
 }
