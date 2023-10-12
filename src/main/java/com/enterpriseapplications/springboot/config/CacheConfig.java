@@ -33,7 +33,7 @@ public class CacheConfig
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_SEARCH_PRODUCTS,CACHE_SEARCH_USERS,CACHE_SEARCH_REPORTS,CACHE_SEARCH_BANS);
+        return new ConcurrentMapCacheManager(CACHE_ALL_PRODUCTS,CACHE_ALL_USERS,CACHE_ALL_REPORTS,CACHE_ALL_BANS,CACHE_SEARCH_PRODUCTS,CACHE_SEARCH_USERS,CACHE_SEARCH_REPORTS,CACHE_SEARCH_BANS);
     }
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_PRODUCTS})

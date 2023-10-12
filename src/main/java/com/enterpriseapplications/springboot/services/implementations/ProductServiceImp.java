@@ -65,7 +65,7 @@ public class ProductServiceImp implements ProductService
 
     @Override
     public PagedModel<ProductDto> getProductsBySeller(UUID sellerID, Pageable pageable) {
-        Page<Product> products = this.productDao.getProductsBySeller(sellerID,pageable);
+        Page<Product> products = this.productDao.getProductsBySeller(sellerID,ProductVisibility.PUBLIC,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
@@ -110,14 +110,23 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
+    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getRecentlyCreatedProducts(Pageable pageable) {
-        Page<Product> products = this.productDao.getRecentlyCreatedProducts(pageable);
+        Page<Product> products = this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
+    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getMostLikedProducts(Pageable pageable) {
-        Page<Product> products = this.productDao.getMostLikedProducts(pageable);
+        Page<Product> products = this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,pageable);
+        return this.pagedResourcesAssembler.toModel(products,modelAssembler);
+    }
+
+    @Override
+    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
+    public PagedModel<ProductDto> getMostExpensiveProducts(Pageable pageable) {
+        Page<Product> products = this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 

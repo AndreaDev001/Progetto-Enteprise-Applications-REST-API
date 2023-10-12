@@ -72,6 +72,12 @@ public class ProductController
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/public/expensive")
+    public ResponseEntity<PagedModel<ProductDto>> getMostExpensiveProducts(@Valid @ParameterObject PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getMostExpensiveProducts(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/public/conditions")
     public ResponseEntity<ProductCondition[]> getConditions() {
         return ResponseEntity.ok(this.productService.getConditions());

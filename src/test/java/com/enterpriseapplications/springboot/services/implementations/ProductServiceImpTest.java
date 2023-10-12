@@ -88,7 +88,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     void getProductsBySeller() {
         User user = User.builder().id(UUID.randomUUID()).build();
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getProductsBySeller(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getProductsBySeller(user.getId(),ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getProductsBySeller(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
     }
@@ -106,7 +106,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @Test
     void getRecentlyCreatedProducts() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getRecentlyCreatedProducts(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getRecentlyCreatedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
     }
@@ -114,7 +114,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @Test
     void getMostLikedProducts() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getMostLikedProducts(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getMostLikedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
     }
