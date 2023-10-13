@@ -72,7 +72,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         Assert.assertEquals(product.getCategory().getId(),productDto.getCategory().getId());
         Assert.assertEquals(product.getCondition(),productDto.getCondition());
         Assert.assertEquals(product.getVisibility(),productDto.getVisibility());
-        Assert.assertEquals(product.getLikes().size(),productDto.getAmountOfLikes());
+        Assert.assertEquals(product.getReceivedLikes().size(),productDto.getAmountOfLikes());
         return true;
     }
 
