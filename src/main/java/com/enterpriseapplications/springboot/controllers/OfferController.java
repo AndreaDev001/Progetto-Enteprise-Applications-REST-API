@@ -75,7 +75,8 @@ public class OfferController
         return ResponseEntity.ok(offers);
     }
 
-    @PostMapping
+    @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<OfferDto> createOffer(@RequestBody @Valid CreateOfferDto createOfferDto) {
         return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
     }

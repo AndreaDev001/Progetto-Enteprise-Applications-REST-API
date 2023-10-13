@@ -51,6 +51,7 @@ public class ReplyController
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ReplyDto> createReply(@RequestBody @Valid CreateReplyDto createReplyDto) {
         return ResponseEntity.ok(this.replyService.createReply(createReplyDto));
     }

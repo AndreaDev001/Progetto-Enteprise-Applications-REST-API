@@ -1,7 +1,9 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
 
+import com.enterpriseapplications.springboot.controllers.LikeController;
 import com.enterpriseapplications.springboot.controllers.images.ProductImageController;
+import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
@@ -38,8 +40,11 @@ public class ProductDto extends GenericOutput<ProductDto>
 
     @Override
     public void addLinks(Object... params) {
+        PaginationRequest paginationRequest = new PaginationRequest(0,20);
+        String paginationQuery = paginationRequest.toString();
         this.add(linkTo(methodOn(ProductImageController.class).getProductImages(id)).withRel("images-all").withName("all"));
         this.add(linkTo(methodOn(ProductImageController.class).getFirstImage(id)).withRel("images-first").withName("first"));
         this.add(linkTo(methodOn(ProductImageController.class).getLastImage(id)).withRel("images-last").withName("last"));
+        this.add(linkTo(methodOn(LikeController.class).getLikesByProduct(id,paginationRequest)).slash(paginationQuery).withRel("received_likes").withName("receivedLikes"));
     }
 }

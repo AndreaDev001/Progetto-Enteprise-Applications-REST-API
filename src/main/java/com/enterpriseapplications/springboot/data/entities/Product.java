@@ -60,8 +60,8 @@ public class Product implements OwnableEntity {
     @Enumerated(EnumType.STRING)
     private ProductVisibility visibility;
 
-    @ManyToMany
-    private Set<User> likes = new HashSet<>();
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Like> receivedLikes = new HashSet<>();
 
     @OneToOne(mappedBy = "product")
     private Order order;

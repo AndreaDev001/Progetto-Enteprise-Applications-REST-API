@@ -41,6 +41,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
     private int amountOfReceivedReviews = 0;
     private int amountOfReceivedBans = 0;
     private int amountOfReplies = 0;
+    private int amountOfLikes = 0;
     private LocalDate createdDate;
 
     @Override
@@ -53,6 +54,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
         this.add(linkTo(methodOn(FollowController.class).getFollowed(id,paginationRequest)).slash(paginationQuery).withRel("followed").withName("followed"));
         this.add(linkTo(methodOn(ReportController.class).getReportsByReporter(id,paginationRequest)).slash(paginationQuery).withRel("created_reports").withName("createdReports"));
         this.add(linkTo(methodOn(ReportController.class).getReportsByReported(id,paginationRequest)).slash(paginationQuery).withRel("received_reports").withName("receivedReports"));
+        this.add(linkTo(methodOn(LikeController.class).getLikesByUser(id,paginationRequest)).slash(paginationQuery).withRel("created_likes").withName("createdLikes"));
         this.add(linkTo(methodOn(BanController.class).getCreatedBans(id,paginationRequest)).slash(paginationQuery).withRel("created_bans").withName("createdBans"));
         this.add(linkTo(methodOn(BanController.class).getReceivedBans(id,paginationRequest)).slash(paginationQuery).withRel("received_bans").withName("receivedBans"));
         this.add(linkTo(methodOn(OrderController.class).getOrders(id,paginationRequest)).slash(paginationQuery).withRel("orders").withName("orders"));

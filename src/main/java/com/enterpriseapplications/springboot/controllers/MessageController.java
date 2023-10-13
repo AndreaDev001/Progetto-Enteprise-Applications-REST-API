@@ -60,6 +60,7 @@ public class MessageController {
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<MessageDto> createMessage(@RequestBody @Valid CreateMessageDto createMessageDto) {
         return ResponseEntity.ok(this.messageService.createMessage(createMessageDto));
     }

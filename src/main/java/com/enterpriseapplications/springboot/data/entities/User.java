@@ -74,10 +74,6 @@ public class User
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
-    @ManyToMany
-    @JoinTable(name = "LIKED_PRODUCTS")
-    private Set<Product> likedProducts = new HashSet<>();
-
     @OneToOne(orphanRemoval = true,cascade = CascadeType.ALL)
     private UserImage userImage;
 
@@ -104,6 +100,9 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "receiver",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Message> receivedMessages = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Like> createdLikes = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "reporter",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Report> createdReports = new HashSet<>();

@@ -61,6 +61,7 @@ public class ProductImageController
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
     @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<List<ProductImageDto>> uploadProductImages(@ModelAttribute @Valid CreateProductImageDto productImageDto) {
         return ResponseEntity.ok(this.productImageService.uploadImages(productImageDto));
     }

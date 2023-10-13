@@ -97,6 +97,7 @@ public class ReportController {
     }
 
     @PostMapping("/private/{userID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.reportService.createReport(createReportDto,userID));
     }

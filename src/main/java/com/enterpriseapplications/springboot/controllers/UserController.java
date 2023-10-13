@@ -39,6 +39,7 @@ public class UserController
     }
 
     @GetMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<UserDetailsDto>> getUsers(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<UserDetailsDto> users = this.userService.getUsers(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(users);

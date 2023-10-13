@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.services.interfaces.CategoryService
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class CategoryController
     }
 
     @PostMapping("private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(this.categoryService.createCategory(createCategoryDto));
     }

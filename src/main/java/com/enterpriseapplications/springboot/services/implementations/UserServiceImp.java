@@ -53,6 +53,7 @@ public class UserServiceImp implements UserService {
         userDetails.setAmountOfReceivedReviews(requiredUser.getReceivedReviews().size());
         userDetails.setAmountOfReceivedBans(requiredUser.getReceivedBans().size());
         userDetails.setAmountOfReplies(requiredUser.getWrittenReplies().size());
+        userDetails.setAmountOfLikes(requiredUser.getCreatedLikes().size());
         userDetails.addLinks();
         return userDetails;
     }

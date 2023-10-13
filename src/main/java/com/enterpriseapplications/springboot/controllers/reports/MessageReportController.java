@@ -46,6 +46,7 @@ public class MessageReportController {
     }
 
     @PostMapping("/private/{messageID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<MessageReportDto> createMessageReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("messageID") @PositiveOrZero UUID messageID) {
         return ResponseEntity.ok(this.messageReportService.createMessageReport(createReportDto,messageID));
     }
