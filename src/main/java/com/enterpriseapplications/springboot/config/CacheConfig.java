@@ -29,11 +29,12 @@ public class CacheConfig
     public static final String CACHE_ALL_USERS = "ALL_USERS";
     public static final String CACHE_ALL_REPORTS = "ALL_REPORTS";
     public static final String CACHE_ALL_BANS = "ALL_PRODUCTS";
+    public static final String CACHE_BANNED_USERS = "BANNED_USERS";
 
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_ALL_PRODUCTS,CACHE_ALL_USERS,CACHE_ALL_REPORTS,CACHE_ALL_BANS,CACHE_SEARCH_PRODUCTS,CACHE_SEARCH_USERS,CACHE_SEARCH_REPORTS,CACHE_SEARCH_BANS);
+        return new ConcurrentMapCacheManager(CACHE_BANNED_USERS,CACHE_ALL_PRODUCTS,CACHE_ALL_USERS,CACHE_ALL_REPORTS,CACHE_ALL_BANS,CACHE_SEARCH_PRODUCTS,CACHE_SEARCH_USERS,CACHE_SEARCH_REPORTS,CACHE_SEARCH_BANS);
     }
 
     @CacheEvict(allEntries = true,value = {CACHE_SEARCH_PRODUCTS})
@@ -73,6 +74,11 @@ public class CacheConfig
     @CacheEvict(allEntries = true,value = {CACHE_ALL_PRODUCTS})
     @Scheduled(fixedDelay = 5 * 60 * 1000,initialDelay = 1000)
     public void allUsersCacheEvict() {
+        log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_ALL_USERS,dateTimeFormatter.format(LocalDateTime.now())));
+    }
+    @CacheEvict(allEntries = true,value = {CACHE_ALL_BANS})
+    @Scheduled(fixedDelay = 24 * 60 * 60 * 1000,initialDelay = 1000)
+    public void bannedUserCacheEvict() {
         log.info(String.format("Cache [%s] has been flushed at [%s]",CACHE_ALL_USERS,dateTimeFormatter.format(LocalDateTime.now())));
     }
 }

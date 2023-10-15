@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.config.authentication;
 
 
+import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.entities.Ban;
@@ -8,6 +9,7 @@ import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,9 @@ public class AuthenticationHandler
 
     }
 
-    boolean isBanned(JwtAuthenticationToken jwtAuthenticationToken) {
+
+    @Cacheable(value = CacheConfig.CACHE_BANNED_USERS,key = "#jwtAuthenticationToken.name")
+    public boolean isBanned(JwtAuthenticationToken jwtAuthenticationToken) {
         UUID userID = UUID.fromString((String)jwtAuthenticationToken.getTokenAttributes().get("sub"));
         Optional<User> userOptional = this.userDao.findById(userID);
         if(userOptional.isPresent()) {

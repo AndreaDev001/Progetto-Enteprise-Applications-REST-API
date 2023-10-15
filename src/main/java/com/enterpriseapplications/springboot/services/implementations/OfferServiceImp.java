@@ -14,6 +14,7 @@ import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OfferService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,13 +27,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class OfferServiceImp implements OfferService
 {
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH::mm:ss");
     private final OfferDao offerDao;
     private final UserDao userDao;
     private final ProductDao productDao;
@@ -126,6 +130,7 @@ public class OfferServiceImp implements OfferService
     public void handleExpiredOffers() {
         List<Offer> expiredOffers = this.offerDao.getOffersByDate(LocalDate.now());
         expiredOffers.forEach(offer -> {
+            log.info(String.format("Offer [%s] has expired at [%s]",offer.getId().toString(),this.dateTimeFormatter.format(LocalDate.now())));
             offer.setExpired(true);
             this.offerDao.save(offer);
         });
@@ -135,6 +140,7 @@ public class OfferServiceImp implements OfferService
     @Transactional
     @Scheduled(fixedDelay = 24 * 5 * 60 * 60 * 1000)
     public void deleteExpiredOffers() {
+        log.info(String.format("Expired offers have been deleted at [%s]",this.dateTimeFormatter.format(LocalDate.now())));
         List<Offer> expiredOffers = this.offerDao.getExpiredOffers(true);
         this.offerDao.deleteAll(expiredOffers);
     }

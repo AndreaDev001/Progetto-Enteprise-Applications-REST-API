@@ -14,6 +14,7 @@ import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.services.interfaces.BanService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,14 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class BanServiceImp implements BanService {
 
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH::mm:ss");
     private final BanDao banDao;
     private final UserDao userDao;
     private final ModelMapper modelMapper;
@@ -128,6 +132,7 @@ public class BanServiceImp implements BanService {
     public void handleExpiredBans() {
         List<Ban> expiredBans = this.banDao.getBansByDate(LocalDate.now());
         expiredBans.forEach(ban -> {
+            log.info(String.format("Ban [%s] has expired at [%s]"),ban.getId().toString(),dateTimeFormatter.format(LocalDate.now()));
             ban.setExpired(true);
             this.banDao.save(ban);
         });
@@ -137,6 +142,7 @@ public class BanServiceImp implements BanService {
     @Transactional
     @Scheduled(fixedDelay = 5 * 24 * 60 * 60 * 1000)
     public void deleteExpiredBans() {
+        log.info(String.format("Expired bans have been deleted at [%s]",dateTimeFormatter.format(LocalDate.now())));
         List<Ban> expiredBans = this.banDao.getExpiredBans(true);
         this.banDao.deleteAll(expiredBans);
     }
