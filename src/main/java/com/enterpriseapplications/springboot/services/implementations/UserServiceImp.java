@@ -71,6 +71,8 @@ public class UserServiceImp implements UserService {
             requiredUser.setDescription(updateUserDto.getDescription());
         if(updateUserDto.getGender() != null)
             requiredUser.setGender(updateUserDto.getGender());
+        if(updateUserDto.getVisibility() != null)
+            requiredUser.setVisibility(updateUserDto.getVisibility());
         this.userDao.save(requiredUser);
         UserDetailsDto userDetailsDto = this.modelMapper.map(requiredUser,UserDetailsDto.class);
         userDetailsDto.addLinks();

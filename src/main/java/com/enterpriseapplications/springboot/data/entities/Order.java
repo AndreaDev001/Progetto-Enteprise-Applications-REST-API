@@ -31,8 +31,8 @@ public class Order implements OwnableEntity
     @JoinColumn(name = "BUYER")
     private User buyer;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id",referencedColumnName = "ID")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
     @Column(name = "PRICE",unique = false)

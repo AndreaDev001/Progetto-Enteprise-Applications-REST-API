@@ -32,6 +32,7 @@ public class Product implements OwnableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "PRODUCT_ID")
     private UUID id;
 
     @Column(name = "NAME",unique = false)
@@ -63,7 +64,7 @@ public class Product implements OwnableEntity {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Like> receivedLikes = new HashSet<>();
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)

@@ -62,6 +62,7 @@ public class SecurityConfig
                         .requestMatchers("/images/public/**").permitAll()
                         .requestMatchers("/userImages/public/**").permitAll()
                         .requestMatchers("/productImages/public/**").permitAll()
+                        .requestMatchers("/likes/public/**").permitAll()
                         .requestMatchers(("/users/public/**")).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.data.dto.output.refs;
 
 import com.enterpriseapplications.springboot.controllers.ProductController;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
+import com.enterpriseapplications.springboot.data.entities.Product;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,8 +21,22 @@ public class ProductRef extends GenericOutput<ProductRef>
 {
     private UUID id;
     private String name;
+    private String description;
     private String brand;
     private BigDecimal price;
+    private UserRef seller;
+    private Integer likes;
+
+    public ProductRef(Product product) {
+        this.setId(product.getId());
+        this.setName(product.getName());
+        this.setDescription(product.getDescription());
+        this.setBrand(product.getBrand());
+        this.setPrice(product.getPrice());
+        this.setSeller(new UserRef(product.getSeller()));
+        this.setLikes(product.getReceivedLikes().size());
+        this.addLinks();
+    }
 
     @Override
     public void addLinks(Object... params) {

@@ -54,7 +54,7 @@ public class LikeController {
     public ResponseEntity<LikeDto> createLike(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.likeService.createLike(productID));
     }
-    @DeleteMapping("/{likeID}")
+    @DeleteMapping("/private/{likeID}")
     @PreAuthorize("@permissionHandler.hasAccess(@likeDao,#likeID)")
     public ResponseEntity<Void> deleteLike(@PathVariable("likeID") UUID likeID) {
         this.likeService.deleteLike(likeID);

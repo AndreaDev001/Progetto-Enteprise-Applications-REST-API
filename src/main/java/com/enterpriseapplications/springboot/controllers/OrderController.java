@@ -39,14 +39,14 @@ public class OrderController
         return ResponseEntity.ok(this.orderService.getOrder(orderID));
     }
 
-    @GetMapping("/private/buyer/{userID}")
-    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
+    @GetMapping("/public/buyer/{userID}")
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/private/product/{productID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<OrderDto> findOrder(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.orderService.getOrder(productID));
     }

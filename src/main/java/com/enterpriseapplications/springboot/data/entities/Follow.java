@@ -14,7 +14,7 @@ import org.springframework.hateoas.server.core.Relation;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "FOLLOWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FOLLOWED_ID","FOLLOWER_ID"})})
+@Table(name = "FOLLOWS")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data

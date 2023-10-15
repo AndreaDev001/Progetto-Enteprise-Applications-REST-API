@@ -20,10 +20,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -114,6 +118,25 @@ public class OfferServiceImp implements OfferService
         offer.setPrice(createOfferDto.getPrice());
         this.offerDao.save(offer);
         return this.modelMapper.map(offer,OfferDto.class);
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelay = 24 * 60 * 1000)
+    public void handleExpiredOffers() {
+        List<Offer> expiredOffers = this.offerDao.getOffersByDate(LocalDate.now());
+        expiredOffers.forEach(offer -> {
+            offer.setExpired(true);
+            this.offerDao.save(offer);
+        });
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelay = 24 * 5 * 60 * 60 * 1000)
+    public void deleteExpiredOffers() {
+        List<Offer> expiredOffers = this.offerDao.getExpiredOffers(true);
+        this.offerDao.deleteAll(expiredOffers);
     }
 
     @Override

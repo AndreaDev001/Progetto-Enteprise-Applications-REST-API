@@ -20,7 +20,7 @@ public interface ProductDao extends JpaRepository<Product, UUID>, JpaSpecificati
     Page<Product> getProductsBySeller(@Param("requiredID") UUID sellerID,@Param("requiredVisibility") ProductVisibility productVisibility, Pageable pageable);
     @Query("select p from PRODUCTS p where p.visibility = :requiredVisibility order by p.createdDate desc")
     Page<Product> getRecentlyCreatedProducts(@Param("requiredVisibility") ProductVisibility productVisibility,Pageable pageable);
-    @Query("select p from PRODUCTS p where p.visibility = :requiredVisibility")
+    @Query("select p from PRODUCTS p,Like l where p.id = l.product.id and p.visibility = :requiredVisibility group by p.id order by count(p.id) desc")
     Page<Product> getMostLikedProducts(@Param("requiredVisibility") ProductVisibility productVisibility,Pageable pageable);
     @Query("select p from PRODUCTS p where p.visibility = :requiredVisibility order by p.price desc")
     Page<Product> getMostExpensiveProducts(@Param("requiredVisibility") ProductVisibility productVisibility,Pageable pageable);

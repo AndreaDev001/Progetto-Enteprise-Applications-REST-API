@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
 
+import com.enterpriseapplications.springboot.config.hateoas.HateoasUtils;
 import com.enterpriseapplications.springboot.controllers.LikeController;
 import com.enterpriseapplications.springboot.controllers.images.ProductImageController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
@@ -39,9 +40,10 @@ public class ProductDto extends GenericOutput<ProductDto>
     private LocalDate createdDate;
 
     @Override
+    @SneakyThrows
     public void addLinks(Object... params) {
         PaginationRequest paginationRequest = new PaginationRequest(0,20);
-        String paginationQuery = paginationRequest.toString();
+        String paginationQuery = HateoasUtils.convert(paginationRequest);
         this.add(linkTo(methodOn(ProductImageController.class).getProductImages(id)).withRel("images-all").withName("all"));
         this.add(linkTo(methodOn(ProductImageController.class).getFirstImage(id)).withRel("images-first").withName("first"));
         this.add(linkTo(methodOn(ProductImageController.class).getLastImage(id)).withRel("images-last").withName("last"));

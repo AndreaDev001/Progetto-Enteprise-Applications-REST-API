@@ -22,10 +22,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,6 +120,25 @@ public class BanServiceImp implements BanService {
     public PagedModel<BanDto> getBansBySpec(Specification<Ban> specification, Pageable pageable) {
         Page<Ban> bans = this.banDao.findAll(specification, pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelay = 24 * 60 * 60 * 1000)
+    public void handleExpiredBans() {
+        List<Ban> expiredBans = this.banDao.getBansByDate(LocalDate.now());
+        expiredBans.forEach(ban -> {
+            ban.setExpired(true);
+            this.banDao.save(ban);
+        });
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedDelay = 5 * 24 * 60 * 60 * 1000)
+    public void deleteExpiredBans() {
+        List<Ban> expiredBans = this.banDao.getExpiredBans(true);
+        this.banDao.deleteAll(expiredBans);
     }
 
     @Override

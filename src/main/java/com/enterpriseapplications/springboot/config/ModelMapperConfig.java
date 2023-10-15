@@ -18,24 +18,14 @@ public class ModelMapperConfig
     public Converter<User,UserRef> userRefConverter = new AbstractConverter<User, UserRef>() {
         @Override
         protected UserRef convert(User user) {
-            UserRef userRef = new UserRef();
-            userRef.setId(user.getId());
-            userRef.setUsername(user.getUsername());
-            userRef.addLinks();
-            return userRef;
+            return new UserRef(user);
         }
     };
 
     public Converter<Product, ProductRef> productRefConverter = new AbstractConverter<Product, ProductRef>() {
         @Override
         protected ProductRef convert(Product product) {
-            ProductRef productRef = new ProductRef();
-            productRef.setId(product.getId());
-            productRef.setName(product.getName());
-            productRef.setBrand(product.getBrand());
-            productRef.setPrice(product.getPrice());
-            productRef.addLinks();
-            return productRef;
+            return new ProductRef(product);
         }
     };
 

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface OfferService
@@ -23,6 +24,8 @@ public interface OfferService
     PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID,OfferStatus status,Pageable pageable);
     PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable);
     OfferDto createOffer(CreateOfferDto createOfferDto);
+    void handleExpiredOffers();
+    void deleteExpiredOffers();
     OfferStatus[] getStatuses();
     OfferSpecifications.OrderType[] getOrderTypes();
     void deleteOffer(UUID offerID);

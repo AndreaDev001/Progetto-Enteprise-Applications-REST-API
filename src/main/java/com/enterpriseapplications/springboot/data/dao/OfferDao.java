@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -18,6 +20,10 @@ public interface OfferDao extends JpaRepository<Offer,UUID>, JpaSpecificationExe
 {
     @Query("select o from Offer o where o.status = :requiredStatus")
     Page<Offer> getOffersByStatus(@Param("requiredStatus")OfferStatus status,Pageable pageable);
+    @Query("select o from Offer o where o.expirationDate > :requiredDate")
+    List<Offer> getOffersByDate(@Param("requiredDate")LocalDate date);
+    @Query("select o from Offer o where o.expired = :requiredExpired")
+    List<Offer> getExpiredOffers(@Param("requiredExpired") boolean expired);
     @Query("select o from Offer o where o.expired = :requiredExpired")
     Page<Offer> getOffersByExpired(@Param("requiredExpired") boolean expired,Pageable pageable);
     @Query("select o from Offer o where o.buyer.id = :requiredID")
