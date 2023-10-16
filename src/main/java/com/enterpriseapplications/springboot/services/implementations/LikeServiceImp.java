@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class LikeServiceImp implements LikeService
+public class LikeServiceImp extends GenericServiceImp<Like,LikeDto> implements LikeService
 {
     private final LikeDao likeDao;
     private final ProductDao productDao;
@@ -36,6 +36,7 @@ public class LikeServiceImp implements LikeService
     private final PagedResourcesAssembler<Like> pagedResourcesAssembler;
 
     public LikeServiceImp(LikeDao likeDao,ProductDao productDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Like> pagedResourcesAssembler) {
+        super(modelMapper,Like.class,LikeDto.class,pagedResourcesAssembler);
         this.productDao = productDao;
         this.likeDao = likeDao;
         this.userDao = userDao;

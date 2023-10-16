@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,23 +35,18 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class OfferServiceImp implements OfferService
+public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implements OfferService
 {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH::mm:ss");
     private final OfferDao offerDao;
     private final UserDao userDao;
     private final ProductDao productDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Offer,OfferDto> modelAssembler;
-    private final PagedResourcesAssembler<Offer> pagedResourcesAssembler;
 
     public OfferServiceImp(OfferDao offerDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Offer> pagedResourcesAssembler) {
+        super(modelMapper,Offer.class,OfferDto.class,pagedResourcesAssembler);
         this.offerDao = offerDao;
         this.userDao = userDao;
         this.productDao = productDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Offer.class,OfferDto.class,modelMapper);
     }
 
     @Override
@@ -130,7 +126,7 @@ public class OfferServiceImp implements OfferService
     public void handleExpiredOffers() {
         List<Offer> expiredOffers = this.offerDao.getOffersByDate(LocalDate.now());
         expiredOffers.forEach(offer -> {
-            log.info(String.format("Offer [%s] has expired at [%s]",offer.getId().toString(),this.dateTimeFormatter.format(LocalDate.now())));
+            log.info(String.format("Offer [%s] has expired at [%s]",offer.getId().toString(),this.dateTimeFormatter.format(LocalDateTime.now())));
             offer.setExpired(true);
             this.offerDao.save(offer);
         });
@@ -138,9 +134,9 @@ public class OfferServiceImp implements OfferService
 
     @Override
     @Transactional
-    @Scheduled(fixedDelay = 24 * 5 * 60 * 60 * 1000)
+    @Scheduled(fixedDelay = 24 * 5 * 60 * 60 * 1000,initialDelay = 24 * 60 * 5000)
     public void deleteExpiredOffers() {
-        log.info(String.format("Expired offers have been deleted at [%s]",this.dateTimeFormatter.format(LocalDate.now())));
+        log.info(String.format("Expired offers have been deleted at [%s]",this.dateTimeFormatter.format(LocalDateTime.now())));
         List<Offer> expiredOffers = this.offerDao.getExpiredOffers(true);
         this.offerDao.deleteAll(expiredOffers);
     }

@@ -22,21 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class MessageServiceImp implements MessageService
+public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> implements MessageService
 {
     private final MessageDao messageDao;
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Message,MessageDto> modelAssembler;
-    private final PagedResourcesAssembler<Message> pagedResourcesAssembler;
-
 
     public MessageServiceImp(MessageDao messageDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Message> pagedResourcesAssembler) {
+        super(modelMapper,Message.class,MessageDto.class,pagedResourcesAssembler);
         this.messageDao = messageDao;
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Message.class,MessageDto.class,modelMapper);
     }
 
     @Override

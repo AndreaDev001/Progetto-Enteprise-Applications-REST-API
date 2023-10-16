@@ -1,4 +1,4 @@
-package com.enterpriseapplications.springboot.data.entities;
+package com.enterpriseapplications.springboot.data.entities.interfaces;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
-import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
+import com.enterpriseapplications.springboot.data.entities.interfaces.MultiOwnableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,33 +11,34 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
-@Table(name = "ORDERS")
+@Table(name = "CONVERSATIONS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FIRST_ID","SECOND_ID","PRODUCT_ID"})})
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(value = {AuditingEntityListener.class})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order implements OwnableEntity
+public class Conversation implements MultiOwnableEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BUYER")
-    private User buyer;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "FIRST_ID")
+    private User first;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "SECOND_ID")
+    private User second;
+
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
-
-    @Column(name = "PRICE",unique = false)
-    private BigDecimal price;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
@@ -47,8 +48,9 @@ public class Order implements OwnableEntity
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
+
     @Override
-    public UUID getOwnerID() {
-        return buyer.getId();
+    public List<UUID> getOwners() {
+        return List.of(first.getId(),second.getId());
     }
 }

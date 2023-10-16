@@ -16,19 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class PaymentMethodServiceImp implements PaymentMethodService
+public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,PaymentMethodDto> implements PaymentMethodService
 {
     private final PaymentMethodDao paymentMethodDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<PaymentMethod,PaymentMethodDto> modelAssembler;
-    private final PagedResourcesAssembler<PaymentMethod> pagedResourcesAssembler;
-
 
     public PaymentMethodServiceImp(PaymentMethodDao paymentMethodDao,ModelMapper modelMapper,PagedResourcesAssembler<PaymentMethod> pagedResourcesAssembler) {
+        super(modelMapper,PaymentMethod.class,PaymentMethodDto.class,pagedResourcesAssembler);
         this.paymentMethodDao = paymentMethodDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(PaymentMethod.class,PaymentMethodDto.class,modelMapper);
     }
 
     @Override

@@ -4,8 +4,8 @@ package com.enterpriseapplications.springboot.data.entities;
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
-import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
+import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +63,9 @@ public class Product implements OwnableEntity {
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Like> receivedLikes = new HashSet<>();
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Conversation> conversations = new HashSet<>();
 
     @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private Order order;

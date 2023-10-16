@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.dto.output;
 
 
 import com.enterpriseapplications.springboot.config.hateoas.HateoasUtils;
+import com.enterpriseapplications.springboot.controllers.ConversationController;
 import com.enterpriseapplications.springboot.controllers.LikeController;
 import com.enterpriseapplications.springboot.controllers.images.ProductImageController;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
@@ -48,5 +49,6 @@ public class ProductDto extends GenericOutput<ProductDto>
         this.add(linkTo(methodOn(ProductImageController.class).getFirstImage(id)).withRel("images-first").withName("first"));
         this.add(linkTo(methodOn(ProductImageController.class).getLastImage(id)).withRel("images-last").withName("last"));
         this.add(linkTo(methodOn(LikeController.class).getLikesByProduct(id,paginationRequest)).slash(paginationQuery).withRel("received_likes").withName("receivedLikes"));
+        this.addLinks(linkTo(ConversationController.class).slash(paginationQuery).withRel("conversations").withName("conversations"));
     }
 }

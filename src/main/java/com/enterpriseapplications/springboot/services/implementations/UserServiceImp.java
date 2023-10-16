@@ -27,19 +27,14 @@ import java.util.UUID;
 
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> implements UserService {
 
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<User,UserDetailsDto> modelAssembler;
-    private final PagedResourcesAssembler<User> pagedResourcesAssembler;
 
 
     public UserServiceImp(UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<User> pagedResourcesAssembler) {
+        super(modelMapper,User.class,UserDetailsDto.class,pagedResourcesAssembler);
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(User.class, UserDetailsDto.class,modelMapper);
     }
 
     @Override
@@ -109,7 +104,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_USERS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_ALL_USERS,CacheConfig.CACHE_SEARCH_USERS},allEntries = true)
     public void deleteUser(UUID userID) {
         this.userDao.findById(userID).orElseThrow();
         this.userDao.deleteById(userID);

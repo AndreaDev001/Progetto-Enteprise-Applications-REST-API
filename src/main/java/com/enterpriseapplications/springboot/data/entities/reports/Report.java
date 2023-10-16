@@ -2,7 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.reports;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
-import com.enterpriseapplications.springboot.data.entities.OwnableEntity;
+import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;

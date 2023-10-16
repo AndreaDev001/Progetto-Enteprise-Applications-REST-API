@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

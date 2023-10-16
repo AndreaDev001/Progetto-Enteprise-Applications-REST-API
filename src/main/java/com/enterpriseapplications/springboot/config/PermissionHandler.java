@@ -1,10 +1,8 @@
 package com.enterpriseapplications.springboot.config;
 
 
-import com.enterpriseapplications.springboot.data.dao.UserDao;
-import com.enterpriseapplications.springboot.data.entities.OwnableEntity;
-import com.enterpriseapplications.springboot.data.entities.User;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
+import com.enterpriseapplications.springboot.data.entities.interfaces.MultiOwnableEntity;
+import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.Authentication;
@@ -45,28 +43,32 @@ public class PermissionHandler
     public boolean hasAccess(JpaRepository<OwnableEntity,UUID> repository, UUID resourceID) {
         if(hasRole("ROLE_ADMIN"))
             return true;
+        UUID userID = this.readUserID();
+        OwnableEntity ownableEntity = repository.findById(resourceID).orElseThrow();
+        return ownableEntity.getOwnerID().equals(userID);
+    }
+
+    public boolean hasAccessMulti(JpaRepository<MultiOwnableEntity,UUID> repository,UUID resourceID) {
+        if(hasRole("ROLE_ADMIN"))
+            return true;
+        UUID userID = this.readUserID();
+        MultiOwnableEntity multiOwnableEntity = repository.findById(resourceID).orElseThrow();
+        return multiOwnableEntity.getOwners().contains(userID);
+    }
+
+    private UUID readUserID() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
-            if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-                String sub = (String)jwtAuthenticationToken.getTokenAttributes().get("sub");
-                UUID userID = UUID.fromString(sub);
-                OwnableEntity ownableEntity = repository.findById(resourceID).orElseThrow();
-                return ownableEntity.getOwnerID().equals(userID);
-            }
+        if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            String sub  = (String)jwtAuthenticationToken.getTokenAttributes().get("sub");
+            UUID userID = UUID.fromString(sub);
+            return userID;
         }
-        return false;
+        return null;
     }
     public boolean hasAccess(UUID userID) {
         if(hasRole("ROLE_ADMIN"))
             return true;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
-            if(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-                String sub = (String)jwtAuthenticationToken.getTokenAttributes().get("sub");
-                UUID id = UUID.fromString(sub);
-                return userID.equals(id);
-            }
-        }
-        return false;
+        UUID requiredID = this.readUserID();
+        return requiredID.equals(userID);
     }
 }

@@ -9,6 +9,7 @@ import com.enterpriseapplications.springboot.data.dto.input.create.images.Create
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.ProductImageService;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -27,20 +28,15 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class ProductImageServiceImp implements ProductImageService
+public class ProductImageServiceImp extends GenericServiceImp<ProductImage,ProductImageDto> implements ProductImageService
 {
     private final ProductDao productDao;
     private final ProductImageDao productImageDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<ProductImage,ProductImageDto> modelAssembler;
-    private final PagedResourcesAssembler<ProductImage> pagedResourcesAssembler;
 
     public ProductImageServiceImp(ProductDao productDao,ProductImageDao productImageDao,ModelMapper modelMapper,PagedResourcesAssembler<ProductImage> pagedResourcesAssembler) {
+        super(modelMapper,ProductImage.class,ProductImageDto.class,pagedResourcesAssembler);
         this.productDao = productDao;
         this.productImageDao = productImageDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(ProductImage.class,ProductImageDto.class,modelMapper);
     }
 
     @Override

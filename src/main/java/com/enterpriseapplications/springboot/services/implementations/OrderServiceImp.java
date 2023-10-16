@@ -24,22 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class OrderServiceImp implements OrderService {
+public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implements OrderService {
 
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final ProductDao productDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Order,OrderDto> modelAssembler;
-    private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
-
     public OrderServiceImp(OrderDao orderDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<Order> pagedResourcesAssembler) {
+        super(modelMapper,Order.class,OrderDto.class,pagedResourcesAssembler);
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.productDao = productDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Order.class,OrderDto.class,modelMapper);
     }
 
     @Override

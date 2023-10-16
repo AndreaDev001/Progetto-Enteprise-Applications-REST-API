@@ -13,6 +13,7 @@ import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,21 +31,16 @@ import java.util.UUID;
 
 
 @Service
-public class ReportServiceImp implements ReportService {
+public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implements ReportService {
 
     private final ReportDao reportDao;
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Report,ReportDto> modelAssembler;
-    private final PagedResourcesAssembler<Report> pagedResourcesAssembler;
 
 
     public ReportServiceImp(ReportDao reportDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Report> pagedResourcesAssembler) {
+        super(modelMapper,Report.class,ReportDto.class,pagedResourcesAssembler);
         this.reportDao = reportDao;
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Report.class,ReportDto.class,modelMapper);
     }
 
     @Override
@@ -96,7 +92,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_REPORTS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_REPORTS,CacheConfig.CACHE_ALL_REPORTS},allEntries = true)
     @Transactional
     public ReportDto createReport(CreateReportDto createReportDto,UUID reportedID) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -114,7 +110,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_REPORTS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_ALL_REPORTS,CacheConfig.CACHE_SEARCH_REPORTS},allEntries = true)
     @Transactional
     public ReportDto updateReport(UpdateReportDto updateReportDto) {
         Report requiredReport = this.reportDao.findById(updateReportDto.getReportID()).orElseThrow();
@@ -138,7 +134,7 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_REPORTS},allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_REPORTS,CacheConfig.CACHE_ALL_REPORTS},allEntries = true)
     public void deleteReport(UUID reportID) {
         this.reportDao.findById(reportID).orElseThrow();
         this.reportDao.deleteById(reportID);

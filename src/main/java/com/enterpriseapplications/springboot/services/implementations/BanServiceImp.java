@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,21 +39,16 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class BanServiceImp implements BanService {
+public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanService {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH::mm:ss");
     private final BanDao banDao;
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Ban,BanDto> modelAssembler;
-    private final PagedResourcesAssembler<Ban> pagedResourcesAssembler;
 
     public BanServiceImp(BanDao banDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Ban> pagedResourcesAssembler) {
+        super(modelMapper,Ban.class,BanDto.class,pagedResourcesAssembler);
         this.banDao = banDao;
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Ban.class,BanDto.class,modelMapper);
     }
 
     @Override
@@ -79,7 +75,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_ALL_BANS,CacheConfig.CACHE_SEARCH_BANS},allEntries = true)
     @Transactional
     public BanDto createBan(CreateBanDto createBanDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -100,7 +96,7 @@ public class BanServiceImp implements BanService {
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_BANS,CacheConfig.CACHE_ALL_BANS},allEntries = true)
     @Transactional
     public BanDto updateBan(UpdateBanDto updateBanDto) {
         Ban requiredBan = this.banDao.findBan(updateBanDto.getBannedID()).orElseThrow();
@@ -128,11 +124,12 @@ public class BanServiceImp implements BanService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_BANS,CacheConfig.CACHE_ALL_BANS,CacheConfig.CACHE_BANNED_USERS},allEntries = true)
     @Scheduled(fixedDelay = 24 * 60 * 60 * 1000)
     public void handleExpiredBans() {
         List<Ban> expiredBans = this.banDao.getBansByDate(LocalDate.now());
         expiredBans.forEach(ban -> {
-            log.info(String.format("Ban [%s] has expired at [%s]"),ban.getId().toString(),dateTimeFormatter.format(LocalDate.now()));
+            log.info(String.format("Ban [%s] has expired at [%s]"),ban.getId().toString(),dateTimeFormatter.format(LocalDateTime.now()));
             ban.setExpired(true);
             this.banDao.save(ban);
         });
@@ -140,9 +137,10 @@ public class BanServiceImp implements BanService {
 
     @Override
     @Transactional
-    @Scheduled(fixedDelay = 5 * 24 * 60 * 60 * 1000)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_BANS,CacheConfig.CACHE_ALL_BANS,CacheConfig.CACHE_BANNED_USERS},allEntries = true)
+    @Scheduled(fixedDelay = 5 * 24 * 60 * 60 * 1000,initialDelay = 24 * 60 * 60 * 1000)
     public void deleteExpiredBans() {
-        log.info(String.format("Expired bans have been deleted at [%s]",dateTimeFormatter.format(LocalDate.now())));
+        log.info(String.format("Expired bans have been deleted at [%s]",dateTimeFormatter.format(LocalDateTime.now())));
         List<Ban> expiredBans = this.banDao.getExpiredBans(true);
         this.banDao.deleteAll(expiredBans);
     }
@@ -160,7 +158,7 @@ public class BanServiceImp implements BanService {
 
     @Override
     @Transactional
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_BANS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_BANS,CacheConfig.CACHE_ALL_BANS,CacheConfig.CACHE_BANNED_USERS},allEntries = true)
     public void deleteBan(UUID id) {
         this.banDao.findById(id).orElseThrow();
         this.banDao.deleteById(id);

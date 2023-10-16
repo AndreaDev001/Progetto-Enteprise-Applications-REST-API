@@ -32,23 +32,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class ProductServiceImp implements ProductService
+public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> implements ProductService
 {
     private final UserDao userDao;
     private final ProductDao productDao;
     private final CategoryDao categoryDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Product,ProductDto> modelAssembler;
-    private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
 
     public ProductServiceImp(ProductDao productDao,UserDao userDao,CategoryDao categoryDao,ModelMapper modelMapper,PagedResourcesAssembler<Product> pagedResourcesAssembler) {
+        super(modelMapper,Product.class,ProductDto.class,pagedResourcesAssembler);
         this.productDao = productDao;
         this.userDao = userDao;
         this.categoryDao = categoryDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Product.class,ProductDto.class,modelMapper);
     }
 
     @Override
@@ -80,7 +75,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_ALL_PRODUCTS,CacheConfig.CACHE_SEARCH_PRODUCTS},allEntries = true)
     @Transactional
     public ProductDto createProduct(CreateProductDto createProductDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -131,7 +126,7 @@ public class ProductServiceImp implements ProductService
     }
 
     @Override
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_PRODUCTS,CacheConfig.CACHE_ALL_PRODUCTS},allEntries = true)
     @Transactional
     public ProductDto updateProduct(UpdateProductDto updateProductDto) {
         Product requiredProduct =  this.productDao.findById(updateProductDto.getProductID()).orElseThrow();
@@ -149,7 +144,7 @@ public class ProductServiceImp implements ProductService
 
     @Override
     @Transactional
-    @CacheEvict(value = CacheConfig.CACHE_SEARCH_PRODUCTS,allEntries = true)
+    @CacheEvict(value = {CacheConfig.CACHE_SEARCH_PRODUCTS,CacheConfig.CACHE_ALL_PRODUCTS},allEntries = true)
     public void deleteProduct(UUID productID) {
         this.productDao.findById(productID);
         this.productDao.deleteById(productID);

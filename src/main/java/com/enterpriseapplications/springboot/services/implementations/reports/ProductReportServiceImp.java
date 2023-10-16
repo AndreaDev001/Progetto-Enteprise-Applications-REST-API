@@ -12,6 +12,7 @@ import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.ProductReport;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ProductReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,23 +26,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class ProductReportServiceImp implements ProductReportService {
+public class ProductReportServiceImp extends GenericServiceImp<ProductReport,ProductReportDto> implements ProductReportService {
 
     private final ProductReportDao productReportDao;
     private final UserDao userDao;
     private final ProductDao productDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<ProductReport,ProductReportDto> modelAssembler;
-    private final PagedResourcesAssembler<ProductReport> pagedResourcesAssembler;
 
 
     public ProductReportServiceImp(ProductReportDao productReportDao,UserDao userDao,ProductDao productDao,ModelMapper modelMapper,PagedResourcesAssembler<ProductReport> pagedResourcesAssembler) {
+        super(modelMapper,ProductReport.class,ProductReportDto.class,pagedResourcesAssembler);
         this.productReportDao = productReportDao;
         this.userDao = userDao;
         this.productDao = productDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(ProductReport.class,ProductReportDto.class,modelMapper);
     }
 
     @Override

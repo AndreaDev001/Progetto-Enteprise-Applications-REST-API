@@ -12,6 +12,7 @@ import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.MessageReport;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,23 +27,18 @@ import java.util.UUID;
 
 
 @Service
-public class MessageReportServiceImp implements MessageReportService {
+public class MessageReportServiceImp extends GenericServiceImp<MessageReport,MessageReportDto> implements MessageReportService {
 
     private final MessageReportDao messageReportDao;
     private final UserDao userDao;
     private final MessageDao messageDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<MessageReport,MessageReportDto> modelAssembler;
-    private final PagedResourcesAssembler<MessageReport> pagedResourcesAssembler;
 
 
     public MessageReportServiceImp(MessageReportDao messageReportDao,UserDao userDao,MessageDao messageDao,ModelMapper modelMapper,PagedResourcesAssembler<MessageReport> pagedResourcesAssembler) {
+        super(modelMapper,MessageReport.class,MessageReportDto.class,pagedResourcesAssembler);
         this.messageReportDao = messageReportDao;
         this.userDao = userDao;
         this.messageDao = messageDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(MessageReport.class,MessageReportDto.class,modelMapper);
     }
 
     @Override

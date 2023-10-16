@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dao.images.ImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,19 +22,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ImageServiceImp implements ImageService
+public class ImageServiceImp extends GenericServiceImp<Image,ImageDto> implements ImageService
 {
     private final ImageDao imageDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Image,ImageDto> modelAssembler;
-    private final PagedResourcesAssembler<Image> pagedResourcesAssembler;
 
 
     public ImageServiceImp(ImageDao imageDao,ModelMapper modelMapper,PagedResourcesAssembler<Image> pagedResourcesAssembler) {
+        super(modelMapper,Image.class,ImageDto.class,pagedResourcesAssembler);
         this.imageDao = imageDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Image.class,ImageDto.class,modelMapper);
     }
 
     @Override

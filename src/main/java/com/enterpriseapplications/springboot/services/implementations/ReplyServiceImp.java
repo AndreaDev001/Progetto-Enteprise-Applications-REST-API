@@ -25,22 +25,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class ReplyServiceImp implements ReplyService
+public class ReplyServiceImp extends GenericServiceImp<Reply,ReplyDto> implements ReplyService
 {
     private final ReplyDao replyDao;
     private final ReviewDao reviewDao;
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Reply,ReplyDto> modelAssembler;
-    private final PagedResourcesAssembler<Reply> pagedResourcesAssembler;
 
     public ReplyServiceImp(ReplyDao replyDao,ReviewDao reviewDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Reply> pagedResourcesAssembler) {
+        super(modelMapper,Reply.class,ReplyDto.class,pagedResourcesAssembler);
         this.replyDao = replyDao;
         this.reviewDao = reviewDao;
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Reply.class,ReplyDto.class,modelMapper);
     }
 
     @Override

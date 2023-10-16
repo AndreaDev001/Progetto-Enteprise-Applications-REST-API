@@ -7,6 +7,8 @@ import com.enterpriseapplications.springboot.data.dto.input.create.images.Create
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.UserImage;
+import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
+import com.enterpriseapplications.springboot.services.implementations.UserServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.UserImageService;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -22,18 +24,13 @@ import java.util.UUID;
 
 
 @Service
-public class UserImageServiceImp implements UserImageService
+public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDto> implements UserImageService
 {
     private final UserImageDao userImageDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<UserImage,UserImageDto> modelAssembler;
-    private final PagedResourcesAssembler<UserImage> pagedResourcesAssembler;
 
     public UserImageServiceImp(UserImageDao userImageDao,ModelMapper modelMapper,PagedResourcesAssembler<UserImage> pagedResourcesAssembler) {
+        super(modelMapper,UserImage.class,UserImageDto.class,pagedResourcesAssembler);
         this.userImageDao = userImageDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(UserImage.class,UserImageDto.class,modelMapper);
     }
 
     @Override

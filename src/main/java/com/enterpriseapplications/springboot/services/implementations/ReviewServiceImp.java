@@ -7,8 +7,10 @@ import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
+import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.Review;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.interfaces.ReviewService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,20 +25,15 @@ import java.util.UUID;
 
 
 @Service
-public class ReviewServiceImp implements ReviewService {
+public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implements ReviewService {
 
     private final ReviewDao reviewDao;
     private final UserDao userDao;
-    private final ModelMapper modelMapper;
-    private final GenericModelAssembler<Review,ReviewDto> modelAssembler;
-    private final PagedResourcesAssembler<Review> pagedResourcesAssembler;
 
     public ReviewServiceImp(ReviewDao reviewDao, UserDao userDao, ModelMapper modelMapper,PagedResourcesAssembler<Review> pagedResourcesAssembler) {
+        super(modelMapper,Review.class,ReviewDto.class,pagedResourcesAssembler);
         this.reviewDao = reviewDao;
         this.userDao = userDao;
-        this.modelMapper = modelMapper;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.modelAssembler = new GenericModelAssembler<>(Review.class,ReviewDto.class,modelMapper);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +10,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "FOLLOWS")
+@Table(name = "FOLLOWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FOLLOWED_ID","FOLLOWER_ID"})})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data
