@@ -3,8 +3,13 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.MessageReportDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.data.entities.Message;
+import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
+import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.MessageReport;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
@@ -24,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -96,6 +102,15 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
 
     @Test
     void createMessageReport() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Message message = Message.builder().id(UUID.randomUUID()).build();
+        message.setReceiver(user);
+        CreateReportDto createReportDto = CreateReportDto.builder().type(ReportType.MESSAGE).reason(ReportReason.RACISM).description("description").build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.messageDao.findById(message.getId())).willReturn(Optional.of(message));
+        given(this.messageReportDao.save(any(MessageReport.class))).willReturn(firstElement);
+        MessageReportDto messageReportDto = this.messageReportServiceImp.createMessageReport(createReportDto,message.getId());
+        Assert.assertTrue(valid(firstElement,messageReportDto));
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
 import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -113,5 +115,12 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
 
     @Test
     void createMessage() {
+        User receiver = User.builder().id(UUID.randomUUID()).build();
+        CreateMessageDto createMessageDto = CreateMessageDto.builder().text("text").receiverID(receiver.getId()).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(receiver.getId())).willReturn(Optional.of(receiver));
+        given(this.messageDao.save(any(Message.class))).willReturn(firstElement);
+        MessageDto messageDto = this.messageServiceImp.createMessage(createMessageDto);
+        Assert.assertTrue(valid(firstElement,messageDto));
     }
 }

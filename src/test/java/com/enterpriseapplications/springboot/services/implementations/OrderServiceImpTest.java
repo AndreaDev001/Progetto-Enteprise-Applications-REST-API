@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.OrderDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.Order;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -94,5 +96,14 @@ class OrderServiceImpTest extends GenericTestImp<Order,OrderDto> {
 
     @Test
     void createOrder() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        product.setSeller(user);
+        CreateOrderDto createOrderDto = CreateOrderDto.builder().productID(product.getId()).price(new BigDecimal(100)).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.orderDao.save(any(Order.class))).willReturn(firstElement);
+        OrderDto orderDto = this.orderServiceImp.createOrder(createOrderDto);
+        Assert.assertTrue(valid(firstElement,orderDto));
     }
 }

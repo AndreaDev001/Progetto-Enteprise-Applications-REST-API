@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.ConversationDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateConversationDto;
 import com.enterpriseapplications.springboot.data.dto.output.ConversationDto;
 import com.enterpriseapplications.springboot.data.entities.Conversation;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -123,5 +125,18 @@ public class ConversationServiceImpTest extends GenericTestImp<Conversation, Con
         PagedModel<ConversationDto> conversations = this.conversationServiceImp.getConversationByProduct(product.getId(),pageRequest);
         Assert.assertTrue(compare(elements,conversations.getContent().stream().toList()));
         Assert.assertTrue(validPage(conversations,20,0,1,2));
+    }
+
+    @Test
+    public void createConversation() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        CreateConversationDto createConversationDto = CreateConversationDto.builder().productID(product.getId()).second(user.getId()).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.conversationDao.save(any(Conversation.class))).willReturn(firstElement);
+        ConversationDto conversationDto = this.conversationServiceImp.createConversation(createConversationDto);
+        Assert.assertTrue(valid(firstElement,conversationDto));
     }
 }

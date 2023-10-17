@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.entities.Ban;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -19,10 +20,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 
+import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -117,5 +121,16 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
         BanDto secondBan = this.banServiceImp.getBan(this.secondElement.getId());
         Assert.assertTrue(valid(this.firstElement,firstBan));
         Assert.assertTrue(valid(this.secondElement,secondBan));
+    }
+
+    @Test
+    void createBan() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        CreateBanDto createBanDto = CreateBanDto.builder().bannedID(user.getId()).reason(ReportReason.RACISM).expirationDate(LocalDate.now()).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.banDao.save(any(Ban.class))).willReturn(firstElement);
+        BanDto banDto = this.banServiceImp.createBan(createBanDto);
+        Assert.assertTrue(valid(firstElement,banDto));
     }
 }

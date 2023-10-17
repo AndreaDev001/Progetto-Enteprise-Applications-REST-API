@@ -1,17 +1,28 @@
 package com.enterpriseapplications.springboot.services;
 
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
+import com.enterpriseapplications.springboot.data.entities.User;
 import lombok.SneakyThrows;
 import org.junit.Assert;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 public abstract class GenericTestImp<T,U extends GenericOutput<?>>
 {
@@ -21,8 +32,15 @@ public abstract class GenericTestImp<T,U extends GenericOutput<?>>
     protected T firstElement;
     protected T secondElement;
     protected List<T> elements;
+    protected User authenticatedUser;
 
     protected void init() {
+        authenticatedUser = User.builder().id(UUID.randomUUID()).build();
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(authenticatedUser.getId().toString());
+        SecurityContextHolder.setContext(securityContext);
         httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setContextPath("/api/v1");
         pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
@@ -30,7 +48,6 @@ public abstract class GenericTestImp<T,U extends GenericOutput<?>>
         ServletRequestAttributes attributes = new ServletRequestAttributes(httpServletRequest);
         RequestContextHolder.setRequestAttributes(attributes);
     }
-
     protected abstract boolean valid(T entity, U dto);
 
     @SneakyThrows

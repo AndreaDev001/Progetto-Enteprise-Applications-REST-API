@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
@@ -99,6 +101,12 @@ class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
 
     @Test
     void createFollow() {
+        User followedUser = User.builder().id(UUID.randomUUID()).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(followedUser.getId())).willReturn(Optional.of(followedUser));
+        when(this.followDao.save(any(Follow.class))).thenReturn(firstElement);
+        FollowDto followDto = this.followServiceImp.createFollow(followedUser.getId());
+        Assert.assertTrue(valid(firstElement,followDto));
     }
 
     @Override

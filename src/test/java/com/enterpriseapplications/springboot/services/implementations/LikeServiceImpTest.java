@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -108,6 +109,17 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         LikeDto secondLike = this.likeServiceImp.getLike(secondRandomID);
         Assert.assertTrue(valid(firstElement,firstLike));
         Assert.assertTrue(valid(secondElement,secondLike));
+    }
+
+    @Test
+    public void createLike() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.likeDao.save(any(Like.class))).willReturn(firstElement);
+        LikeDto createdLike = this.likeServiceImp.createLike(product.getId());
+        Assert.assertTrue(valid(firstElement,createdLike));
     }
 
     @Override

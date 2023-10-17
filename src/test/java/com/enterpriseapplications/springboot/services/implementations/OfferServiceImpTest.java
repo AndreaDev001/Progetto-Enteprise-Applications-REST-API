@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -23,8 +24,10 @@ import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -132,5 +135,14 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
 
     @Test
     void createOffer() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        product.setSeller(user);
+        CreateOfferDto createOfferDto = CreateOfferDto.builder().description("description").price(new BigDecimal(100)).productID(product.getId()).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.offerDao.save(any(Offer.class))).willReturn(firstElement);
+        OfferDto offerDto = this.offerServiceImp.createOffer(createOfferDto);
+        Assert.assertTrue(valid(firstElement,offerDto));
     }
 }

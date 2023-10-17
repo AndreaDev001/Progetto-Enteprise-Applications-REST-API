@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -141,6 +143,13 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
 
     @Test
     void createReport() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        CreateReportDto createReportDto = CreateReportDto.builder().description("description").reason(ReportReason.RACISM).type(ReportType.USER).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.reportDao.save(any(Report.class))).willReturn(firstElement);
+        ReportDto reportDto = this.reportServiceImp.createReport(createReportDto,user.getId());
+        Assert.assertTrue(valid(firstElement,reportDto));
     }
 
     @Test

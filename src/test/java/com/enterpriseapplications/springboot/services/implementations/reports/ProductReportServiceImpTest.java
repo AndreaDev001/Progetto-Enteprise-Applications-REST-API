@@ -3,8 +3,12 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ProductReportDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
+import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.ProductReport;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
@@ -24,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -93,6 +98,20 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
         Assert.assertTrue(compare(elements,productReports.getContent().stream().toList()));
         Assert.assertTrue(validPage(productReports,20,0,1,2));
     }
+
+    @Test
+    void createReport() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        CreateReportDto createReportDto = CreateReportDto.builder().reason(ReportReason.RACISM).type(ReportType.PRODUCT).description("description").build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.productReportDao.save(any(ProductReport.class))).willReturn(firstElement);
+        ProductReportDto productReportDto = this.productReportServiceImp.createProductReport(createReportDto,product.getId());
+        Assert.assertTrue(valid(firstElement,productReportDto));
+    }
+
+
     @Test
     void updateProductReport() {
     }

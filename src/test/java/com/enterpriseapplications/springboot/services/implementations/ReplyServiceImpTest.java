@@ -3,7 +3,9 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.ReplyDao;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReplyDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReplyDto;
+import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.data.entities.Reply;
 import com.enterpriseapplications.springboot.data.entities.Review;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -93,6 +96,13 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
 
     @Test
     void createReply() {
+        Review review = Review.builder().id(UUID.randomUUID()).build();
+        CreateReplyDto createReplyDto = CreateReplyDto.builder().reviewID(review.getId()).text("TEXT").build();
+        given(this.userDao.findById(this.authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.reviewDao.findById(review.getId())).willReturn(Optional.of(review));
+        given(this.replyDao.save(any(Reply.class))).willReturn(firstElement);
+        ReplyDto replyDto = this.replyServiceImp.createReply(createReplyDto);
+        Assert.assertTrue(valid(firstElement,replyDto));
     }
 
     @Test

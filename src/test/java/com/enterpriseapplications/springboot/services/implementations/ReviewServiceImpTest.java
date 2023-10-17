@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.data.entities.Review;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -118,6 +120,13 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
 
     @Test
     void createReview() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        CreateReviewDto createReviewDto = CreateReviewDto.builder().reviewedID(user.getId()).rating(10).text("TEXT").build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.reviewDao.save(any(Review.class))).willReturn(firstElement);
+        ReviewDto reviewDto = this.reviewServiceImp.createReview(createReviewDto);
+        Assert.assertTrue(valid(firstElement,reviewDto));
     }
 
     @Test
