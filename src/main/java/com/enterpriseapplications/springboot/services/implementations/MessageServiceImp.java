@@ -74,8 +74,7 @@ public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> imp
         message.setSender(requiredUser);
         message.setReceiver(receiver);
         message.setText(createMessageDto.getText());
-        this.messageDao.save(message);
-        return this.modelMapper.map(message,MessageDto.class);
+        return this.modelMapper.map(this.messageDao.save(message),MessageDto.class);
     }
 
     @Override

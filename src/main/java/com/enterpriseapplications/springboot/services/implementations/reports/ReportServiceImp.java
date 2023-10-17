@@ -105,8 +105,7 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
         report.setDescription(createReportDto.getDescription());
         report.setReason(createReportDto.getReason());
         report.setType(ReportType.USER);
-        this.reportDao.save(report);
-        return this.modelMapper.map(report,ReportDto.class);
+        return this.modelMapper.map(this.reportDao.save(report),ReportDto.class);
     }
 
     @Override

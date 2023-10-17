@@ -76,8 +76,7 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
         review.setReceiver(reviewed);
         review.setText(createReviewDto.getText());
         review.setRating(createReviewDto.getRating());
-        this.reviewDao.save(review);
-        return this.modelMapper.map(review,ReviewDto.class);
+        return this.modelMapper.map(this.reviewDao.save(review),ReviewDto.class);
     }
 
     @Override

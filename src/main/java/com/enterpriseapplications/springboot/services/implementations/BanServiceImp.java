@@ -91,8 +91,7 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         ban.setReason(createBanDto.getReason());
         ban.setExpired(false);
         ban.setExpirationDate(createBanDto.getExpirationDate());
-        this.banDao.save(ban);
-        return this.modelMapper.map(ban,BanDto.class);
+        return this.modelMapper.map(this.banDao.save(ban),BanDto.class);
     }
 
     @Override

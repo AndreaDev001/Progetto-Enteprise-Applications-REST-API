@@ -87,9 +87,8 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
         if(requiredUser.getId().equals(createConversationDto.getSecond()))
             throw new InvalidFormat("error.conversation.invalidReceiver");
         Conversation conversation = Conversation.builder().product(requiredProduct)
-                .first(requiredUser).second(secondUser).build();
-        this.conversationDao.save(conversation);
-        return this.modelMapper.map(conversation,ConversationDto.class);
+                .first(requiredUser).second(secondUser).build();;
+        return this.modelMapper.map(this.conversationDao.save(conversation),ConversationDto.class);
     }
 
     @Override

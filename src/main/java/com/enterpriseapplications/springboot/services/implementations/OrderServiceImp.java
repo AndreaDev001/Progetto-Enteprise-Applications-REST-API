@@ -71,8 +71,7 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
         order.setBuyer(requiredUser);
         order.setProduct(requiredProduct);
         order.setPrice(createOrderDto.getPrice());
-        this.orderDao.save(order);
-        return this.modelMapper.map(order,OrderDto.class);
+        return this.modelMapper.map(this.orderDao.save(order),OrderDto.class);
     }
 
     @Override

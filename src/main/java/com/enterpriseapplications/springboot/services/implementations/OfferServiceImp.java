@@ -116,8 +116,7 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         offer.setStatus(OfferStatus.OPEN);
         offer.setDescription(createOfferDto.getDescription());
         offer.setPrice(createOfferDto.getPrice());
-        this.offerDao.save(offer);
-        return this.modelMapper.map(offer,OfferDto.class);
+        return this.modelMapper.map(this.offerDao.save(offer),OfferDto.class);
     }
 
     @Override

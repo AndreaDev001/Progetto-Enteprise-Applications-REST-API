@@ -73,8 +73,7 @@ public class MessageReportServiceImp extends GenericServiceImp<MessageReport,Mes
         messageReport.setDescription(createReportDto.getDescription());
         messageReport.setReason(createReportDto.getReason());
         messageReport.setType(ReportType.MESSAGE);
-        this.messageReportDao.save(messageReport);
-        return this.modelMapper.map(messageReport,MessageReportDto.class);
+        return this.modelMapper.map(this.messageReportDao.save(messageReport),MessageReportDto.class);
     }
 
     @Override

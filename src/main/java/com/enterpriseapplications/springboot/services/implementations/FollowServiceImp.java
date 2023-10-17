@@ -76,8 +76,7 @@ public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implem
         Follow follow = new Follow();
         follow.setFollower(requiredUser);
         follow.setFollowed(followed);
-        this.followDao.save(follow);
-        return this.modelMapper.map(follow,FollowDto.class);
+        return this.modelMapper.map(this.followDao.save(follow),FollowDto.class);
     }
 
     @Override
