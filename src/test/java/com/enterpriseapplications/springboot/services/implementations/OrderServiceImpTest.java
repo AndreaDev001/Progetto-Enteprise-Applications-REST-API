@@ -71,6 +71,7 @@ class OrderServiceImpTest extends GenericTestImp<Order,OrderDto> {
         given(this.orderDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<OrderDto> orders = this.orderServiceImp.getOrders(pageRequest);
         Assert.assertTrue(compare(elements,orders.getContent().stream().toList()));
+        Assert.assertTrue(validPage(orders,20,0,1,2));
     }
 
     @Test

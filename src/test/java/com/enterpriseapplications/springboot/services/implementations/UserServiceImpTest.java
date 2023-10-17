@@ -89,6 +89,7 @@ class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
         given(this.userDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<UserDetailsDto> pagedModel = this.userServiceImp.getUsers(pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test

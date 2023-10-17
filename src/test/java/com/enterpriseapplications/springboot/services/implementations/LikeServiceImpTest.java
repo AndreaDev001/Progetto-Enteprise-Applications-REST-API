@@ -61,7 +61,8 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.likeDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<LikeDto> pagedModel = this.likeServiceImp.getLikes(pageRequest);
-        compare(elements,pagedModel.getContent().stream().toList());
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -70,7 +71,8 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         Product product = Product.builder().id(UUID.randomUUID()).build();
         given(this.likeDao.getLikesByProduct(product.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<LikeDto> pagedModel = this.likeServiceImp.getLikesByProduct(product.getId(),pageRequest);
-        compare(elements,pagedModel.getContent().stream().toList());
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -79,16 +81,21 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         User user = User.builder().id(UUID.randomUUID()).build();
         given(this.likeDao.getLikesByUser(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<LikeDto> pagedModel = this.likeServiceImp.getLikesByUser(user.getId(),pageRequest);
-        compare(elements,pagedModel.getContent().stream().toList());
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
     public void getLike() {
-        User user = User.builder().id(UUID.randomUUID()).build();
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
         Product product = Product.builder().id(UUID.randomUUID()).build();
-        given(this.likeDao.getLikeByProductAndUser(user.getId(),product.getId())).willReturn(Optional.of(firstElement));
-        LikeDto likeDto = this.likeServiceImp.getLike(user.getId(),product.getId());
-        valid(firstElement,likeDto);
+        given(this.likeDao.getLikeByProductAndUser(firstUser.getId(),product.getId())).willReturn(Optional.of(firstElement));
+        given(this.likeDao.getLikeByProductAndUser(secondUser.getId(),product.getId())).willReturn(Optional.of(secondElement));
+        LikeDto firstLike = this.likeServiceImp.getLike(firstUser.getId(),product.getId());
+        LikeDto secondLike = this.likeServiceImp.getLike(secondUser.getId(),product.getId());
+        Assert.assertTrue(valid(firstElement,firstLike));
+        Assert.assertTrue(valid(secondElement,secondLike));
     }
 
     @Test
@@ -99,8 +106,8 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         given(this.likeDao.findById(secondRandomID)).willReturn(Optional.of(secondElement));
         LikeDto firstLike = this.likeServiceImp.getLike(firstRandomID);
         LikeDto secondLike = this.likeServiceImp.getLike(secondRandomID);
-        valid(firstElement,firstLike);
-        valid(secondElement,secondLike);
+        Assert.assertTrue(valid(firstElement,firstLike));
+        Assert.assertTrue(valid(secondElement,secondLike));
     }
 
     @Override

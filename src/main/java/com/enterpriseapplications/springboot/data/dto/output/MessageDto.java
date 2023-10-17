@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.output;
 
 
+import com.enterpriseapplications.springboot.data.dto.output.refs.ConversationRef;
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
@@ -21,5 +22,6 @@ public class MessageDto extends GenericOutput<MessageDto>
     private UserRef sender;
     private UserRef receiver;
     private String text;
+    private ConversationRef conversatio;
     private LocalDateTime createdDate;
 }

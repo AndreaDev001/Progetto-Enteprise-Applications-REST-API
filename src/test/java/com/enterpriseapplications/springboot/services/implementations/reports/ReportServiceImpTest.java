@@ -93,6 +93,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         given(this.reportDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReportDto> reports = this.reportServiceImp.getReports(pageRequest);
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test
@@ -102,6 +103,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         given(this.reportDao.getCreatedReports(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReportDto> reports =  this.reportServiceImp.getCreatedReports(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test
@@ -111,6 +113,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         given(this.reportDao.getReceivedReports(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReportDto> reports = this.reportServiceImp.getReceivedReports(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test
@@ -120,6 +123,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         given(this.reportDao.getReportsByReason(ReportReason.RACISM,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReportDto> reports = this.reportServiceImp.getReportsByReason(ReportReason.RACISM,pageRequest);
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test
@@ -128,6 +132,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         given(this.reportDao.getReportsByType(ReportType.USER,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReportDto> reports = this.reportServiceImp.getReportsByType(ReportType.USER,pageRequest);
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test

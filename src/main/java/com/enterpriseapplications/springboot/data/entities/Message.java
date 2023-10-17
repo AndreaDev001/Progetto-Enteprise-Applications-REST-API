@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Table(name = "MESSAGES")
+@Table(name = "MESSAGES",uniqueConstraints = {@UniqueConstraint(columnNames = {"SENDER","RECEIVER","CREATED_DATE"})})
 @Entity
 @EntityListeners(value = {AuditingEntityListener.class})
 @Data
@@ -38,7 +38,7 @@ public class Message implements OwnableEntity
     @JoinColumn(name = "RECEIVER")
     private User receiver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Conversation conversation;
 
     @CreatedDate

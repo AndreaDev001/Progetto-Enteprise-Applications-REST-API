@@ -76,6 +76,7 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         given(this.paymentMethodDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethods(pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -86,6 +87,7 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         given(this.paymentMethodDao.getPaymentMethodsByBrand(user.getId(),brand,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByBrand(user.getId(),brand,pageRequest);
         Assert.assertTrue(compare(elements, pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -96,6 +98,7 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         given(this.paymentMethodDao.getPaymentMethodsByCountry(user.getId(),country,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByCountry(user.getId(),country,pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -106,5 +109,6 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         given(this.paymentMethodDao.getPaymentMethodsByHolderName(user.getId(),holderName,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByHolderName(user.getId(),holderName,pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }

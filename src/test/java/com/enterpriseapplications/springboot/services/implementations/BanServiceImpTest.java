@@ -71,6 +71,7 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
         given(this.banDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<BanDto> bans = this.banServiceImp.getBans(pageRequest);
         Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
+        Assert.assertTrue(validPage(bans,20,0,1,2));
     }
 
     @Test
@@ -80,10 +81,19 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
         given(this.banDao.getCreatedBans(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<BanDto> bans = this.banServiceImp.getCreatedBans(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
+        Assert.assertTrue(validPage(bans,20,0,1,2));
     }
 
     @Test
     void getCurrentBan() {
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
+        given(this.banDao.findBan(firstUser.getId())).willReturn(Optional.of(firstElement));
+        given(this.banDao.findBan(secondUser.getId())).willReturn(Optional.of(secondElement));
+        BanDto firstBan = this.banServiceImp.getCurrentBan(firstUser.getId());
+        BanDto secondBan = this.banServiceImp.getCurrentBan(secondUser.getId());
+        Assert.assertTrue(valid(firstElement,firstBan));
+        Assert.assertTrue(valid(secondElement,secondBan));
     }
 
     @Test
@@ -92,6 +102,7 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
         given(this.banDao.getBansByReason(ReportReason.RACISM,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<BanDto> bans = this.banServiceImp.getBansByReason(ReportReason.RACISM,pageRequest);
         Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
+        Assert.assertTrue(validPage(bans,20,0,1,2));
     }
 
     @Test

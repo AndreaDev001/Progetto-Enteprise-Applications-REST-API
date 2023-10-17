@@ -34,7 +34,7 @@ public abstract class GenericTestImp<T,U extends GenericOutput<?>>
     protected abstract boolean valid(T entity, U dto);
 
     @SneakyThrows
-    boolean validPage(PagedModel<U> pagedModel,long size,long page,long totalPages,long totalElements) {
+    protected boolean validPage(PagedModel<U> pagedModel,long size,long page,long totalPages,long totalElements) {
         Assert.assertNotNull(pagedModel);;
         Assert.assertEquals(pagedModel.getMetadata().getSize(),size);
         Assert.assertEquals(pagedModel.getMetadata().getNumber(),page);

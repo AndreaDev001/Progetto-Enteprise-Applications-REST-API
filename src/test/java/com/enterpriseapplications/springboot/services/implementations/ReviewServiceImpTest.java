@@ -80,6 +80,7 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
         given(this.reviewDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.getReviews(pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -89,6 +90,7 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
         given(this.reviewDao.findAllWrittenReviews(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.findAllWrittenReviews(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
 
@@ -99,11 +101,19 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
         given(this.reviewDao.findAllReviewsReceived(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReviewDto> pagedModel = this.reviewServiceImp.findAllReceivedReviews(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
     void findReview() {
-
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
+        given(this.reviewDao.findReview(firstUser.getId(),secondUser.getId())).willReturn(Optional.of(firstElement));
+        given(this.reviewDao.findReview(secondUser.getId(),firstUser.getId())).willReturn(Optional.of(secondElement));
+        ReviewDto firstReview = this.reviewServiceImp.findReview(firstUser.getId(),secondUser.getId());
+        ReviewDto secondReview = this.reviewServiceImp.findReview(secondUser.getId(),firstUser.getId());
+        Assert.assertTrue(valid(firstElement,firstReview));
+        Assert.assertTrue(valid(secondElement,secondReview));
     }
 
     @Test

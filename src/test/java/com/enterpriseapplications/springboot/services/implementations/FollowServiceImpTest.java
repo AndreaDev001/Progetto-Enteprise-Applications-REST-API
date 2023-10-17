@@ -66,6 +66,7 @@ class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
         given(this.followDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<FollowDto> pagedModel = this.followServiceImp.getFollows(pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -75,6 +76,7 @@ class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
         given(this.followDao.findAllFollowers(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<FollowDto> pagedModel = this.followServiceImp.findAllFollowers(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
@@ -84,6 +86,7 @@ class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
         given(this.followDao.findAllFollows(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<FollowDto> pagedModel = this.followServiceImp.findAllFollowed(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test

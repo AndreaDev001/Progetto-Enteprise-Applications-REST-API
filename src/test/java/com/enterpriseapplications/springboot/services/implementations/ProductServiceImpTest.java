@@ -82,6 +82,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         given(this.productDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+        Assert.assertTrue(validPage(products,20,0,1,2));
     }
 
     @Test
@@ -91,6 +92,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         given(this.productDao.getProductsBySeller(user.getId(),ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getProductsBySeller(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+        Assert.assertTrue(validPage(products,20,0,1,2));
     }
 
     @Test
@@ -109,6 +111,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         given(this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getRecentlyCreatedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+        Assert.assertTrue(validPage(products,20,0,1,2));
     }
 
     @Test
@@ -117,14 +120,20 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         given(this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getMostLikedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+        Assert.assertTrue(validPage(products,20,0,1,2));
+    }
+
+    @Test
+    void getMostExpensiveProducts() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> products = this.productServiceImp.getMostExpensiveProducts(pageRequest);
+        Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
+        Assert.assertTrue(validPage(products,20,0,1,2));
     }
 
     @Test
     void getProductsBySpec() {
 
-    }
-
-    @Test
-    void updateProduct() {
     }
 }

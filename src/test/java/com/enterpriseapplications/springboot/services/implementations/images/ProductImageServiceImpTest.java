@@ -76,6 +76,7 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
         given(this.productImageDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductImageDto> productImages = this.productImageServiceImp.getImages(pageRequest);
         Assert.assertTrue(compare(elements,productImages.getContent().stream().toList()));
+        Assert.assertTrue(validPage(productImages,20,0,1,2));
     }
 
     @Test

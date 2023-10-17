@@ -81,6 +81,7 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
         given(this.productReportDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductReportDto> productReports = this.productReportServiceImp.getReports(pageRequest);
         Assert.assertTrue(compare(elements,productReports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(productReports,20,0,1,2));
     }
 
     @Test
@@ -90,6 +91,7 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
         given(this.productReportDao.getProductReports(product.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductReportDto> productReports = this.productReportServiceImp.getReports(product.getId(),pageRequest);
         Assert.assertTrue(compare(elements,productReports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(productReports,20,0,1,2));
     }
     @Test
     void updateProductReport() {

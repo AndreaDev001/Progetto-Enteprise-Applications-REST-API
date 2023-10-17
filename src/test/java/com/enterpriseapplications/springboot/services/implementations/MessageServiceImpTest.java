@@ -77,6 +77,7 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
         given(this.messageDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<MessageDto> messages = this.messageServiceImp.getMessages(pageRequest);
         Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
+        Assert.assertTrue(validPage(messages,20,0,1,2));
     }
 
     @Test
@@ -86,6 +87,7 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
         given(this.messageDao.getSentMessages(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<MessageDto> messages = this.messageServiceImp.getSentMessages(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
+        Assert.assertTrue(validPage(messages,20,0,1,2));
     }
 
     @Test
@@ -95,6 +97,7 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
         given(this.messageDao.getReceivedMessages(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<MessageDto> messages = this.messageServiceImp.getReceivedMessages(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
+        Assert.assertTrue(validPage(messages,20,0,1,2));
     }
 
     @Test
@@ -105,6 +108,7 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
         given(this.messageDao.getMessagesBetween(sender.getId(),receiver.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<MessageDto> messages = this.messageServiceImp.getMessagesBetween(sender.getId(),receiver.getId(),pageRequest);
         Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
+        Assert.assertTrue(validPage(messages,20,0,1,2));
     }
 
     @Test

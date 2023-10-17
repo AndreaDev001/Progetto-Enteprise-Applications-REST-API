@@ -78,6 +78,7 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
         given(this.replyDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReplyDto> replies = this.replyServiceImp.getReplies(pageRequest);
         Assert.assertTrue(compare(elements,replies.getContent().stream().toList()));
+        Assert.assertTrue(validPage(replies,20,0,1,2));
     }
 
     @Test
@@ -105,5 +106,6 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
         given(this.replyDao.findByWriter(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ReplyDto> pagedModel = this.replyServiceImp.getWrittenReplies(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }
