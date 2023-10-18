@@ -22,6 +22,7 @@ public interface ProductService
     PagedModel<ProductDto> getRecentlyCreatedProducts(Pageable pageable);
     PagedModel<ProductDto> getMostLikedProducts(Pageable pageable);
     PagedModel<ProductDto> getMostExpensiveProducts(Pageable pageable);
+    PagedModel<ProductDto> getSimilarProducts(UUID productID,Pageable pageable);
     ProductDto getProductDetails(UUID productID);
     ProductDto createProduct(CreateProductDto createProductDto);
     ProductDto updateProduct(UpdateProductDto updateProductDto);

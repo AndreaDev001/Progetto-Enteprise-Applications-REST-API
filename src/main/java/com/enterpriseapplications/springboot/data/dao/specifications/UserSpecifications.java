@@ -49,6 +49,14 @@ public class UserSpecifications
         private Integer maxRating;
         private List<OrderType> orderTypes;
         private SpecificationsUtils.OrderMode orderMode;
+
+        public Filter(User user) {
+            this.email = user.getEmail();
+            this.username = user.getUsername();
+            this.name = user.getName();
+            this.surname = user.getSurname();
+            this.gender = user.getGender();
+        }
     }
     public static Specification<User> withFilter(Filter filter) {
         return (Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {

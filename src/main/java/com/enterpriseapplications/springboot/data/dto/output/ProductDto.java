@@ -49,6 +49,5 @@ public class ProductDto extends GenericOutput<ProductDto>
         this.add(linkTo(methodOn(ProductImageController.class).getFirstImage(id)).withRel("images-first").withName("first"));
         this.add(linkTo(methodOn(ProductImageController.class).getLastImage(id)).withRel("images-last").withName("last"));
         this.add(linkTo(methodOn(LikeController.class).getLikesByProduct(id,paginationRequest)).slash(paginationQuery).withRel("received_likes").withName("receivedLikes"));
-        this.addLinks(linkTo(ConversationController.class).slash(paginationQuery).withRel("conversations").withName("conversations"));
     }
 }

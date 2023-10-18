@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +76,12 @@ public class BanController
     @GetMapping("private/banned/{userID}/active")
     public ResponseEntity<BanDto> findBan(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.banService.getCurrentBan(userID));
+    }
+
+    @GetMapping("/private/{banID}/similar")
+    public ResponseEntity<PagedModel<BanDto>> getSimilarBans(@PathVariable("banID") UUID banID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<BanDto> bans = this.banService.getSimilarBans(banID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(bans);
     }
 
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")

@@ -87,6 +87,16 @@ public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> imple
         return this.pagedResourcesAssembler.toModel(users,modelAssembler);
     }
 
+
+    @Override
+    public PagedModel<UserDetailsDto> getSimilarUsers(UUID userID, Pageable pageable) {
+        User requiredUser = this.userDao.findById(userID).orElseThrow();
+        UserSpecifications.Filter filter = new UserSpecifications.Filter(requiredUser);
+        Page<User> users = this.userDao.findAll(UserSpecifications.withFilter(filter),pageable);
+        users.getContent().removeIf((value) -> value.getId().equals(userID));
+        return this.pagedResourcesAssembler.toModel(users,modelAssembler);
+    }
+
     @Override
     public Gender[] getGenders() {
         return Gender.values();

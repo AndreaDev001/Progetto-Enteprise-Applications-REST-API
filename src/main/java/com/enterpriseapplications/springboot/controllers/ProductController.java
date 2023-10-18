@@ -47,6 +47,12 @@ public class ProductController
         return ResponseEntity.ok(this.productService.getProductDetails(productID));
     }
 
+    @GetMapping("/public/{productID}/similar")
+    public ResponseEntity<PagedModel<ProductDto>> getSimilarProducts(@PathVariable("productID") UUID productID,@Valid @ParameterObject PaginationRequest paginationRequest) {
+        PagedModel<ProductDto> products = this.productService.getSimilarProducts(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/public/seller/{sellerID}")
     public ResponseEntity<PagedModel<ProductDto>> getProducts(@PathVariable("sellerID") UUID sellerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductDto> products = this.productService.getProductsBySeller(sellerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

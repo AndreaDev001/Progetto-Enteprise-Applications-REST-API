@@ -50,6 +50,14 @@ public class ProductSpecifications
         private Long maxPrice;
         private List<OrderType> orderTypes;
         private SpecificationsUtils.OrderMode orderMode;
+
+        public Filter(Product product) {
+            this.primaryCat = product.getCategory().getPrimaryCat();
+            this.secondaryCat = product.getCategory().getSecondaryCat();
+            this.tertiaryCat = product.getCategory().getTertiaryCat();
+            this.name = product.getName();
+            this.description = product.getDescription();
+        }
     }
 
     public static Specification<Product> withFilter(Filter filter) {

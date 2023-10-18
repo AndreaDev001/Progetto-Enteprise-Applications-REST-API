@@ -24,6 +24,7 @@ public interface BanService
     PagedModel<BanDto> getReceivedBans(UUID userID,Pageable pageable);
     PagedModel<BanDto> getBansByReason(ReportReason reason,Pageable pageable);
     PagedModel<BanDto> getBansBySpec(Specification<Ban> specification,Pageable pageable);
+    PagedModel<BanDto> getSimilarBans(UUID banID,Pageable pageable);
     void handleExpiredBans();
     void deleteExpiredBans();
     BanDto getBan(UUID banID);

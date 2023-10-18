@@ -92,6 +92,15 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
     }
 
     @Override
+    public PagedModel<ReportDto> getSimilarReports(UUID reportID, Pageable pageable) {
+        Report requiredReport = this.reportDao.findById(reportID).orElseThrow();
+        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(requiredReport);
+        Page<Report> reports = this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageable);
+        reports.getContent().removeIf(value -> value.getId().equals(requiredReport.getId()));
+        return this.pagedResourcesAssembler.toModel(reports,this.modelAssembler);
+    }
+
+    @Override
     @CacheEvict(value = {CacheConfig.CACHE_SEARCH_REPORTS,CacheConfig.CACHE_ALL_REPORTS},allEntries = true)
     @Transactional
     public ReportDto createReport(CreateReportDto createReportDto,UUID reportedID) {

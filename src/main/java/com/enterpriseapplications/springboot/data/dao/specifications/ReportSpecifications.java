@@ -47,6 +47,15 @@ public class ReportSpecifications
         private ReportType type;
         private List<OrderType> orderTypes;
         private SpecificationsUtils.OrderMode orderMode;
+
+        public Filter(Report report) {
+            this.reportedEmail = report.getReported().getEmail();
+            this.reporterEmail = report.getReporter().getEmail();
+            this.reporterUsername = report.getReporter().getUsername();
+            this.reportedUsername = report.getReported().getUsername();
+            this.description = report.getDescription();
+            this.reason = report.getReason();
+        }
     }
     public static Specification<Report> withFilter(Filter filter) {
         return (Root<Report> root, CriteriaQuery<?> criteriaQuery,CriteriaBuilder criteriaBuilder) -> {

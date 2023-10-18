@@ -47,6 +47,15 @@ public class BanSpecifications
         private Boolean expired;
         private List<OrderType> orderTypes;
         private SpecificationsUtils.OrderMode orderMode;
+
+        public Filter(Ban ban) {
+            this.bannerEmail = ban.getBanner().getEmail();
+            this.bannedEmail = ban.getBanned().getEmail();
+            this.bannedUsername = ban.getBanned().getUsername();
+            this.bannerUsername = ban.getBanner().getUsername();
+            this.reason = ban.getReason();
+            this.expired = ban.isExpired();
+        }
     }
 
     public static Specification<Ban> withFilter(Filter filter) {

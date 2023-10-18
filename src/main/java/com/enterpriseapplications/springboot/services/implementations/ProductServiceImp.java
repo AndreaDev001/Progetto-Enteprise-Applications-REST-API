@@ -126,6 +126,15 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     }
 
     @Override
+    public PagedModel<ProductDto> getSimilarProducts(UUID productID, Pageable pageable) {
+        Product requiredProduct = this.productDao.findById(productID).orElseThrow();
+        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(requiredProduct);
+        Page<Product> products = this.productDao.findAll(ProductSpecifications.withFilter(filter),pageable);
+        products.getContent().removeIf(value -> value.getId().equals(requiredProduct.getId()));
+        return this.pagedResourcesAssembler.toModel(products,this.modelAssembler);
+    }
+
+    @Override
     @CacheEvict(value = {CacheConfig.CACHE_SEARCH_PRODUCTS,CacheConfig.CACHE_ALL_PRODUCTS},allEntries = true)
     @Transactional
     public ProductDto updateProduct(UpdateProductDto updateProductDto) {

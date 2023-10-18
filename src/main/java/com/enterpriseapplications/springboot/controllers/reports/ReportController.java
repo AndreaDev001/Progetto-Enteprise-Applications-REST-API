@@ -60,6 +60,13 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
+    @GetMapping("/private/{reportID}/similar")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    public ResponseEntity<PagedModel<ReportDto>> getSimilarReports(@PathVariable("reportID") UUID reportID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ReportDto> reports = this.reportService.getSimilarReports(reportID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(reports);
+    }
+
     @GetMapping("/private/type/{type}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReportsByType(@PathVariable("type") ReportType type,@ParameterObject @Valid PaginationRequest paginationRequest) {

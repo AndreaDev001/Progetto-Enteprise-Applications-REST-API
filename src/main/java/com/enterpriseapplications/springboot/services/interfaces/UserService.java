@@ -18,6 +18,7 @@ public interface UserService
     UserDetailsDto updateUser(UpdateUserDto updateUserDto);
     PagedModel<UserDetailsDto> getUsers(Pageable pageable);
     PagedModel<UserDetailsDto> getUsersBySpec(Specification<User> specification, Pageable pageable);
+    PagedModel<UserDetailsDto> getSimilarUsers(UUID userID,Pageable pageable);
     Gender[] getGenders();
     UserVisibility[] getVisibilities();
     UserSpecifications.OrderType[] getOrderTypes();

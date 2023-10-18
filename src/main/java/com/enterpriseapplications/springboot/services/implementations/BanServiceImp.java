@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.BanSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
@@ -119,6 +120,15 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
     public PagedModel<BanDto> getBansBySpec(Specification<Ban> specification, Pageable pageable) {
         Page<Ban> bans = this.banDao.findAll(specification, pageable);
         return this.pagedResourcesAssembler.toModel(bans,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<BanDto> getSimilarBans(UUID banID, Pageable pageable) {
+        Ban requiredBan = this.banDao.findById(banID).orElseThrow();
+        BanSpecifications.Filter filter = new BanSpecifications.Filter(requiredBan);
+        Page<Ban> bans = this.banDao.findAll(BanSpecifications.withFilter(filter),pageable);
+        bans.getContent().removeIf(value -> value.getId().equals(requiredBan.getId()));
+        return this.pagedResourcesAssembler.toModel(bans,this.modelAssembler);
     }
 
     @Override
