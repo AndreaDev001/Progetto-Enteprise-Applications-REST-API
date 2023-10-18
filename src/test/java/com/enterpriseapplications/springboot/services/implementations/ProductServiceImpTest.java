@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -132,6 +133,17 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         Assert.assertTrue(validPage(products,20,0,1,2));
     }
 
+    @Test
+    void getSimilarProducts() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(product);
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
+        given(this.productDao.findAll(ProductSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> pagedModel = this.productServiceImp.getSimilarProducts(product.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
     @Test
     void getProductsBySpec() {
 

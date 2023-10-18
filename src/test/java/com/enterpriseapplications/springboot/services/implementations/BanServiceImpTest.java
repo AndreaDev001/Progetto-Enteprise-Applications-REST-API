@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.BanDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.BanSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateBanDto;
 import com.enterpriseapplications.springboot.data.dto.output.BanDto;
 import com.enterpriseapplications.springboot.data.entities.Ban;
@@ -111,6 +112,18 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
 
     @Test
     void getBansBySpec() {
+    }
+
+    @Test
+    void getSimilarBans() {
+        Ban ban = Ban.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        BanSpecifications.Filter filter = new BanSpecifications.Filter(ban);
+        given(this.banDao.findById(ban.getId())).willReturn(Optional.of(ban));
+        given(this.banDao.findAll(BanSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> bans = this.banServiceImp.getSimilarBans(ban.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,bans.getContent().stream().toList()));
+        Assert.assertTrue(validPage(bans,20,0,1,2));
     }
 
     @Test

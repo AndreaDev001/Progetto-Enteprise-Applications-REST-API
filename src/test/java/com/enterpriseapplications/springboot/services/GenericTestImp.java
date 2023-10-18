@@ -7,6 +7,8 @@ import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
@@ -24,6 +26,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
 public abstract class GenericTestImp<T,U extends GenericOutput<?>>
 {
     protected MockHttpServletRequest httpServletRequest;

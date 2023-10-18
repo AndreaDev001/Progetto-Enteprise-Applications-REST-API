@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 
+import java.rmi.server.UID;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -139,6 +141,18 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
 
     @Test
     void getReportsBySpec() {
+    }
+
+    @Test
+    void getSimilarReports() {
+        Report report = Report.builder().id(UUID.randomUUID()).build();
+        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(report);
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.findById(report.getId())).willReturn(Optional.of(report));
+        given(this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getSimilarReports(report.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test

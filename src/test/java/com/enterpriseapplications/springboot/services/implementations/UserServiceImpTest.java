@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
@@ -13,8 +14,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,6 +82,18 @@ class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
         Assert.assertTrue(valid(secondElement,secondDetails));
     }
 
+    @Test
+    void getSimilarUsers() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        UserSpecifications.Filter filter = new UserSpecifications.Filter(user);
+        PageRequest pageRequest = PageRequest.of(0,20);
+        Specification<User> specification = UserSpecifications.withFilter(filter);
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.userDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<UserDetailsDto> pagedModel = this.userServiceImp.getSimilarUsers(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
     @Test
     void updateUser() {
 
