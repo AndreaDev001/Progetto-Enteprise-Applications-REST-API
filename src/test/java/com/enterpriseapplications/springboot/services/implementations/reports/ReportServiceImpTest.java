@@ -145,7 +145,9 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
 
     @Test
     void getSimilarReports() {
-        Report report = Report.builder().id(UUID.randomUUID()).build();
+        User reporter = User.builder().id(UUID.randomUUID()).build();
+        User reported = User.builder().id(UUID.randomUUID()).build();
+        Report report = Report.builder().id(UUID.randomUUID()).reporter(reporter).reported(reported).description("Description").reason(ReportReason.RACISM).build();
         ReportSpecifications.Filter filter = new ReportSpecifications.Filter(report);
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.reportDao.findById(report.getId())).willReturn(Optional.of(report));

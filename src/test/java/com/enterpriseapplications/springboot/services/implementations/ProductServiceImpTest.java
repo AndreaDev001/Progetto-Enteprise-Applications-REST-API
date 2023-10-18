@@ -135,7 +135,9 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
 
     @Test
     void getSimilarProducts() {
-        Product product = Product.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).name("Name").description("Description").build();
+        Category category = Category.builder().id(UUID.randomUUID()).primaryCat("Primary").secondaryCat("Secondary").tertiaryCat("Tertiary").build();
+        product.setCategory(category);
         ProductSpecifications.Filter filter = new ProductSpecifications.Filter(product);
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));

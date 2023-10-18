@@ -57,6 +57,7 @@ public class ProductSpecifications
             this.tertiaryCat = product.getCategory().getTertiaryCat();
             this.name = product.getName();
             this.description = product.getDescription();
+            this.condition = product.getCondition();
         }
     }
 

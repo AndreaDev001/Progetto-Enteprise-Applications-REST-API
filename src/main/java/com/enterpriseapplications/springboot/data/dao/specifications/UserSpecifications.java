@@ -53,8 +53,10 @@ public class UserSpecifications
         public Filter(User user) {
             this.email = user.getEmail();
             this.username = user.getUsername();
-            this.name = user.getName();
-            this.surname = user.getSurname();
+            if(user.getName() != null)
+                this.name = user.getName();
+            if(user.getSurname() != null)
+                 this.surname = user.getSurname();
             this.gender = user.getGender();
         }
     }

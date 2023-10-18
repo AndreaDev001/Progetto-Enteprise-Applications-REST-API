@@ -116,7 +116,9 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
 
     @Test
     void getSimilarBans() {
-        Ban ban = Ban.builder().id(UUID.randomUUID()).build();
+        User banned = User.builder().id(UUID.randomUUID()).build();
+        User banner = User.builder().id(UUID.randomUUID()).build();
+        Ban ban = Ban.builder().id(UUID.randomUUID()).description("description").banner(banner).banned(banned).expired(false).reason(ReportReason.RACISM).build();
         PageRequest pageRequest = PageRequest.of(0,20);
         BanSpecifications.Filter filter = new BanSpecifications.Filter(ban);
         given(this.banDao.findById(ban.getId())).willReturn(Optional.of(ban));
