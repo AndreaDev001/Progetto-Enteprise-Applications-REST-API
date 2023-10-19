@@ -17,6 +17,8 @@ public interface OfferService
 {
     OfferDto getOffer(UUID offerID);
     PagedModel<OfferDto> getOffers(Pageable pageable);
+    PagedModel<OfferDto> getCreatedOffers(UUID userID,Pageable pageable);
+    PagedModel<OfferDto> getReceivedOffers(UUID userID,Pageable pageable);
     PagedModel<OfferDto> getOffersByStatus(OfferStatus offerStatus, Pageable pageable);
     PagedModel<OfferDto> getOffersByExpired(boolean expired,Pageable pageable);
     PagedModel<OfferDto> getOffersByBuyerID(UUID buyerID, Pageable pageable);

@@ -71,6 +71,12 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
     }
 
     @Override
+    public List<ConversationDto> getConversations(UUID userID) {
+        List<Conversation> conversations = this.conversationDao.getConversations(userID);
+        return conversations.stream().map(conversation -> this.modelMapper.map(conversation,ConversationDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
     public PagedModel<ConversationDto> getConversationByProduct(UUID productID, Pageable pageable) {
         Page<Conversation> conversations = this.conversationDao.getConversationByProduct(productID,pageable);
         return this.pagedResourcesAssembler.toModel(conversations,modelAssembler);

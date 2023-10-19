@@ -49,6 +49,11 @@ public class ConversationController
         return ResponseEntity.ok(this.conversationService.getConversationBySecond(userID));
     }
 
+    @GetMapping("/public/{userID}")
+    public ResponseEntity<List<ConversationDto>> getConversations(@PathVariable("userID") UUID userID) {
+        return ResponseEntity.ok(this.conversationService.getConversations(userID));
+    }
+
     @GetMapping("/private/product/{productID}")
     public ResponseEntity<PagedModel<ConversationDto>> getConversations(@PathVariable("productID") UUID productID,@Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<ConversationDto> conversations = this.conversationService.getConversationByProduct(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

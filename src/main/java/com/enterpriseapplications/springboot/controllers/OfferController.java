@@ -10,6 +10,7 @@ import com.enterpriseapplications.springboot.services.interfaces.OfferService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
@@ -63,10 +64,15 @@ public class OfferController
         PagedModel<OfferDto> offers = this.offerService.getOffersByExpired(expired,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @GetMapping("/private/buyer/{userID}")
-    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<PagedModel<OfferDto>> getOffersByBuyerID(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        PagedModel<OfferDto> offers = this.offerService.getOffersByBuyerID(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+    @GetMapping("/public/{userID}/created")
+    public ResponseEntity<PagedModel<OfferDto>> getCreatedOffers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<OfferDto> offers = this.offerService.getCreatedOffers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(offers);
+    }
+
+    @GetMapping("/public/{userID}/received")
+    public ResponseEntity<PagedModel<OfferDto>> getReceivedOffers(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<OfferDto> offers = this.offerService.getReceivedOffers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
     @GetMapping("/private/product/{productID}")

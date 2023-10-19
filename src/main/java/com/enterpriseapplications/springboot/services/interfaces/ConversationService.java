@@ -16,6 +16,7 @@ public interface ConversationService
     List<ConversationDto> getConversationByFirst(UUID id);
     List<ConversationDto> getConversationBySecond(UUID id);
     List<ConversationDto> getConversation(UUID first,UUID second);
+    List<ConversationDto> getConversations(UUID userID);
     PagedModel<ConversationDto> getConversationByProduct(UUID productID, Pageable pageable);
     ConversationDto createConversation(CreateConversationDto createConversationDto);
     void deleteConversation(UUID id);

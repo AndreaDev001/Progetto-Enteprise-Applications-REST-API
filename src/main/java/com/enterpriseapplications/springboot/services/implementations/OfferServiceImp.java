@@ -17,6 +17,7 @@ import com.enterpriseapplications.springboot.services.interfaces.OfferService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -64,6 +65,18 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
     @Override
     public PagedModel<OfferDto> getOffers(Pageable pageable) {
         Page<Offer> offers = this.offerDao.findAll(pageable);
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<OfferDto> getCreatedOffers(UUID userID, Pageable pageable) {
+        Page<Offer> offers = this.offerDao.getCreatedOffers(userID, pageable);
+        return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<OfferDto> getReceivedOffers(UUID userID, Pageable pageable) {
+        Page<Offer> offers = this.offerDao.getReceivedOffers(userID,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
     }
 
