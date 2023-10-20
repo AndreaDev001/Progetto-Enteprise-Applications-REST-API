@@ -32,8 +32,7 @@ public class ConversationController
         return ResponseEntity.ok(conversations);
     }
 
-    @GetMapping("/private/{conversationID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
+    @GetMapping("/public/conversation/{conversationID}")
     public ResponseEntity<ConversationDto> getConversation(@PathVariable("conversationID") UUID conversation) {
         return ResponseEntity.ok(this.conversationService.find(conversation));
     }
