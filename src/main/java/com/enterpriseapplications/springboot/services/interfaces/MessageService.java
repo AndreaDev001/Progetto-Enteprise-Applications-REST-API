@@ -14,6 +14,9 @@ public interface MessageService {
     PagedModel<MessageDto> getSentMessages(UUID userID, Pageable pageable);
     PagedModel<MessageDto> getReceivedMessages(UUID userID,Pageable pageable);
     PagedModel<MessageDto> getMessagesBetween(UUID senderID,UUID receiverID,Pageable pageable);
+    PagedModel<MessageDto> getMessages(UUID conversationID,Pageable pageable);
+    MessageDto getLastMessage(UUID conversationID);
+    MessageDto getFirstMessage(UUID conversationID);
     MessageDto createMessage(CreateMessageDto createMessageDto);
     void deleteMessage(UUID messageID);
 }

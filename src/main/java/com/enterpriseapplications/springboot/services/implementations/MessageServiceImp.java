@@ -64,6 +64,22 @@ public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> imp
     }
 
     @Override
+    public PagedModel<MessageDto> getMessages(UUID conversationID, Pageable pageable) {
+        Page<Message> messages = this.messageDao.getMessages(conversationID,pageable);
+        return this.pagedResourcesAssembler.toModel(messages,this.modelAssembler);
+    }
+
+    @Override
+    public MessageDto getLastMessage(UUID conversationID) {
+        return this.modelMapper.map(this.messageDao.getLastMessage(conversationID).orElseThrow(),MessageDto.class);
+    }
+
+    @Override
+    public MessageDto getFirstMessage(UUID conversationID) {
+        return this.modelMapper.map(this.messageDao.getFirstMessage(conversationID).orElseThrow(),MessageDto.class);
+    }
+
+    @Override
     @Transactional
     public MessageDto createMessage(CreateMessageDto createMessageDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();

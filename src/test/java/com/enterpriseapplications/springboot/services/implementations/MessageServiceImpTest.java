@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
+import com.enterpriseapplications.springboot.data.entities.Conversation;
 import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
@@ -103,6 +104,40 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
     }
 
     @Test
+    void getFirstMessage() {
+        Conversation firstConversation = Conversation.builder().id(UUID.randomUUID()).build();
+        Conversation secondConversation = Conversation.builder().id(UUID.randomUUID()).build();
+        given(this.messageDao.getFirstMessage(firstConversation.getId())).willReturn(Optional.of(firstElement));
+        given(this.messageDao.getFirstMessage(secondConversation.getId())).willReturn(Optional.of(secondElement));
+        MessageDto firstMessage = this.messageServiceImp.getFirstMessage(firstConversation.getId());
+        MessageDto secondMessage = this.messageServiceImp.getFirstMessage(secondConversation.getId());
+        Assert.assertTrue(valid(firstElement,firstMessage));
+        Assert.assertTrue(valid(secondElement,secondMessage));
+    }
+
+    @Test
+    void getLastMessage() {
+        Conversation firstConversation = Conversation.builder().id(UUID.randomUUID()).build();
+        Conversation secondConversation = Conversation.builder().id(UUID.randomUUID()).build();
+        given(this.messageDao.getLastMessage(firstConversation.getId())).willReturn(Optional.of(firstElement));
+        given(this.messageDao.getLastMessage(secondConversation.getId())).willReturn(Optional.of(secondElement));
+        MessageDto firstMessage = this.messageServiceImp.getLastMessage(firstConversation.getId());
+        MessageDto secondMessage = this.messageServiceImp.getLastMessage(secondConversation.getId());
+        Assert.assertTrue(valid(firstElement,firstMessage));
+        Assert.assertTrue(valid(secondElement,secondMessage));
+    }
+
+    @Test
+    void getMessagesByConversation() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        Conversation conversation = Conversation.builder().id(UUID.randomUUID()).build();
+        given(this.messageDao.getMessages(conversation.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<MessageDto> pagedModel = this.messageServiceImp.getMessages(conversation.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
     void getMessagesBetween() {
         User sender = User.builder().id(UUID.randomUUID()).build();
         User receiver = User.builder().id(UUID.randomUUID()).build();
@@ -112,6 +147,7 @@ class MessageServiceImpTest extends GenericTestImp<Message,MessageDto> {
         Assert.assertTrue(compare(elements,messages.getContent().stream().toList()));
         Assert.assertTrue(validPage(messages,20,0,1,2));
     }
+
 
     @Test
     void createMessage() {

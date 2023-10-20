@@ -52,6 +52,24 @@ public class MessageController {
         return ResponseEntity.ok(messages);
     }
 
+    @GetMapping("public/conversation/{conversationID}")
+    public ResponseEntity<PagedModel<MessageDto>> getMessages(@PathVariable("conversationID") UUID conversationID,@Valid @ParameterObject PaginationRequest paginationRequest) {
+        PagedModel<MessageDto> messages = this.messageService.getMessages(conversationID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("public/conversation/{conversationID}/first")
+    public ResponseEntity<MessageDto> getFirstMessage(@PathVariable("conversationID") UUID conversationID) {
+        MessageDto messageDto = this.messageService.getFirstMessage(conversationID);
+        return ResponseEntity.ok(messageDto);
+    }
+
+    @GetMapping("public/conversation/{conversationID}/last")
+    public ResponseEntity<MessageDto> getLastMessage(@PathVariable("conversationID") UUID conversationID) {
+        MessageDto messageDto = this.messageService.getLastMessage(conversationID);
+        return ResponseEntity.ok(messageDto);
+    }
+
     @GetMapping("private/{senderID}/{receiverID}/between")
     @PreAuthorize("@permissionHandler.hasAccess(#senderID) or @permissionHandler.hasAccess(#receiverID)")
     public ResponseEntity<PagedModel<MessageDto>> getMessagesBetween(@PathVariable("senderID") UUID senderID,@PathVariable("receiverID") UUID receiverID,@ParameterObject @Valid PaginationRequest paginationRequest) {
