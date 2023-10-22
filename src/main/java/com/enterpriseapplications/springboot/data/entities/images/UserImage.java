@@ -2,10 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.images;
 
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +31,7 @@ public class UserImage extends Image
         this.setOwner(ImageOwner.USER);
         this.setUser(user);
     }
-    @OneToOne(mappedBy = "userImage")
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 }

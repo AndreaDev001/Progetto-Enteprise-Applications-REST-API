@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+
 public class ProductImageServiceImp extends GenericServiceImp<ProductImage,ProductImageDto> implements ProductImageService
 {
     private final ProductDao productDao;
@@ -68,12 +69,17 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
         Product requiredProduct = this.productDao.findById(createProductImageDto.getProductID()).orElseThrow();
         for(MultipartFile multipartFile : createProductImageDto.getFiles()) {
             ProductImage productImage = new ProductImage(requiredProduct,multipartFile);
+            productImage = this.productImageDao.save(productImage);
             ProductImageDto productImageDto = this.modelMapper.map(productImage,ProductImageDto.class);
             productImageDto.addLinks();
-            this.productImageDao.save(productImage);
             results.add(productImageDto);
         }
         return results;
+    }
+
+    @Override
+    public Integer getAmount(UUID productID) {
+        return this.productImageDao.getProductImages(productID).size();
     }
 
     @Override

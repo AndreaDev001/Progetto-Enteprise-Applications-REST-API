@@ -1,14 +1,14 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
-import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.UserImageDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateUserImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
+import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
-import com.enterpriseapplications.springboot.services.implementations.UserServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.UserImageService;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -20,17 +20,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Service
+@Transactional
 public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDto> implements UserImageService
 {
     private final UserImageDao userImageDao;
+    private final UserDao userDao;
 
-    public UserImageServiceImp(UserImageDao userImageDao,ModelMapper modelMapper,PagedResourcesAssembler<UserImage> pagedResourcesAssembler) {
+    public UserImageServiceImp(UserImageDao userImageDao, ModelMapper modelMapper, PagedResourcesAssembler<UserImage> pagedResourcesAssembler, UserDao userDao) {
         super(modelMapper,UserImage.class,UserImageDto.class,pagedResourcesAssembler);
         this.userImageDao = userImageDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -64,11 +68,14 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
     @Transactional
     @SneakyThrows
     public UserImageDto uploadImage(CreateUserImageDto createUserImageDto) {
-        UserImage userImage = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
+        Optional<UserImage> userImageOptional = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName()));
+        UserImage userImage = userImageOptional.orElseGet(UserImage::new);
         userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
         userImage.setName(createUserImageDto.getFile().getOriginalFilename());
         userImage.setType(createUserImageDto.getFile().getContentType());
         userImage.setOwner(ImageOwner.USER);
+        userImage.setUser(requiredUser);
         this.userImageDao.save(userImage);
         return this.modelMapper.map(userImage,UserImageDto.class);
     }

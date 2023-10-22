@@ -50,6 +50,10 @@ public class ProductImageController
         ProductImageDto productImageDto = this.productImageService.getFirstProductImage(productID);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
     }
+    @GetMapping("/public/{productID}/amount")
+    public ResponseEntity<Integer> getAmount(@PathVariable("productID") UUID productID) {
+        return ResponseEntity.ok(this.productImageService.getAmount(productID));
+    }
     @GetMapping("/public/{productID}/last")
     public ResponseEntity<byte[]> getLastImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getLastProductImage(productID);
@@ -66,6 +70,7 @@ public class ProductImageController
         return ResponseEntity.ok(this.productImageService.uploadImages(productImageDto));
     }
     @DeleteMapping("/private/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<Void> deleteProductImages(@PathVariable("productID") UUID productID) {
         this.productImageService.deleteProductImages(productID);
         return ResponseEntity.noContent().build();

@@ -64,18 +64,21 @@ public class OfferController
         PagedModel<OfferDto> offers = this.offerService.getOffersByExpired(expired,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
-    @GetMapping("/public/{userID}/created")
+    @GetMapping("/private/{userID}/created")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<OfferDto>> getCreatedOffers(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getCreatedOffers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("/public/{userID}/received")
+    @GetMapping("/private/{userID}/received")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<OfferDto>> getReceivedOffers(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getReceivedOffers(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
     @GetMapping("/private/product/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByProductID(@PathVariable("productID") UUID productID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductID(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
@@ -95,6 +98,7 @@ public class OfferController
     }
 
     @GetMapping("private/product/{productID}/status/{status}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<PagedModel<OfferDto>> getOffersByProductIDAndStatus(@PathVariable("productID") UUID productID,@PathVariable("status") OfferStatus status,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductIDAndStatus(productID,status,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);

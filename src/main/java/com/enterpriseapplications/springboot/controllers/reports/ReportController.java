@@ -53,8 +53,9 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("/public/spec")
+    @GetMapping("/private/spec")
     @Cacheable(value = CacheConfig.CACHE_SEARCH_REPORTS,key = "{#filter.toString(),#paginationRequest.toString()}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ReportDto>> getReportsBySpec(@ParameterObject @Valid ReportSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ReportDto> reports = this.reportService.getReportsBySpec(ReportSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reports);

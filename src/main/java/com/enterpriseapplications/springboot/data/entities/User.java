@@ -74,7 +74,7 @@ public class User
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
-    @OneToOne(orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToOne(orphanRemoval = true,cascade = CascadeType.ALL,mappedBy = "user")
     private UserImage userImage;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)

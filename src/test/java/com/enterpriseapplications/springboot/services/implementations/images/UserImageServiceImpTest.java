@@ -35,7 +35,7 @@ class UserImageServiceImpTest extends GenericTestImp<UserImage,UserImageDto> {
     @Override
     protected void init() {
         super.init();
-        this.userImageServiceImp = new UserImageServiceImp(userImageDao,modelMapper,pagedResourcesAssembler);
+        this.userImageServiceImp = new UserImageServiceImp(userImageDao,modelMapper,pagedResourcesAssembler, userDao);
         List<Image> images = ImageServiceImpTest.createImages();
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();

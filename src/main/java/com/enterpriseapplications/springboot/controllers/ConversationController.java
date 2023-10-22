@@ -32,10 +32,12 @@ public class ConversationController
         return ResponseEntity.ok(conversations);
     }
 
-    @GetMapping("/public/conversation/{conversationID}")
+    @GetMapping("/private/conversation/{conversationID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@conversationDao,#conversationID)")
     public ResponseEntity<ConversationDto> getConversation(@PathVariable("conversationID") UUID conversation) {
         return ResponseEntity.ok(this.conversationService.find(conversation));
     }
+
     @GetMapping("/private/first/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<List<ConversationDto>> getConversationsByFirst(@PathVariable("userID") UUID userID) {

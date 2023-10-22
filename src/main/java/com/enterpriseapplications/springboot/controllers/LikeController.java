@@ -25,26 +25,31 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<LikeDto>> getLikes(@Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<LikeDto> likes = this.likeService.getLikes(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(likes);
     }
 
-    @GetMapping("/public/like/{userID}/{productID}")
+    @GetMapping("/private/like/{userID}/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<LikeDto> getLike(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.likeService.getLike(userID,productID));
     }
 
-    @GetMapping("/public/{likeID}")
+    @GetMapping("/private/{likeID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@likeDao,#likeID)")
     public ResponseEntity<LikeDto> getLike(@PathVariable("likeID") UUID likeID) {
         return ResponseEntity.ok(this.likeService.getLike(likeID));
     }
-    @GetMapping("/public/user/{userID}")
+    @GetMapping("/private/user/{userID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@likeDao,#userID)")
     public ResponseEntity<PagedModel<LikeDto>> getLikesByUser(@PathVariable("userID") UUID userID, @Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<LikeDto> likes = this.likeService.getLikesByUser(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(likes);
     }
-    @GetMapping("/public/product/{productID}")
+    @GetMapping("/private/product/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<PagedModel<LikeDto>> getLikesByProduct(@PathVariable("productID") UUID productID,@Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<LikeDto> likes = this.likeService.getLikesByProduct(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(likes);
@@ -54,6 +59,7 @@ public class LikeController {
     public ResponseEntity<LikeDto> createLike(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.likeService.createLike(productID));
     }
+
     @DeleteMapping("/private/{likeID}")
     @PreAuthorize("@permissionHandler.hasAccess(@likeDao,#likeID)")
     public ResponseEntity<Void> deleteLike(@PathVariable("likeID") UUID likeID) {

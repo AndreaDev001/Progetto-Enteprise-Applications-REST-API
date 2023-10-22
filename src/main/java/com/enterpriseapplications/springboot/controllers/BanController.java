@@ -66,7 +66,8 @@ public class BanController
     }
 
     @Cacheable(value = CacheConfig.CACHE_SEARCH_BANS,key = "{#filter.toString(),#paginationRequest.toString()}")
-    @GetMapping("/public/spec")
+    @GetMapping("/private/spec")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid BanSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getBansBySpec(BanSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
