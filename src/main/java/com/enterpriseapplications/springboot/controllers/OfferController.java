@@ -4,6 +4,9 @@ package com.enterpriseapplications.springboot.controllers;
 import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferBuyerDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferSellerDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OfferService;
@@ -85,7 +88,6 @@ public class OfferController
     }
 
     @PostMapping("/private")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<OfferDto> createOffer(@RequestBody @Valid CreateOfferDto createOfferDto) {
         return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
     }
@@ -103,6 +105,25 @@ public class OfferController
         PagedModel<OfferDto> offers = this.offerService.getOffersByProductIDAndStatus(productID,status,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(offers);
     }
+
+    @PutMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    public ResponseEntity<OfferDto> updateOffer(@RequestBody @Valid UpdateOfferDto updateOfferDto) {
+        return ResponseEntity.ok(this.offerService.updateOffer(updateOfferDto));
+    }
+
+    @PutMapping("/private/seller")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#updateOfferSellerDto.productID")
+    public ResponseEntity<OfferDto> updateOfferSeller(@RequestBody @Valid UpdateOfferSellerDto updateOfferSellerDto) {
+        return ResponseEntity.ok(this.offerService.updateOfferSeller(updateOfferSellerDto));
+    }
+
+    @PutMapping("/private/buyer")
+    @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#updateOfferBuyerDto.offerID")
+    public ResponseEntity<OfferDto> updateOfferBuyer(@RequestBody @Valid UpdateOfferBuyerDto updateOfferBuyerDto) {
+        return ResponseEntity.ok(this.offerService.updateOfferBuyer(updateOfferBuyerDto));
+    }
+
     @DeleteMapping("private/{offerID}")
     @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#offerID)")
     public ResponseEntity<Void> deleteOffer(@PathVariable("offerID") UUID offerID) {

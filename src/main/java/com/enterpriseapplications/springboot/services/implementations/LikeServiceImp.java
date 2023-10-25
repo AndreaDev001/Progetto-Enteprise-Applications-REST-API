@@ -81,7 +81,8 @@ public class LikeServiceImp extends GenericServiceImp<Like,LikeDto> implements L
         if(user.getId().equals(product.getSeller().getId()))
             throw new InvalidFormat("error.likes.invalidUser");
         Like like = Like.builder().product(product).user(user).build();
-        return this.modelMapper.map(this.likeDao.save(like),LikeDto.class);
+        this.likeDao.save(like);
+        return this.modelMapper.map(like,LikeDto.class);
     }
 
     @Override
@@ -89,5 +90,12 @@ public class LikeServiceImp extends GenericServiceImp<Like,LikeDto> implements L
     public void deleteLike(UUID likeID) {
         this.likeDao.findById(likeID).orElseThrow();
         this.likeDao.deleteById(likeID);
+    }
+
+    @Override
+    public void deleteLikeByProduct(UUID productID) {
+        UUID userID = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        Like like = this.likeDao.getLikeByProductAndUser(userID,productID).orElseThrow();
+        this.likeDao.delete(like);
     }
 }

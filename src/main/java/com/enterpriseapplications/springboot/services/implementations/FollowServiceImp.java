@@ -76,7 +76,8 @@ public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implem
         Follow follow = new Follow();
         follow.setFollower(requiredUser);
         follow.setFollowed(followed);
-        return this.modelMapper.map(this.followDao.save(follow),FollowDto.class);
+        this.followDao.save(follow);
+        return this.modelMapper.map(follow,FollowDto.class);
     }
 
     @Override
@@ -84,5 +85,12 @@ public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implem
     public void deleteFollows(UUID followId) {
         this.followDao.findById(followId);
         this.followDao.deleteById(followId);
+    }
+
+    @Override
+    public void deleteFollowsByFollowed(UUID followedID) {
+        UUID userID = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+        Follow follow = this.followDao.findFollow(userID,followedID).orElseThrow();
+        this.followDao.delete(follow);
     }
 }

@@ -2,15 +2,16 @@ package com.enterpriseapplications.springboot.services.interfaces;
 
 import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferBuyerDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferSellerDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface OfferService
@@ -26,6 +27,9 @@ public interface OfferService
     PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID,OfferStatus status,Pageable pageable);
     PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable);
     OfferDto createOffer(CreateOfferDto createOfferDto);
+    OfferDto updateOffer(UpdateOfferDto updateOfferDto);
+    OfferDto updateOfferBuyer(UpdateOfferBuyerDto updateOfferBuyerDto);
+    OfferDto updateOfferSeller(UpdateOfferSellerDto updateOfferSeller);
     void handleExpiredOffers();
     void deleteExpiredOffers();
     OfferStatus[] getStatuses();

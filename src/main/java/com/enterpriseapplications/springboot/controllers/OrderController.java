@@ -2,6 +2,9 @@ package com.enterpriseapplications.springboot.controllers;
 
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateOrderDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreatePaymentMethodDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.Order;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
@@ -44,6 +47,17 @@ public class OrderController
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
+    }
+
+    @PostMapping("/private")
+    public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid CreateOrderDto createOrderDto) {
+        return ResponseEntity.ok(this.orderService.createOrder(createOrderDto));
+    }
+
+    @PutMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    public ResponseEntity<OrderDto> updateOrder(@RequestBody @Valid UpdateOrderDto updateOrderDto) {
+        return ResponseEntity.ok(this.orderService.updateOrder(updateOrderDto));
     }
 
     @GetMapping("/private/product/{productID}")

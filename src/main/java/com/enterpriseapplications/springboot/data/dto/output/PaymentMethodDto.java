@@ -18,10 +18,9 @@ import java.util.UUID;
 public class PaymentMethodDto extends GenericOutput<PaymentMethodDto>
 {
     private UUID id;
-    private UserRef owner;
+    private UserRef user;
     private String holderName;
     private String number;
-    private String country;
     private LocalDate createdDate;
     private LocalDate expirationDate;
 }

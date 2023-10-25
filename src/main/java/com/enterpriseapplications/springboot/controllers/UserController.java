@@ -60,7 +60,7 @@ public class UserController
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/public")
+    @PutMapping("/private")
     public ResponseEntity<UserDetailsDto> updateUser(@RequestBody @Valid UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(this.userService.updateUser(updateUserDto));
     }

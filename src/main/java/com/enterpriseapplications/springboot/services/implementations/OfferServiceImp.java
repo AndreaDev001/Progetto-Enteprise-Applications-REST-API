@@ -8,6 +8,9 @@ import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferBuyerDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferSellerDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -27,11 +30,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -130,6 +135,59 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         offer.setDescription(createOfferDto.getDescription());
         offer.setPrice(createOfferDto.getPrice());
         return this.modelMapper.map(this.offerDao.save(offer),OfferDto.class);
+    }
+
+    @Override
+    @Transactional
+    public OfferDto updateOffer(UpdateOfferDto updateOfferDto) {
+        Offer requiredOffer = this.offerDao.findById(updateOfferDto.getOfferID()).orElseThrow();
+        if(updateOfferDto.getOfferStatus() != null)
+            requiredOffer.setStatus(updateOfferDto.getOfferStatus());
+        if(updateOfferDto.getDescription() != null)
+            requiredOffer.setDescription(updateOfferDto.getDescription());
+        if(updateOfferDto.getPrice() != null)
+            requiredOffer.setPrice(updateOfferDto.getPrice());
+        if(updateOfferDto.getExpirationDate() != null)
+            requiredOffer.setExpirationDate(updateOfferDto.getExpirationDate());
+        this.offerDao.save(requiredOffer);
+        return this.modelMapper.map(requiredOffer,OfferDto.class);
+    }
+
+    @Override
+    @Transactional
+    public OfferDto updateOfferBuyer(UpdateOfferBuyerDto updateOfferBuyerDto) {
+        Offer requiredOffer = this.offerDao.findById(updateOfferBuyerDto.getOfferID()).orElseThrow();
+        if(updateOfferBuyerDto.getDescription() != null)
+            requiredOffer.setDescription(updateOfferBuyerDto.getDescription());
+        if(updateOfferBuyerDto.getPrice() != null) {
+            if(updateOfferBuyerDto.getPrice().compareTo(requiredOffer.getProduct().getPrice()) < 0)
+                throw new InvalidFormat("error.offers.updateBuyer.invalidPrice");
+            requiredOffer.setPrice(updateOfferBuyerDto.getPrice());
+        }
+        this.offerDao.save(requiredOffer);
+        return this.modelMapper.map(requiredOffer,OfferDto.class);
+    }
+
+    @Override
+    @Transactional
+    public OfferDto updateOfferSeller(UpdateOfferSellerDto updateOfferSeller) {
+        Product requiredProduct = this.productDao.findById(updateOfferSeller.getProductID()).orElseThrow();
+        Offer requiredOffer = this.offerDao.findById(updateOfferSeller.getOfferID()).orElseThrow();
+        Optional<Offer> offerOptional = this.offerDao.getOfferByStatus(requiredOffer.getId(),OfferStatus.ACCEPTED);
+        OfferStatus offerStatus = updateOfferSeller.getOfferStatus();
+        if(!requiredProduct.getId().equals(requiredOffer.getProduct().getSeller().getId()))
+            throw new InvalidFormat("error.product.updateSeller.invalidProduct");
+        if(offerOptional.isPresent())
+            throw new InvalidFormat("error.offer.updateSeller.alreadyAccepted");
+        if(offerStatus != null) {
+            if(requiredOffer.getStatus() != OfferStatus.OPEN)
+                throw new InvalidFormat("error.offer.updateSeller.invalidOldStatus");
+            if(offerStatus.equals(OfferStatus.EXPIRED) || offerStatus.equals(OfferStatus.OPEN))
+                throw new InvalidFormat("error.offer.updateSeller.invalidStatus");
+            requiredOffer.setStatus(updateOfferSeller.getOfferStatus());
+        }
+        this.offerDao.save(requiredOffer);
+        return this.modelMapper.map(requiredOffer,OfferDto.class);
     }
 
     @Override

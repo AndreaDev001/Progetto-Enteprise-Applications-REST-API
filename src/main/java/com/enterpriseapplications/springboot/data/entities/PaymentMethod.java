@@ -33,23 +33,19 @@ public class PaymentMethod implements OwnableEntity
     private String holderName;
 
     @Column(name = "NUMBER",unique = false)
-    @Pattern(regexp = "[0-9]{4}")
+    @Pattern(regexp = "[0-9]{16,19}")
     private String number;
 
     @Column(name = "BRAND",unique = false)
     @Convert(converter = TrimConverter.class)
     private String brand;
 
-    @Column(name = "COUNTRY",unique = false)
-    @Convert(converter = TrimConverter.class)
-    private String country;
-
     @Column(name = "EXPIRATION_DATE",unique = false)
     private LocalDate expirationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OWNER")
-    private User owner;
+    private User user;
 
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
@@ -61,6 +57,6 @@ public class PaymentMethod implements OwnableEntity
 
     @Override
     public UUID getOwnerID() {
-        return this.owner.getId();
+        return this.user.getId();
     }
 }

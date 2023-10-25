@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
@@ -30,9 +32,11 @@ public class Like
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Product product;
 
+    @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
     private LocalDate createdDate;
 
+    @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 }

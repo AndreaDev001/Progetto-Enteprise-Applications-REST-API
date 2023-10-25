@@ -18,11 +18,9 @@ public class UpdateReportDto
 {
     @NotNull
     private UUID reportID;
-
     @NotNull
     @NotBlank
     private String description;
-
     @NotNull
     private ReportReason reason;
 }

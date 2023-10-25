@@ -2,6 +2,8 @@ package com.enterpriseapplications.springboot.controllers;
 
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreatePaymentMethodDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdatePaymentMethodDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.services.interfaces.PaymentMethodService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -57,6 +59,17 @@ public class PaymentMethodController
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethodsByBrand(userID,brand,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
+
+    @PostMapping("/private")
+    public ResponseEntity<PaymentMethodDto> createPaymentMethod(@RequestBody @Valid CreatePaymentMethodDto createPaymentMethodDto) {
+        return ResponseEntity.ok(this.paymentMethodService.createPaymentMethod(createPaymentMethodDto));
+    }
+
+    @PutMapping("/private")
+    @PreAuthorize("@permissionHandler.hasAccess(@paymentMethodDao,#updatePaymentMethodDto.paymentMethodID")
+    public ResponseEntity<PaymentMethodDto> updatePaymentMethod(@RequestBody @Valid UpdatePaymentMethodDto updatePaymentMethodDto) {
+        return ResponseEntity.ok(this.paymentMethodService.updatePaymentMethod(updatePaymentMethodDto));
+}
 
     @GetMapping("/private/owner/{userID}/name/{name}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")

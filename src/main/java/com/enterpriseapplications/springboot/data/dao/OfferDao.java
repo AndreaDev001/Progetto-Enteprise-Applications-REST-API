@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -39,4 +40,7 @@ public interface OfferDao extends JpaRepository<Offer,UUID>, JpaSpecificationExe
     Page<Offer> getOffersByProductID(@Param("requiredID") UUID requiredID, Pageable pageable);
     @Query("select o from Offer  o where o.product.id = :requiredID and o.status = :requiredStatus")
     Page<Offer> getOffersByProductAndStatus(@Param("requiredID") UUID productID,@Param("requiredStatus") OfferStatus status,Pageable pageable);
+    @Query("select o from Offer o where o.product.id = :requiredID and o.status = :requiredStatus")
+    Optional<Offer> getOfferByStatus(@Param("requiredID") UUID productID, @Param("requiredStatus") OfferStatus status);
+
 }

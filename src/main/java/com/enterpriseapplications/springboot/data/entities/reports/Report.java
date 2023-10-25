@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTED","REPORTER"})})
+@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTED","REPORTER","TYPE"})})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)

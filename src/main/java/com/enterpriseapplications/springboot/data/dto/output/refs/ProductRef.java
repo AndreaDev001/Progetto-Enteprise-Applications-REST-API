@@ -33,7 +33,6 @@ public class ProductRef extends GenericOutput<ProductRef>
         this.setDescription(product.getDescription());
         this.setBrand(product.getBrand());
         this.setPrice(product.getPrice());
-        this.setSeller(new UserRef(product.getSeller()));
         this.setLikes(product.getReceivedLikes().size());
         this.addLinks();
     }

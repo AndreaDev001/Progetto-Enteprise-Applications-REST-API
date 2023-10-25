@@ -22,10 +22,5 @@ public class CreateReportDto
     private String description;
 
     @NotNull
-    @NotBlank
     protected ReportReason reason;
-
-    @NotNull
-    @NotBlank
-    protected ReportType type;
 }

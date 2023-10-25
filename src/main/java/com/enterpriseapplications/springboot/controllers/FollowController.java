@@ -52,13 +52,12 @@ public class FollowController {
         return ResponseEntity.ok(pagedModel);
     }
 
-    @GetMapping("public/follow")
-    public ResponseEntity<FollowDto> findFollow(@RequestParam("followerID") UUID followerID,@RequestParam("followedID") UUID followedID) {
+    @GetMapping("public/{followerID}/{followedID}")
+    public ResponseEntity<FollowDto> findFollow(@PathVariable("followerID") UUID followerID,@PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.findFollow(followerID,followedID));
     }
 
     @PostMapping("private/{followedID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.createFollow(followedID));
     }
@@ -67,6 +66,12 @@ public class FollowController {
     @PreAuthorize("@permissionHandler.hasAccess(@followDao,#followID)")
     public ResponseEntity<Void> deleteFollow(@PathVariable("followID") UUID followID) {
         this.followService.deleteFollows(followID);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("private/followed/{followedID}")
+    public ResponseEntity<Void> deleteFollowByFollowed(@PathVariable("followedID") UUID followedID) {
+        this.followService.deleteFollowsByFollowed(followedID);
         return ResponseEntity.noContent().build();
     }
 }

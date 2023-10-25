@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dao.OrderDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOrderDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.Order;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -75,6 +76,16 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
     }
 
     @Override
+    @Transactional
+    public OrderDto updateOrder(UpdateOrderDto updateOrderDto) {
+        Order order = this.orderDao.findById(updateOrderDto.getOrderID()).orElseThrow();
+        if(updateOrderDto.getPrice() != null)
+            order.setPrice(updateOrderDto.getPrice());
+        return this.modelMapper.map(order,OrderDto.class);
+    }
+
+    @Override
+    @Transactional
     public void deleteOrder(UUID orderID) {
         this.orderDao.findById(orderID).orElseThrow();
         this.orderDao.deleteById(orderID);

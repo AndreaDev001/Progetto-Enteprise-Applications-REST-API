@@ -18,4 +18,5 @@ public interface FollowService {
     FollowDto findFollow(UUID followerID,UUID followedID);
     FollowDto createFollow(UUID followedID);
     void deleteFollows(UUID followID);
+    void deleteFollowsByFollowed(UUID followedID);
 }

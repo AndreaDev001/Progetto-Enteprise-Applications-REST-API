@@ -48,7 +48,6 @@ public class ProductReportController {
     }
 
     @PostMapping("/private/{productID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ProductReportDto> createProductReport(@RequestBody @Valid CreateReportDto createReportDto,@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.productReportService.createProductReport(createReportDto,productID));
     }
