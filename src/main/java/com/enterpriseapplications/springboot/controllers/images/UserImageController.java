@@ -49,7 +49,7 @@ public class UserImageController {
     @GetMapping("/public/{userID}")
     public ResponseEntity<byte[]> getUserImage(@PathVariable("userID") UUID userID) {
         UserImageDto userImageDto = this.userImageService.getUserImage(userID);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(userImageDto.getType())).body(userImageDto.getImage());
+        return ResponseEntity.ok().contentType(MediaType.valueOf(userImageDto.getType().getName())).body(userImageDto.getImage());
     }
     @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserImageDto> uploadImage(@ModelAttribute @Valid CreateUserImageDto createUserImageDto) {

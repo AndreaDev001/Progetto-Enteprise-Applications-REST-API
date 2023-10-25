@@ -18,6 +18,4 @@ public interface ImageDao extends JpaRepository<Image, UUID>
 {
     @Query("select i from Image i where i.type = :requiredType")
     List<Image> getImagesByType(@Param("requiredType") String type);
-    @Query("select i from Image i where i.name = :requiredName")
-    List<Image> getImagesByName(@Param("requiredName") String name);
 }

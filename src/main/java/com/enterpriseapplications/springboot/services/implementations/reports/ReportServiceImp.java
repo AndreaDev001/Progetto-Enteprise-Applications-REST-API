@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
@@ -94,9 +95,8 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
     @Override
     public PagedModel<ReportDto> getSimilarReports(UUID reportID, Pageable pageable) {
         Report requiredReport = this.reportDao.findById(reportID).orElseThrow();
-        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(requiredReport);
+        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,requiredReport);
         Page<Report> reports = this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageable);
-        reports.getContent().removeIf(value -> value.getId().equals(requiredReport.getId()));
         return this.pagedResourcesAssembler.toModel(reports,this.modelAssembler);
     }
 

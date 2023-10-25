@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.controllers;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateCategoryDto;
 import com.enterpriseapplications.springboot.data.dto.output.CategoryDto;
 import com.enterpriseapplications.springboot.services.interfaces.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class CategoryController
 {
     private final CategoryService categoryService;
@@ -36,7 +38,7 @@ public class CategoryController
         return ResponseEntity.ok(this.categoryService.getPrimaryCategories());
     }
 
-    @PostMapping("private")
+    @PostMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(this.categoryService.createCategory(createCategoryDto));

@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.config.CacheConfig;
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
@@ -91,9 +92,8 @@ public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> imple
     @Override
     public PagedModel<UserDetailsDto> getSimilarUsers(UUID userID, Pageable pageable) {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
-        UserSpecifications.Filter filter = new UserSpecifications.Filter(requiredUser);
+        UserSpecifications.Filter filter = new UserSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,requiredUser);
         Page<User> users = this.userDao.findAll(UserSpecifications.withFilter(filter),pageable);
-        users.getContent().removeIf((value) -> value.getId().equals(userID));
         return this.pagedResourcesAssembler.toModel(users,modelAssembler);
     }
 

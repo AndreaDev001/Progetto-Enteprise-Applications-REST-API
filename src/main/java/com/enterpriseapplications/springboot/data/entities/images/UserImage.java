@@ -1,7 +1,6 @@
 package com.enterpriseapplications.springboot.data.entities.images;
 
 import com.enterpriseapplications.springboot.data.entities.User;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,16 +18,13 @@ public class UserImage extends Image
 {
     public UserImage(Image image) {
         this.setId(image.getId());
-        this.setName(image.getName());
         this.setType(image.getType());
-        this.setOwner(ImageOwner.USER);
         this.setImage(image.getImage());
         this.setCreatedDate(image.getCreatedDate());
         this.setLastModifiedDate(image.getLastModifiedDate());
     }
     public UserImage(User user, MultipartFile multipartFile) throws IOException {
         super(multipartFile);
-        this.setOwner(ImageOwner.USER);
         this.setUser(user);
     }
     @OneToOne(fetch = FetchType.LAZY)

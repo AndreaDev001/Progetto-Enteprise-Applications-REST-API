@@ -2,7 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.images;
 
 
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,15 +31,8 @@ public class Image
     @GeneratedValue(strategy = GenerationType.UUID)
     protected UUID id;
 
-    @Column(name = "NAME",unique = false)
-    protected String name;
-
-    @Column(name = "TYPE",unique = false)
-    protected String type;
-
-    @Column(name = "OWNER",unique = false)
-    @Enumerated(EnumType.STRING)
-    protected ImageOwner owner;
+    @Column(name = "TYPE",unique = false,nullable = false)
+    private ImageType type;
 
     @Lob
     @Column(name = "IMAGE",unique = false,nullable = false)
@@ -54,8 +47,6 @@ public class Image
     protected LocalDate lastModifiedDate;
 
     protected Image(MultipartFile multipartFile) throws IOException {
-        this.setName(multipartFile.getOriginalFilename());
-        this.setType(multipartFile.getContentType());
         this.setImage(ImageUtils.compressImage(multipartFile.getBytes()));
     }
 }

@@ -74,6 +74,9 @@ public class User
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
+    @OneToOne(mappedBy = "user")
+    private UserImage userImage;
+
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 

@@ -4,10 +4,7 @@ import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.data.entities.enums.UserVisibility;
 import jakarta.persistence.criteria.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -34,10 +31,12 @@ public class UserSpecifications
             this.path = path;
         }
     }
+
+    @EqualsAndHashCode(callSuper = false)
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Filter
+    public static class Filter extends BaseFilter
     {
         private String email;
         private String username;
@@ -48,9 +47,9 @@ public class UserSpecifications
         private Integer minRating;
         private Integer maxRating;
         private List<OrderType> orderTypes;
-        private SpecificationsUtils.OrderMode orderMode;
 
-        public Filter(User user) {
+        public Filter(SpecificationsUtils.OrderMode orderMode,User user) {
+            super(orderMode,List.of(user.getId()));
             this.email = user.getEmail();
             this.username = user.getUsername();
             if(user.getName() != null)
@@ -87,7 +86,7 @@ public class UserSpecifications
             if(filter.orderMode == null)
                 filter.orderMode = SpecificationsUtils.OrderMode.DESCENDED;
 
-            Predicate requiredPredicate = criteriaBuilder.isNotNull(root.get("id"));
+            Predicate requiredPredicate = SpecificationsUtils.generateExcludedPredicate(root,criteriaBuilder,filter.excludedIDs);
             requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("visibility"), UserVisibility.PUBLIC));
             requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.orderTypes,filter.orderMode);

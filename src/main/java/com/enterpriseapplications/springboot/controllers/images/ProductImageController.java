@@ -48,7 +48,7 @@ public class ProductImageController
     @GetMapping("/public/{productID}/first")
     public ResponseEntity<byte[]> getFirstImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getFirstProductImage(productID);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
+        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType().getName())).body(productImageDto.getImage());
     }
     @GetMapping("/public/{productID}/amount")
     public ResponseEntity<Integer> getAmount(@PathVariable("productID") UUID productID) {
@@ -57,12 +57,12 @@ public class ProductImageController
     @GetMapping("/public/{productID}/last")
     public ResponseEntity<byte[]> getLastImage(@PathVariable("productID") UUID productID) {
         ProductImageDto productImageDto = this.productImageService.getLastProductImage(productID);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
+        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType().getName())).body(productImageDto.getImage());
     }
     @GetMapping("/public/{productID}/{index}")
     public ResponseEntity<byte[]> getImageByIndex(@PathVariable("productID") UUID productID,@PathVariable("index") Integer index) {
         ProductImageDto productImageDto = this.productImageService.getProductImage(productID,index);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType())).body(productImageDto.getImage());
+        return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType().getName())).body(productImageDto.getImage());
     }
     @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")

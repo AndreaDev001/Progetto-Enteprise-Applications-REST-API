@@ -3,7 +3,7 @@ package com.enterpriseapplications.springboot.data.dto.output.images;
 
 import com.enterpriseapplications.springboot.controllers.images.ImageController;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -21,10 +21,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ImageDto extends GenericOutput<ImageDto>
 {
     protected UUID id;
-    protected String name;
-    protected String type;
+    protected ImageType type;
     protected LocalDate createdDate;
-    protected ImageOwner owner;
 
     @JsonIgnore
     protected byte[] image;

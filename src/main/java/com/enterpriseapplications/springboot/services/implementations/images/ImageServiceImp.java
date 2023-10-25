@@ -1,11 +1,9 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
 
-import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.images.ImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
@@ -42,27 +40,15 @@ public class ImageServiceImp extends GenericServiceImp<Image,ImageDto> implement
     public ImageDto getImage(UUID imageID) {
         Image image = this.imageDao.findById(imageID).orElseThrow();
         ImageDto imageDto = new ImageDto();
-        imageDto.setName(image.getName());
         imageDto.setType(image.getType());
         imageDto.setImage(ImageUtils.decompressImage(image.getImage()));
         return imageDto;
     }
 
     @Override
-    public List<ImageDto> getImagesByName(String name) {
-        List<Image> images = this.imageDao.getImagesByName(name);
-        return images.stream().map(image -> this.modelMapper.map(image,ImageDto.class)).collect(Collectors.toList());
-    }
-
-    @Override
     public List<ImageDto> getImagesByType(String type) {
         List<Image> images = this.imageDao.getImagesByType(type);
         return images.stream().map(image -> this.modelMapper.map(image,ImageDto.class)).collect(Collectors.toList());
-    }
-
-    @Override
-    public ImageOwner[] getImageOwners() {
-        return ImageOwner.values();
     }
 
     @Override

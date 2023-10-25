@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferBuyerDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferDto;
@@ -119,6 +120,14 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
     public PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable) {
         Page<Offer> offers = this.offerDao.findAll(specification,pageable);
         return this.pagedResourcesAssembler.toModel(offers,modelAssembler);
+    }
+
+    @Override
+    public PagedModel<OfferDto> getSimilarOffers(UUID offerID, Pageable pageable) {
+        Offer requiredOffer = this.offerDao.findById(offerID).orElseThrow();
+        OfferSpecifications.Filter filter = new OfferSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,requiredOffer);
+        Page<Offer> offers = this.offerDao.findAll(OfferSpecifications.withFilter(filter),pageable);
+        return this.pagedResourcesAssembler.toModel(offers,this.modelAssembler);
     }
 
     @Override

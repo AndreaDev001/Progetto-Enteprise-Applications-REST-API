@@ -4,15 +4,13 @@ import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import jakarta.persistence.criteria.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProductSpecifications
 {
@@ -35,10 +33,11 @@ public class ProductSpecifications
         }
     }
 
+    @EqualsAndHashCode(callSuper = false)
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Filter
+    public static class Filter extends BaseFilter
     {
         private String primaryCat;
         private String secondaryCat;
@@ -49,9 +48,9 @@ public class ProductSpecifications
         private Long minPrice;
         private Long maxPrice;
         private List<OrderType> orderTypes;
-        private SpecificationsUtils.OrderMode orderMode;
 
-        public Filter(Product product) {
+        public Filter(SpecificationsUtils.OrderMode orderMode,Product product) {
+            super(orderMode,List.of(product.getId()));
             this.primaryCat = product.getCategory().getPrimaryCat();
             this.secondaryCat = product.getCategory().getSecondaryCat();
             this.tertiaryCat = product.getCategory().getTertiaryCat();
@@ -86,7 +85,7 @@ public class ProductSpecifications
             if(filter.orderTypes == null)
                 filter.orderTypes = List.of(OrderType.PRICE);
 
-            Predicate requiredPredicate = criteriaBuilder.isNotNull(root.get("id"));
+            Predicate requiredPredicate = SpecificationsUtils.generateExcludedPredicate(root,criteriaBuilder,filter.excludedIDs);
             requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("visibility"), ProductVisibility.PUBLIC));
             requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);

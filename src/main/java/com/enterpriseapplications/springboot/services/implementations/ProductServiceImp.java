@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
@@ -29,9 +30,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> implements ProductService
 {
     private final UserDao userDao;
@@ -65,7 +68,6 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     }
 
     @Override
-    @Transactional
     public ProductDto getProductDetails(UUID productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
@@ -76,10 +78,17 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
 
     @Override
     @CacheEvict(value = {CacheConfig.CACHE_ALL_PRODUCTS,CacheConfig.CACHE_SEARCH_PRODUCTS},allEntries = true)
-    @Transactional
     public ProductDto createProduct(CreateProductDto createProductDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Category requiredCategory = this.categoryDao.getCategory(createProductDto.getPrimaryCat(), createProductDto.getSecondaryCat(), createProductDto.getTertiaryCat()).orElseThrow();
+        Product requiredProduct = buildProduct(createProductDto, requiredCategory, requiredUser);
+        this.productDao.save(requiredProduct);
+        ProductDto productDto = this.modelMapper.map(requiredProduct, ProductDto.class);
+        productDto.addLinks();
+        return productDto;
+    }
+
+    private Product buildProduct(CreateProductDto createProductDto, Category requiredCategory, User requiredUser) {
         Product requiredProduct = new Product();
         if(createProductDto.getPrice().compareTo(createProductDto.getMinPrice()) < 0)
             throw new InvalidFormat("error.product.invalidMinPrice");
@@ -92,10 +101,7 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
         requiredProduct.setMinPrice(createProductDto.getMinPrice());
         requiredProduct.setCategory(requiredCategory);
         requiredProduct.setSeller(requiredUser);
-        this.productDao.save(requiredProduct);
-        ProductDto productDto = this.modelMapper.map(requiredProduct, ProductDto.class);
-        productDto.addLinks();
-        return productDto;
+        return requiredProduct;
     }
 
     @Override
@@ -128,15 +134,13 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     @Override
     public PagedModel<ProductDto> getSimilarProducts(UUID productID, Pageable pageable) {
         Product requiredProduct = this.productDao.findById(productID).orElseThrow();
-        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(requiredProduct);
+        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,requiredProduct);
         Page<Product> products = this.productDao.findAll(ProductSpecifications.withFilter(filter),pageable);
-        products.getContent().removeIf(value -> value.getId().equals(requiredProduct.getId()));
         return this.pagedResourcesAssembler.toModel(products,this.modelAssembler);
     }
 
     @Override
     @CacheEvict(value = {CacheConfig.CACHE_SEARCH_PRODUCTS,CacheConfig.CACHE_ALL_PRODUCTS},allEntries = true)
-    @Transactional
     public ProductDto updateProduct(UpdateProductDto updateProductDto) {
         Product requiredProduct =  this.productDao.findById(updateProductDto.getProductID()).orElseThrow();
         if(updateProductDto.getDescription() != null)
@@ -152,7 +156,6 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = {CacheConfig.CACHE_SEARCH_PRODUCTS,CacheConfig.CACHE_ALL_PRODUCTS},allEntries = true)
     public void deleteProduct(UUID productID) {
         this.productDao.findById(productID);

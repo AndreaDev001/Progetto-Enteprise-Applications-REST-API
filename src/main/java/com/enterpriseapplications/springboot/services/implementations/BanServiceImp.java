@@ -127,7 +127,6 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         Ban requiredBan = this.banDao.findById(banID).orElseThrow();
         BanSpecifications.Filter filter = new BanSpecifications.Filter(requiredBan);
         Page<Ban> bans = this.banDao.findAll(BanSpecifications.withFilter(filter),pageable);
-        bans.getContent().removeIf(value -> value.getId().equals(requiredBan.getId()));
         return this.pagedResourcesAssembler.toModel(bans,this.modelAssembler);
     }
 

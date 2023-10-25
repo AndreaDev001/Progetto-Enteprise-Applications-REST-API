@@ -3,10 +3,7 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import jakarta.persistence.criteria.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -35,10 +32,12 @@ public class OfferSpecifications
             this.path = path;
         }
     }
+
+    @EqualsAndHashCode(callSuper = false)
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Filter
+    public static class Filter extends BaseFilter
     {
         private String description;
         private Long price;
@@ -49,7 +48,16 @@ public class OfferSpecifications
         private OfferStatus status;
         private Boolean expired;
         private List<OrderType> orderTypes;
-        private SpecificationsUtils.OrderMode orderMode;
+
+        public Filter(SpecificationsUtils.OrderMode orderMode,Offer offer) {
+            super(orderMode,List.of(offer.getId()));
+            this.buyerEmail = offer.getBuyer().getEmail();
+            this.buyerUsername = offer.getBuyer().getUsername();
+            this.productName = offer.getProduct().getName();
+            this.productDescription = offer.getProduct().getDescription();
+            this.status = offer.getStatus();
+            this.expired = offer.isExpired();
+        }
     }
     public static Specification<Offer> withFilter(Filter filter) {
         return (Root<Offer> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
@@ -76,7 +84,8 @@ public class OfferSpecifications
             if(filter.orderTypes == null)
                 filter.orderTypes = List.of(OrderType.CREATED_DATE);
 
-            Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
+            Predicate requiredPredicate = SpecificationsUtils.generateExcludedPredicate(root,criteriaBuilder,filter.excludedIDs);
+            requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
             return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };

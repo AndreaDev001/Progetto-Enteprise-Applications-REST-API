@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,9 +94,16 @@ public class OfferController
     }
 
     @GetMapping("/private/spec")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<OfferDto>> getOffersBySpec(@ParameterObject @Valid OfferSpecifications.Filter filter,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OfferDto> offers = this.offerService.getOffersBySpec(OfferSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        return ResponseEntity.ok(offers);
+    }
+
+    @GetMapping("/private/{offerID}/similar")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    public ResponseEntity<PagedModel<OfferDto>> getSimilarOffers(@PathVariable("offerID") UUID offerID, Pageable pageable) {
+        PagedModel<OfferDto> offers = this.offerService.getSimilarOffers(offerID,pageable);
         return ResponseEntity.ok(offers);
     }
 

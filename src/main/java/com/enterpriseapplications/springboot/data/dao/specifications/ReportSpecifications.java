@@ -33,10 +33,12 @@ public class ReportSpecifications
             this.path = path;
         }
     }
+
+    @EqualsAndHashCode(callSuper = false)
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Filter
+    public static class Filter extends BaseFilter
     {
         private String reporterEmail;
         private String reportedEmail;
@@ -46,9 +48,9 @@ public class ReportSpecifications
         private ReportReason reason;
         private ReportType type;
         private List<OrderType> orderTypes;
-        private SpecificationsUtils.OrderMode orderMode;
 
-        public Filter(Report report) {
+        public Filter(SpecificationsUtils.OrderMode orderMode,Report report) {
+            super(orderMode,List.of(report.getId()));
             this.reportedEmail = report.getReported().getEmail();
             this.reporterEmail = report.getReporter().getEmail();
             this.reporterUsername = report.getReporter().getUsername();
@@ -79,7 +81,8 @@ public class ReportSpecifications
             if(filter.orderTypes == null)
                 filter.orderTypes = List.of(OrderType.CREATED_DATE);
 
-            Predicate requiredPredicate = SpecificationsUtils.generatePredicate(criteriaBuilder.isNotNull(root.get("id")),requiredPredicates,criteriaBuilder);
+            Predicate requiredPredicate = SpecificationsUtils.generateExcludedPredicate(root,criteriaBuilder,filter.excludedIDs);
+            requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
             return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();
         };

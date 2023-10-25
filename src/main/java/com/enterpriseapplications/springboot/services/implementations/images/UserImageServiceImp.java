@@ -6,7 +6,7 @@ import com.enterpriseapplications.springboot.data.dao.images.UserImageDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateUserImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
 import com.enterpriseapplications.springboot.data.entities.User;
-import com.enterpriseapplications.springboot.data.entities.enums.ImageOwner;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.UserImageService;
@@ -72,11 +72,19 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
         Optional<UserImage> userImageOptional = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName()));
         UserImage userImage = userImageOptional.orElseGet(UserImage::new);
         userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
-        userImage.setName(createUserImageDto.getFile().getOriginalFilename());
-        userImage.setType(createUserImageDto.getFile().getContentType());
-        userImage.setOwner(ImageOwner.USER);
+        userImage.setType(this.getImageType(createUserImageDto.getFile().getContentType()));
         userImage.setUser(requiredUser);
         this.userImageDao.save(userImage);
-        return this.modelMapper.map(userImage,UserImageDto.class);
+        UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
+        userImageDto.addLinks();
+        return userImageDto;
+    }
+
+    private ImageType getImageType(String type) {
+        for(ImageType current : ImageType.values()) {
+            if(current.getName().equals(type))
+                return current;
+        }
+        return null;
     }
 }
