@@ -28,11 +28,15 @@ public class Order implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "BUYER")
     private User buyer;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "ADDRESS")
+    private Address address;
+
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 

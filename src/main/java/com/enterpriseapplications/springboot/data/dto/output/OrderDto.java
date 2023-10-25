@@ -22,6 +22,7 @@ public class OrderDto extends GenericOutput<OrderDto>
     private UUID id;
     private UserRef buyer;
     private BigDecimal price;
+    private AddressDto address;
     private ProductRef product;
     private LocalDate createdDate;
 }

@@ -65,6 +65,7 @@ public class SecurityConfig
                         .requestMatchers("/likes/public/**").permitAll()
                         .requestMatchers("/conversations/public/**").permitAll()
                         .requestMatchers(("/users/public/**")).permitAll()
+                        .requestMatchers("/addresses/public/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         http.addFilterAfter(authenticationFilter, BasicAuthenticationFilter.class);

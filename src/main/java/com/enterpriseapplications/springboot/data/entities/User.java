@@ -130,4 +130,7 @@ public class User
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<PaymentMethod> paymentMethods = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Address> addresses = new HashSet<>();
 }
