@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,11 +59,25 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
     }
 
     @Override
+    @Transactional
+    @SneakyThrows
     public UserImageDto getUserImage(UUID userID) {
-        UserImage userImage = this.userImageDao.getUserImage(userID).orElseThrow();
-        UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
-        userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
-        return userImageDto;
+            User requiredUser = this.userDao.findById(userID).orElseThrow();
+            Optional<UserImage> userImageOptional = this.userImageDao.getUserImage(userID);
+            UserImage userImage = null;
+            if(userImageOptional.isEmpty()) {
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaultUserImage.jpg");
+                userImage = new UserImage();
+                userImage.setType(ImageType.IMAGE_JPEG);
+                userImage.setImage(ImageUtils.compressImage(inputStream.readAllBytes()));
+                userImage.setUser(requiredUser);
+                this.userImageDao.save(userImage);
+            }
+            else
+                userImage = userImageOptional.get();
+            UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
+            userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
+            return userImageDto;
     }
 
     @Override
