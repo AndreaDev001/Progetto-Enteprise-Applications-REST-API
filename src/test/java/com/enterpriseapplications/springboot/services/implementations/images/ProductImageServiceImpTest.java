@@ -89,6 +89,7 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
 
     @Test
     void uploadImages() {
+
     }
 
     @Test
@@ -107,4 +108,23 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
         Assert.assertTrue(valid(secondElement,productImageDto));
     }
 
+    @Test
+    void getProductImageIndex() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productImageDao.getProductImages(product.getId())).willReturn(elements);
+        List<ProductImageDto> productImages = this.productImageServiceImp.getProductImages(product.getId());
+        ProductImageDto first = productImages.get(0);
+        ProductImageDto second = productImages.get(1);
+        Assert.assertEquals(2, productImages.size());
+        Assert.assertTrue(valid(firstElement,first));
+        Assert.assertTrue(valid(secondElement,second));
+    }
+    @Test
+    void getProductImagesAmount() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productImageDao.getProductImages(product.getId())).willReturn(elements);
+        List<ProductImageDto> productImages = this.productImageServiceImp.getProductImages(product.getId());
+        Assert.assertNotNull(productImages);
+        Assert.assertEquals(elements.size(),2);
+    }
 }

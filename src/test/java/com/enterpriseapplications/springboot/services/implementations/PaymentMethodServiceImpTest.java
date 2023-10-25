@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.PaymentMethodDao;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -30,16 +31,18 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
     private PaymentMethodServiceImp paymentMethodServiceImp;
     @Mock
     private PaymentMethodDao paymentMethodDao;
+    @Mock
+    private UserDao userDao;
 
 
     @Override
     protected void init() {
         super.init();
-        paymentMethodServiceImp = new PaymentMethodServiceImp(paymentMethodDao,modelMapper,pagedResourcesAssembler);
+        paymentMethodServiceImp = new PaymentMethodServiceImp(userDao,paymentMethodDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        firstElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("Italy").owner(firstUser).number("234568279102").holderName("Holder Name").build();
-        secondElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").country("UK").owner(secondUser).number("37238393910").holderName("Holder Name").build();
+        firstElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").user(firstUser).number("234568279102").holderName("Holder Name").build();
+        secondElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").user(secondUser).number("37238393910").holderName("Holder Name").build();
         elements = List.of(firstElement,secondElement);
     }
 
@@ -53,9 +56,8 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         Assert.assertEquals(paymentMethod.getId(),paymentMethodDto.getId());
         Assert.assertEquals(paymentMethod.getNumber(),paymentMethod.getNumber());
         Assert.assertEquals(paymentMethod.getBrand(),paymentMethod.getBrand());
-        Assert.assertEquals(paymentMethod.getCountry(),paymentMethod.getCountry());
         Assert.assertEquals(paymentMethod.getHolderName(),paymentMethod.getHolderName());
-        Assert.assertEquals(paymentMethod.getOwner().getId(),paymentMethod.getOwnerID());
+        Assert.assertEquals(paymentMethod.getUser().getId(),paymentMethod.getOwnerID());
         Assert.assertEquals(paymentMethod.getCreatedDate(),paymentMethod.getCreatedDate());
         return true;
     }

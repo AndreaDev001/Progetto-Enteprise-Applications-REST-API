@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.UserImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.UserImageDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -29,6 +30,8 @@ import static org.mockito.BDDMockito.given;
 class UserImageServiceImpTest extends GenericTestImp<UserImage,UserImageDto> {
 
     private UserImageServiceImp userImageServiceImp;
+    @Mock
+    private UserDao userDao;
     @Mock
     private UserImageDao userImageDao;
 

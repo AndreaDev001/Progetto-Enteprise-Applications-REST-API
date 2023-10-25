@@ -51,7 +51,7 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
         Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
         Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
         firstElement = Offer.builder().id(UUID.randomUUID()).description("description").price(BigDecimal.valueOf(100)).status(OfferStatus.OPEN).buyer(firstUser).product(firstProduct).build();
-        secondElement = Offer.builder().id(UUID.randomUUID()).description("description").price(BigDecimal.valueOf(200)).status(OfferStatus.CLOSED).buyer(secondUser).product(secondProduct).build();
+        secondElement = Offer.builder().id(UUID.randomUUID()).description("description").price(BigDecimal.valueOf(200)).status(OfferStatus.ACCEPTED).buyer(secondUser).product(secondProduct).build();
         elements = List.of(firstElement,secondElement);
     }
 
@@ -89,8 +89,8 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
     @Test
     void getOffersByStatus() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.offerDao.getOffersByStatus(OfferStatus.CLOSED,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
-        PagedModel<OfferDto> offers = this.offerServiceImp.getOffersByStatus(OfferStatus.CLOSED,pageRequest);
+        given(this.offerDao.getOffersByStatus(OfferStatus.OPEN,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<OfferDto> offers = this.offerServiceImp.getOffersByStatus(OfferStatus.OPEN,pageRequest);
         Assert.assertTrue(compare(elements,offers.getContent().stream().toList()));
     }
 

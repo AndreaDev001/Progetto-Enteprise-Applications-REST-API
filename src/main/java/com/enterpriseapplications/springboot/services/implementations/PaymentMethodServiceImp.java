@@ -60,12 +60,6 @@ public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,Pay
     }
 
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethodsByCountry(UUID ownerID, String country, Pageable pageable) {
-        Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByCountry(ownerID,country,pageable);
-        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
-    }
-
-    @Override
     public PagedModel<PaymentMethodDto> getPaymentMethodsByHolderName(UUID ownerID, String name, Pageable pageable) {
         Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethodsByHolderName(ownerID,name,pageable);
         return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);

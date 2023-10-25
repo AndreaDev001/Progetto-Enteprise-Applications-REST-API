@@ -160,7 +160,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
     @Test
     void createReport() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        CreateReportDto createReportDto = CreateReportDto.builder().description("description").reason(ReportReason.RACISM).type(ReportType.USER).build();
+        CreateReportDto createReportDto = CreateReportDto.builder().description("description").reason(ReportReason.RACISM).build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
         given(this.reportDao.save(any(Report.class))).willReturn(firstElement);

@@ -103,7 +103,7 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
     void createReport() {
         User user = User.builder().id(UUID.randomUUID()).build();
         Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
-        CreateReportDto createReportDto = CreateReportDto.builder().reason(ReportReason.RACISM).type(ReportType.PRODUCT).description("description").build();
+        CreateReportDto createReportDto = CreateReportDto.builder().reason(ReportReason.RACISM).description("description").build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
         given(this.productReportDao.save(any(ProductReport.class))).willReturn(firstElement);

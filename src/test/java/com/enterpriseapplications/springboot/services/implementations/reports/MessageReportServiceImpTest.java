@@ -105,7 +105,7 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
         User user = User.builder().id(UUID.randomUUID()).build();
         Message message = Message.builder().id(UUID.randomUUID()).build();
         message.setReceiver(user);
-        CreateReportDto createReportDto = CreateReportDto.builder().type(ReportType.MESSAGE).reason(ReportReason.RACISM).description("description").build();
+        CreateReportDto createReportDto = CreateReportDto.builder().reason(ReportReason.RACISM).description("description").build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.messageDao.findById(message.getId())).willReturn(Optional.of(message));
         given(this.messageReportDao.save(any(MessageReport.class))).willReturn(firstElement);

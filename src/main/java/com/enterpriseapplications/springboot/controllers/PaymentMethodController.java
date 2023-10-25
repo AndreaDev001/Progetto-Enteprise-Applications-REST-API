@@ -45,14 +45,6 @@ public class PaymentMethodController
         PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(paymentMethods);
     }
-
-    @GetMapping("/private/owner/{userID}/country/{country}")
-    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethodsByCountry(@PathVariable("userID") UUID userID,@PathVariable("country") String country,@ParameterObject @Valid PaginationRequest paginationRequest) {
-        PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethodsByCountry(userID,country,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
-        return ResponseEntity.ok(paymentMethods);
-    }
-
     @GetMapping("/private/owner/{userID}/brand/{brand}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethodsByBrand(@PathVariable("userID") UUID userID, @PathVariable("brand") String brand, @ParameterObject @Valid PaginationRequest paginationRequest) {
