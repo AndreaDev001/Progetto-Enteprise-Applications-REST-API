@@ -9,6 +9,7 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdatePayment
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import com.enterpriseapplications.springboot.services.interfaces.PaymentMethodService;
 import com.nimbusds.jose.proc.SecurityContext;
 import jakarta.transaction.Transactional;
@@ -20,9 +21,12 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,PaymentMethodDto> implements PaymentMethodService
 {
     private final PaymentMethodDao paymentMethodDao;
@@ -48,9 +52,9 @@ public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,Pay
     }
 
     @Override
-    public PagedModel<PaymentMethodDto> getPaymentMethods(UUID ownerID, Pageable pageable) {
-        Page<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethods(ownerID,pageable);
-        return this.pagedResourcesAssembler.toModel(paymentMethods,modelAssembler);
+    public List<PaymentMethodDto> getPaymentMethods(UUID ownerID) {
+        List<PaymentMethod> paymentMethods = this.paymentMethodDao.getPaymentMethods(ownerID);
+        return paymentMethods.stream().map(paymentMethod -> this.modelMapper.map(paymentMethod,PaymentMethodDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -70,6 +74,7 @@ public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,Pay
     public PaymentMethodDto createPaymentMethod(CreatePaymentMethodDto createPaymentMethodDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setHolderName(createPaymentMethodDto.getHolderName());
         paymentMethod.setNumber(createPaymentMethodDto.getNumber());
         paymentMethod.setBrand(createPaymentMethodDto.getBrand());
         paymentMethod.setNumber(createPaymentMethodDto.getNumber());
@@ -95,5 +100,10 @@ public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,Pay
     public void deletePaymentMethod(UUID paymentMethodID) {
         this.paymentMethodDao.findById(paymentMethodID).orElseThrow();
         this.paymentMethodDao.deleteById(paymentMethodID);
+    }
+
+    @Override
+    public PaymentMethodBrand[] getBrands() {
+        return PaymentMethodBrand.values();
     }
 }

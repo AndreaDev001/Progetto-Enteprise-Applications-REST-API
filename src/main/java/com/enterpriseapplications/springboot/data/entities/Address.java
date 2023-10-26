@@ -27,7 +27,7 @@ public class Address implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "address")
     private Set<Order> orders = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,optional = false)

@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -16,9 +17,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "PAYMENT_METHODS")
+@Table(name = "PAYMENT_METHODS",uniqueConstraints = {@UniqueConstraint(columnNames = {"OWNER","NUMBER"})})
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class,})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,8 +38,7 @@ public class PaymentMethod implements OwnableEntity
     private String number;
 
     @Column(name = "BRAND",unique = false)
-    @Convert(converter = TrimConverter.class)
-    private String brand;
+    private PaymentMethodBrand brand;
 
     @Column(name = "EXPIRATION_DATE",unique = false)
     private LocalDate expirationDate;

@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.input.create;
 
 
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,8 +23,7 @@ public class CreatePaymentMethodDto {
     @Pattern(regexp = "[0-9]{16,19}")
     private String number;
     @NotNull
-    @NotBlank
-    private String brand;
+    private PaymentMethodBrand brand;
     @NotNull
     @Future
     private LocalDate expirationDate;

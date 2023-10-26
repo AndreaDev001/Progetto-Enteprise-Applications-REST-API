@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreatePaymentMethodDto;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdatePaymentMethodDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import com.enterpriseapplications.springboot.services.interfaces.PaymentMethodService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,8 +43,8 @@ public class PaymentMethodController
 
     @GetMapping("/private/owner/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<PagedModel<PaymentMethodDto>> getPaymentMethods(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        PagedModel<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+    public ResponseEntity<List<PaymentMethodDto>> getPaymentMethods(@PathVariable("userID") UUID userID) {
+        List<PaymentMethodDto> paymentMethods = this.paymentMethodService.getPaymentMethods(userID);
         return ResponseEntity.ok(paymentMethods);
     }
     @GetMapping("/private/owner/{userID}/brand/{brand}")
@@ -75,5 +77,10 @@ public class PaymentMethodController
     public ResponseEntity<Void> deletePaymentMethod(UUID paymentMethodID) {
         this.paymentMethodService.deletePaymentMethod(paymentMethodID);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/public/brands")
+    public ResponseEntity<PaymentMethodBrand[]> getBrands() {
+        return ResponseEntity.ok(this.paymentMethodService.getBrands());
     }
 }

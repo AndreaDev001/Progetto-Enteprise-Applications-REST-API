@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.dto.output;
 
 
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
+import com.enterpriseapplications.springboot.data.entities.enums.addresses.CountryCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ public class AddressDto extends GenericOutput<AddressDto>
 {
     private UUID id;
     private UserRef user;
+    private CountryCode countryCode;
     private String street;
     private String locality;
     private String postalCode;

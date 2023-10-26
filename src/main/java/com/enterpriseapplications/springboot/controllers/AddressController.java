@@ -58,9 +58,9 @@ public class AddressController
         return ResponseEntity.ok(addresses);
     }
 
-    @GetMapping("/private/{userID}")
+    @GetMapping("/private/user/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<List<AddressDto>> getAddresses(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+    public ResponseEntity<List<AddressDto>> getAddresses(@PathVariable("userID") UUID userID) {
         List<AddressDto> addresses = this.addressService.getAddressesByUser(userID);
         return ResponseEntity.ok(addresses);
     }

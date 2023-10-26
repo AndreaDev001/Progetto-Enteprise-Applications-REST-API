@@ -9,13 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface PaymentMethodDao extends JpaRepository<PaymentMethod, UUID>
 {
     @Query("select p from PaymentMethod p where p.user.id = :requiredID")
-    Page<PaymentMethod> getPaymentMethods(@Param("requiredID") UUID ownerID, Pageable pageable);
+    List<PaymentMethod> getPaymentMethods(@Param("requiredID") UUID ownerID);
     @Query("select p from PaymentMethod p where p.user.id = :requiredID and p.brand = :requiredBrand")
     Page<PaymentMethod> getPaymentMethodsByBrand(@Param("requiredID") UUID ownerID,@Param("requiredBrand") String brand,Pageable pageable);
     @Query("select p from PaymentMethod p where p.user.id = :requiredID and p.holderName = :requiredName")

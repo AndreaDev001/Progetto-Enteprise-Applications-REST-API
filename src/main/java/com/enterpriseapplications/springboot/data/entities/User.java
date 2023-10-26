@@ -63,9 +63,6 @@ public class User
     @Column(name = "RATING",unique = false)
     private Long rating;
 
-    @Column(name = "STRIPE_ID",unique = false)
-    private String stripeID;
-
     @CreatedDate
     @Column(name = "CREATED_DATE",unique = false)
     private LocalDate createdDate;

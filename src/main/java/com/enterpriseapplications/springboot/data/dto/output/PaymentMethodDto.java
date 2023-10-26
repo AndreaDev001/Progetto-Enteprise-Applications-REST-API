@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.dto.output;
 
 
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
 
@@ -21,6 +22,7 @@ public class PaymentMethodDto extends GenericOutput<PaymentMethodDto>
     private UserRef user;
     private String holderName;
     private String number;
+    private PaymentMethodBrand brand;
     private LocalDate createdDate;
     private LocalDate expirationDate;
 }

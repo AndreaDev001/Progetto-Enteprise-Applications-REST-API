@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.input.update;
 
 
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,5 @@ public class UpdatePaymentMethodDto {
     @NotNull
     private UUID paymentMethodID;
     private String holderName;
-    private String brand;
+    private PaymentMethodBrand brand;
 }
