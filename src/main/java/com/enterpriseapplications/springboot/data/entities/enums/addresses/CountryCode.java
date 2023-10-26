@@ -2,7 +2,7 @@ package com.enterpriseapplications.springboot.data.entities.enums.addresses;
 
 public enum CountryCode
 {
-    IT,
+    ITA,
     EN,
     FR,
     DE,

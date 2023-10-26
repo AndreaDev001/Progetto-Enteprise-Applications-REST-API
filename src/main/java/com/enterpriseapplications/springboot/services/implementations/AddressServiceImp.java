@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 
+import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.data.dao.AddressDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateAddressDto;
@@ -70,7 +71,11 @@ public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> im
     @Override
     public AddressDto createAddress(CreateAddressDto createAddressDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
-        return null;
+        if(!this.addressValidationHandler.validateAddress(createAddressDto))
+            throw new InvalidFormat("errors.address.invalidAddress");
+        Address address = Address.builder().countryCode(createAddressDto.getCountryCode()).postalCode(createAddressDto.getPostalCode()).locality(createAddressDto.getLocality()).street(createAddressDto.getStreet()).ownerName(createAddressDto.getOwnerName()).user(requiredUser).build();
+        this.addressDao.save(address);
+        return this.modelMapper.map(address,AddressDto.class);
     }
 
     @Override

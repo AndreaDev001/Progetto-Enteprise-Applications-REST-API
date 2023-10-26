@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateAddressDto;
+import com.enterpriseapplications.springboot.data.entities.enums.addresses.AddressItem;
 import com.enterpriseapplications.springboot.data.entities.enums.addresses.AddressSearchRequest;
 import com.enterpriseapplications.springboot.data.entities.enums.addresses.AddressSearchResponse;
 import com.enterpriseapplications.springboot.data.entities.enums.addresses.CountryCode;
@@ -25,20 +26,19 @@ public class AddressValidationHandler
 
     public AddressSearchResponse getAddresses(CountryCode countryCode,String query)
     {
-        try
-        {
-            RestTemplate restTemplate = new RestTemplate();
-            AddressSearchRequest addressSearchRequest = generateAddressSearchRequest(countryCode,query);
-            String resourceURI = this.baseURI + "/lookup?" + addressSearchRequest.toString();
-            return restTemplate.getForObject(resourceURI,AddressSearchResponse.class);
-        }
-        catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return null;
+        RestTemplate restTemplate = new RestTemplate();
+        AddressSearchRequest addressSearchRequest = generateAddressSearchRequest(countryCode,query);
+        String resourceURI = this.baseURI + "/lookup?" + addressSearchRequest.toString();
+        return restTemplate.getForObject(resourceURI,AddressSearchResponse.class);
     }
 
     public boolean validateAddress(CreateAddressDto createAddressDto) {
+        AddressSearchResponse addressSearchResponse = getAddresses(createAddressDto.getCountryCode(),createAddressDto.getStreet());
+        for(AddressItem candidate : addressSearchResponse.getCandidates()) {
+            if (candidate.getStreet().equals(createAddressDto.getStreet()) && candidate.getLocality().equals(createAddressDto.getLocality())
+                    && candidate.getPostal_code().equals(createAddressDto.getPostalCode()) && candidate.getCountry_iso3().equals(createAddressDto.getCountryCode().toString()))
+                return true;
+        }
         return false;
     }
 

@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
@@ -49,9 +51,11 @@ public class Address implements OwnableEntity
     private CountryCode countryCode;
 
     @Column(name = "CREATED_DATE",unique = false)
+    @CreatedDate
     private LocalDate createdDate;
 
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @LastModifiedDate
     private LocalDate lastModifiedDate;
 
     @Override
