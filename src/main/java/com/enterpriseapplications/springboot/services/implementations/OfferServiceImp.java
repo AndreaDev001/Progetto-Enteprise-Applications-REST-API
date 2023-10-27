@@ -136,7 +136,9 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(createOfferDto.getProductID()).orElseThrow();
         if(requiredProduct.getSeller().getId().equals(requiredUser.getId()))
-            throw new InvalidFormat("errors.offer.invalidBidder");
+            throw new InvalidFormat("errors.offer.create.invalidBidder");
+        if(requiredProduct.getMinPrice().compareTo(createOfferDto.getPrice()) > 0)
+            throw new InvalidFormat("errors.offer.create.invalidPrice");
         Offer offer = new Offer();
         offer.setBuyer(requiredUser);
         offer.setProduct(requiredProduct);
@@ -170,7 +172,7 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
             requiredOffer.setDescription(updateOfferBuyerDto.getDescription());
         if(updateOfferBuyerDto.getPrice() != null) {
             if(updateOfferBuyerDto.getPrice().compareTo(requiredOffer.getProduct().getPrice()) < 0)
-                throw new InvalidFormat("error.offers.updateBuyer.invalidPrice");
+                throw new InvalidFormat("errors.offers.updateBuyer.invalidPrice");
             requiredOffer.setPrice(updateOfferBuyerDto.getPrice());
         }
         this.offerDao.save(requiredOffer);
@@ -185,14 +187,14 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         Optional<Offer> offerOptional = this.offerDao.getOfferByStatus(requiredOffer.getId(),OfferStatus.ACCEPTED);
         OfferStatus offerStatus = updateOfferSeller.getOfferStatus();
         if(!requiredProduct.getId().equals(requiredOffer.getProduct().getSeller().getId()))
-            throw new InvalidFormat("error.product.updateSeller.invalidProduct");
+            throw new InvalidFormat("errors.product.updateSeller.invalidProduct");
         if(offerOptional.isPresent())
-            throw new InvalidFormat("error.offer.updateSeller.alreadyAccepted");
+            throw new InvalidFormat("errors.offer.updateSeller.alreadyAccepted");
         if(offerStatus != null) {
             if(requiredOffer.getStatus() != OfferStatus.OPEN)
-                throw new InvalidFormat("error.offer.updateSeller.invalidOldStatus");
+                throw new InvalidFormat("errors.offer.updateSeller.invalidOldStatus");
             if(offerStatus.equals(OfferStatus.EXPIRED) || offerStatus.equals(OfferStatus.OPEN))
-                throw new InvalidFormat("error.offer.updateSeller.invalidStatus");
+                throw new InvalidFormat("errors.offer.updateSeller.invalidStatus");
             requiredOffer.setStatus(updateOfferSeller.getOfferStatus());
         }
         this.offerDao.save(requiredOffer);

@@ -89,9 +89,9 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
         Product requiredProduct = this.productDao.findById(createConversationDto.getProductID()).orElseThrow();
         User secondUser = this.userDao.findById(createConversationDto.getSecond()).orElseThrow();
         if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
-            throw new InvalidFormat("error.conversation.invalidStarter");
+            throw new InvalidFormat("errors.conversation.invalidStarter");
         if(requiredUser.getId().equals(createConversationDto.getSecond()))
-            throw new InvalidFormat("error.conversation.invalidReceiver");
+            throw new InvalidFormat("errors.conversation.invalidReceiver");
         Conversation conversation = Conversation.builder().product(requiredProduct)
                 .first(requiredUser).second(secondUser).build();;
         return this.modelMapper.map(this.conversationDao.save(conversation),ConversationDto.class);

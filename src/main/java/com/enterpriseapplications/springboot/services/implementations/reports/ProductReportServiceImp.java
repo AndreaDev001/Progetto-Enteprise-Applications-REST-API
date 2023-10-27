@@ -81,7 +81,7 @@ public class ProductReportServiceImp extends GenericServiceImp<ProductReport,Pro
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         ProductReport productReport = this.productReportDao.findById(updateReportDto.getReportID()).orElseThrow();
         if(requiredUser.getId().equals(productReport.getProduct().getSeller().getId()))
-            throw new InvalidFormat("error.productReport.invalidUpdater");
+            throw new InvalidFormat("errors.productReport.invalidUpdater");
         if(updateReportDto.getReason() != null)
             productReport.setReason(updateReportDto.getReason());
         if(updateReportDto.getDescription() != null)

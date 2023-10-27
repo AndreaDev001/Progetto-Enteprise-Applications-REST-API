@@ -83,9 +83,9 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         User bannedUser = this.userDao.findById(createBanDto.getBannedID()).orElseThrow();
         Optional<Ban> banOptional = this.banDao.findBan(createBanDto.getBannedID());
         if(requiredUser.getId().equals(createBanDto.getBannedID()))
-            throw new InvalidFormat("error.bans.invalidBanner");
+            throw new InvalidFormat("errors.bans.invalidBanner");
         if(banOptional.isPresent())
-            throw new InvalidFormat("error.bans.alreadyBanned");
+            throw new InvalidFormat("errors.bans.alreadyBanned");
         Ban ban = new Ban();
         ban.setBanned(bannedUser);
         ban.setBanner(requiredUser);

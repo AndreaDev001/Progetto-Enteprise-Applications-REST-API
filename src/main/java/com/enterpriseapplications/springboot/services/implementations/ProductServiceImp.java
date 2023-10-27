@@ -91,7 +91,7 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     private Product buildProduct(CreateProductDto createProductDto, Category requiredCategory, User requiredUser) {
         Product requiredProduct = new Product();
         if(createProductDto.getPrice().compareTo(createProductDto.getMinPrice()) < 0)
-            throw new InvalidFormat("error.product.invalidMinPrice");
+            throw new InvalidFormat("errors.product.invalidMinPrice");
         requiredProduct.setName(createProductDto.getName());
         requiredProduct.setDescription(createProductDto.getDescription());
         requiredProduct.setBrand(createProductDto.getBrand());

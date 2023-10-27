@@ -62,7 +62,7 @@ public class ReplyServiceImp extends GenericServiceImp<Reply,ReplyDto> implement
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Review requiredReview  = this.reviewDao.findById(createReplyDto.getReviewID()).orElseThrow();
         if(requiredUser.getId().equals(requiredReview.getWriter().getId()))
-            throw new InvalidFormat("error.reply.invalidWriter");
+            throw new InvalidFormat("errors.reply.invalidWriter");
         Reply reply = new Reply();
         reply.setWriter(requiredUser);
         reply.setReview(requiredReview);
