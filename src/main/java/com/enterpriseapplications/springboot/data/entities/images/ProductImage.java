@@ -23,11 +23,6 @@ public class ProductImage extends Image
         this.setCreatedDate(image.getCreatedDate());
         this.setLastModifiedDate(image.getLastModifiedDate());
     }
-
-    public ProductImage(Product product,MultipartFile multipartFile) throws IOException {
-        super(multipartFile);
-        this.setProduct(product);
-    }
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;

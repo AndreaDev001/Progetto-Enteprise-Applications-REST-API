@@ -69,6 +69,7 @@ public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> im
     }
 
     @Override
+    @Transactional
     public AddressDto createAddress(CreateAddressDto createAddressDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         if(!this.addressValidationHandler.validateAddress(createAddressDto))
@@ -79,6 +80,7 @@ public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> im
     }
 
     @Override
+    @Transactional
     public AddressDto updateAddress(UpdateAddressDto updateAddressDto) {
         Address address = this.addressDao.findById(updateAddressDto.getAddressID()).orElseThrow();
         if(updateAddressDto.getOwnerName() != null)
@@ -93,6 +95,7 @@ public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> im
     }
 
     @Override
+    @Transactional
     public void deleteAddress(UUID addressID) {
         this.addressDao.findById(addressID).orElseThrow();
         this.addressDao.deleteById(addressID);

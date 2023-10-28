@@ -88,19 +88,11 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
         Optional<UserImage> userImageOptional = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName()));
         UserImage userImage = userImageOptional.orElseGet(UserImage::new);
         userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
-        userImage.setType(this.getImageType(createUserImageDto.getFile().getContentType()));
+        userImage.setType(ImageUtils.getImageType(createUserImageDto.getFile().getContentType()));
         userImage.setUser(requiredUser);
         this.userImageDao.save(userImage);
         UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
         userImageDto.addLinks();
         return userImageDto;
-    }
-
-    private ImageType getImageType(String type) {
-        for(ImageType current : ImageType.values()) {
-            if(current.getName().equals(type))
-                return current;
-        }
-        return null;
     }
 }

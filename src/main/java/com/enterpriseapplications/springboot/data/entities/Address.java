@@ -48,6 +48,7 @@ public class Address implements OwnableEntity
     private String ownerName;
 
     @Column(name = "COUNTRY_CODE",unique = false)
+    @Enumerated(EnumType.STRING)
     private CountryCode countryCode;
 
     @Column(name = "CREATED_DATE",unique = false)

@@ -4,10 +4,12 @@ import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssemble
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.ProductImageDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.images.CreateProductImageDto;
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.ProductImageService;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,10 +35,12 @@ import java.util.stream.Collectors;
 public class ProductImageServiceImp extends GenericServiceImp<ProductImage,ProductImageDto> implements ProductImageService
 {
     private final ProductDao productDao;
+    private final UserDao userDao;
     private final ProductImageDao productImageDao;
 
-    public ProductImageServiceImp(ProductDao productDao,ProductImageDao productImageDao,ModelMapper modelMapper,PagedResourcesAssembler<ProductImage> pagedResourcesAssembler) {
+    public ProductImageServiceImp(UserDao userDao,ProductDao productDao,ProductImageDao productImageDao,ModelMapper modelMapper,PagedResourcesAssembler<ProductImage> pagedResourcesAssembler) {
         super(modelMapper,ProductImage.class,ProductImageDto.class,pagedResourcesAssembler);
+        this.userDao = userDao;
         this.productDao = productDao;
         this.productImageDao = productImageDao;
     }
@@ -66,9 +71,15 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
     @SneakyThrows
     public List<ProductImageDto> uploadImages(CreateProductImageDto createProductImageDto) {
         List<ProductImageDto> results = new ArrayList<>();
+        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(createProductImageDto.getProductID()).orElseThrow();
+        if(!requiredProduct.getSeller().getId().equals(requiredUser.getId()))
+            throw new InvalidFormat("errors.productImage.invalidUploader");
         for(MultipartFile multipartFile : createProductImageDto.getFiles()) {
-            ProductImage productImage = new ProductImage(requiredProduct,multipartFile);
+            ProductImage productImage = new ProductImage();
+            productImage.setProduct(requiredProduct);
+            productImage.setImage(ImageUtils.compressImage(multipartFile.getBytes()));
+            productImage.setType(ImageUtils.getImageType(multipartFile.getContentType()));
             productImage = this.productImageDao.save(productImage);
             ProductImageDto productImageDto = this.modelMapper.map(productImage,ProductImageDto.class);
             productImageDto.addLinks();

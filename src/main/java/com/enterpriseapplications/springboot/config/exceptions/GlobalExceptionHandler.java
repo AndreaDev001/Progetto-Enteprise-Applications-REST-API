@@ -121,6 +121,12 @@ public class GlobalExceptionHandler {
         return errorResponse(HttpStatus.PAYLOAD_TOO_LARGE,Date.from(Instant.now()),"error.http.maxUpload",request.getRequestURI());
     }
 
+    @ExceptionHandler({InvalidMediaType.class})
+    @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ResponseEntity<ErrorResponse> unsupportedMediaType(InvalidMediaType exception,HttpServletRequest request) {
+        return errorResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE,Date.from(Instant.now()),"error.http.unsupportedMediaType",request.getRequestURI());
+    }
+
     public ResponseEntity<ErrorResponse> errorResponse(HttpStatus httpStatus, Date date, String code, String url) {
         ErrorResponse errorResponse = new ErrorResponse(date,url,String.valueOf(httpStatus.value()),messageGetter.getMessage(code));
         return ResponseEntity.status(httpStatus).body(errorResponse);
