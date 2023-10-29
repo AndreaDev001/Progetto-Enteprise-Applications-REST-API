@@ -19,16 +19,15 @@ import java.util.UUID;
 public class CreateOrderDto
 {
     @NotNull
-    private UUID productID;
+    public UUID productID;
 
     @NotNull
-    private UUID paymentMethodID;
+    public UUID paymentMethodID;
 
     @NotNull
-    private UUID addressID;
+    public UUID addressID;
 
     @NotNull
     @Positive
-    private BigDecimal price;
-
+    public BigDecimal price;
 }

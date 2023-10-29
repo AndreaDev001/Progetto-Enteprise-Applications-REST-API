@@ -63,6 +63,7 @@ public class OrderController
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasAccess(@addressDao,#createOrderDto.addressID) and @permissionHandler.hasAccess(@paymentMethodDao,#createOrderDto.paymentMethodID)")
     public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid CreateOrderDto createOrderDto) {
         return ResponseEntity.ok(this.orderService.createOrder(createOrderDto));
     }

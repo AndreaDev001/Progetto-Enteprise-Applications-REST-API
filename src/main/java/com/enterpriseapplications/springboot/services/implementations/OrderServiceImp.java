@@ -10,6 +10,7 @@ import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.*;
 import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,15 +23,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implements OrderService {
 
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH::mm:ss");
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final ProductDao productDao;
@@ -83,12 +90,16 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
         Product requiredProduct = this.productDao.findById(createOrderDto.getProductID()).orElseThrow();
         Address requiredAddress = this.addressDao.findById(createOrderDto.getAddressID()).orElseThrow();
         PaymentMethod requiredPaymentMethod = this.paymentMethodDao.findById(createOrderDto.getPaymentMethodID()).orElseThrow();
+        if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
+            throw new InvalidFormat("error.order.invalidBuyer");
         Order order = new Order();
         order.setBuyer(requiredUser);
         order.setProduct(requiredProduct);
         order.setPrice(createOrderDto.getPrice());
         order.setAddress(requiredAddress);
         order.setPaymentMethod(requiredPaymentMethod);
+        order.setStatus(OrderStatus.PROCESSING);
+        order.setDeliveryDate(LocalDate.now().plus(Duration.ofDays(3)));
         return this.modelMapper.map(this.orderDao.save(order),OrderDto.class);
     }
 
@@ -110,7 +121,10 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
     @Scheduled(fixedDelay = 24 * 60 * 60 * 1000,initialDelay = 24 * 60 * 60 * 1000)
     public void updateProcessing() {
         List<Order> requiredOrders = this.orderDao.getOrders(OrderStatus.PROCESSING);
-        requiredOrders.forEach(order -> order.setStatus(OrderStatus.SHIPPING));
+        requiredOrders.forEach(order -> {
+            log.info(String.format("Order [%s] has been processed at [%s]"),order.getId().toString(),dateTimeFormatter.format(LocalDateTime.now()));
+            order.setStatus(OrderStatus.SHIPPING);
+        });
         this.orderDao.saveAll(requiredOrders);
     }
 
@@ -118,7 +132,10 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
     @Scheduled(fixedDelay = 24 * 60 * 60 * 1000)
     public void updateShipping() {
         List<Order> requiredOrders = this.orderDao.getDeliveredOrders(LocalDate.now());
-        requiredOrders.forEach(order -> order.setStatus(OrderStatus.DELIVERED));
+        requiredOrders.forEach(order -> {
+            log.info(String.format("Order [%s] has been delivered at [%s]"),order.getId().toString(),dateTimeFormatter.format(LocalDateTime.now()));
+            order.setStatus(OrderStatus.DELIVERED);
+        });
         this.orderDao.saveAll(requiredOrders);
     }
 
