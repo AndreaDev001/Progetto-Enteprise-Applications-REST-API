@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.OfferDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
@@ -20,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
@@ -131,6 +133,13 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
 
     @Test
     void getOffersBySpec() {
+        OfferSpecifications.Filter filter = new OfferSpecifications.Filter();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        Specification<Offer> specification = OfferSpecifications.withFilter(filter);
+        given(this.offerDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<OfferDto> pagedModel = this.offerServiceImp.getOffersBySpec(specification,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test

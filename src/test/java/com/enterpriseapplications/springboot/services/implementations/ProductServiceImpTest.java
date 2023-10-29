@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.data.dao.CategoryDao;
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -21,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
@@ -36,7 +38,6 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
 
     private ProductServiceImp productServiceImp;
-
     @Mock
     public UserDao userDao;
     @Mock
@@ -138,7 +139,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         Product product = Product.builder().id(UUID.randomUUID()).name("Name").description("Description").build();
         Category category = Category.builder().id(UUID.randomUUID()).primaryCat("Primary").secondaryCat("Secondary").tertiaryCat("Tertiary").build();
         product.setCategory(category);
-        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(product);
+        ProductSpecifications.Filter filter = new ProductSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,product);
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
         given(this.productDao.findAll(ProductSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
@@ -148,6 +149,12 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     }
     @Test
     void getProductsBySpec() {
-
+        ProductSpecifications.Filter filter = new ProductSpecifications.Filter();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        Specification<Product> specification = ProductSpecifications.withFilter(filter);
+        given(this.productDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ProductDto> pagedModel = this.productServiceImp.getProductsBySpec(specification,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }

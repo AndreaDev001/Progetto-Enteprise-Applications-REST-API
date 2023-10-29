@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +87,7 @@ class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
     @Test
     void getSimilarUsers() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        UserSpecifications.Filter filter = new UserSpecifications.Filter(user);
+        UserSpecifications.Filter filter = new UserSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,user);
         PageRequest pageRequest = PageRequest.of(0,20);
         Specification<User> specification = UserSpecifications.withFilter(filter);
         given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
@@ -110,5 +112,12 @@ class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
 
     @Test
     void getUsersBySpec() {
+        PageRequest pageRequest = PageRequest.of(0,20);
+        UserSpecifications.Filter filter = new UserSpecifications.Filter();
+        Specification<User> specification = UserSpecifications.withFilter(filter);
+        given(this.userDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<UserDetailsDto> pagedModel = this.userServiceImp.getUsersBySpec(specification,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }

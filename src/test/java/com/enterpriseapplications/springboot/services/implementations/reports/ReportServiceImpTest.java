@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations.reports;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
+import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -20,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import java.rmi.server.UID;
@@ -141,6 +143,13 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
 
     @Test
     void getReportsBySpec() {
+        ReportSpecifications.Filter filter = new ReportSpecifications.Filter();
+        Specification<Report> specification = ReportSpecifications.withFilter(filter);
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.reportDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<ReportDto> reports = this.reportServiceImp.getReportsBySpec(specification,pageRequest);
+        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
+        Assert.assertTrue(validPage(reports,20,0,1,2));
     }
 
     @Test
@@ -148,7 +157,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         User reporter = User.builder().id(UUID.randomUUID()).build();
         User reported = User.builder().id(UUID.randomUUID()).build();
         Report report = Report.builder().id(UUID.randomUUID()).reporter(reporter).reported(reported).description("Description").reason(ReportReason.RACISM).build();
-        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(report);
+        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,report);
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.reportDao.findById(report.getId())).willReturn(Optional.of(report));
         given(this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));

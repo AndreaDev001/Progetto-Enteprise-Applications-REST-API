@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.services.implementations.images;
 
 import com.enterpriseapplications.springboot.data.dao.ProductDao;
+import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.ProductImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -33,13 +34,15 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
     @Mock
     private ProductDao productDao;
     @Mock
+    private UserDao userDao;
+    @Mock
     private ProductImageDao productImageDao;
 
 
     @Override
     protected void init() {
         super.init();
-        productImageServiceImp = new ProductImageServiceImp(productDao,productImageDao,modelMapper,pagedResourcesAssembler);
+        productImageServiceImp = new ProductImageServiceImp(userDao,productDao,productImageDao,modelMapper,pagedResourcesAssembler);
         List<Image> images = ImageServiceImpTest.createImages();
         Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
         Product secondProduct = Product.builder().id(UUID.randomUUID()).build();

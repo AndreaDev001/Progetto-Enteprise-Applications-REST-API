@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
 import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.enums.PaymentMethodBrand;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +42,8 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         paymentMethodServiceImp = new PaymentMethodServiceImp(userDao,paymentMethodDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        firstElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").user(firstUser).number("234568279102").holderName("Holder Name").build();
-        secondElement = PaymentMethod.builder().id(UUID.randomUUID()).brand("brand").user(secondUser).number("37238393910").holderName("Holder Name").build();
+        firstElement = PaymentMethod.builder().id(UUID.randomUUID()).brand(PaymentMethodBrand.VISA).user(firstUser).number("234568279102").holderName("Holder Name").build();
+        secondElement = PaymentMethod.builder().id(UUID.randomUUID()).brand(PaymentMethodBrand.DISCOVER).user(secondUser).number("37238393910").holderName("Holder Name").build();
         elements = List.of(firstElement,secondElement);
     }
 
@@ -54,11 +55,11 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
     public boolean valid(PaymentMethod paymentMethod, PaymentMethodDto paymentMethodDto) {
         Assert.assertNotNull(paymentMethodDto);
         Assert.assertEquals(paymentMethod.getId(),paymentMethodDto.getId());
-        Assert.assertEquals(paymentMethod.getNumber(),paymentMethod.getNumber());
-        Assert.assertEquals(paymentMethod.getBrand(),paymentMethod.getBrand());
-        Assert.assertEquals(paymentMethod.getHolderName(),paymentMethod.getHolderName());
-        Assert.assertEquals(paymentMethod.getUser().getId(),paymentMethod.getOwnerID());
-        Assert.assertEquals(paymentMethod.getCreatedDate(),paymentMethod.getCreatedDate());
+        Assert.assertEquals(paymentMethod.getNumber(),paymentMethodDto.getNumber());
+        Assert.assertEquals(paymentMethod.getBrand(),paymentMethodDto.getBrand());
+        Assert.assertEquals(paymentMethod.getHolderName(),paymentMethodDto.getHolderName());
+        Assert.assertEquals(paymentMethod.getUser().getId(),paymentMethodDto.getUser().getId());
+        Assert.assertEquals(paymentMethod.getCreatedDate(),paymentMethodDto.getCreatedDate());
         return true;
     }
 
@@ -89,17 +90,6 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         given(this.paymentMethodDao.getPaymentMethodsByBrand(user.getId(),brand,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByBrand(user.getId(),brand,pageRequest);
         Assert.assertTrue(compare(elements, pagedModel.getContent().stream().toList()));
-        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
-    }
-
-    @Test
-    void getPaymentMethodsByCountry() {
-        User user = User.builder().id(UUID.randomUUID()).build();
-        String country = "country";
-        PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.paymentMethodDao.getPaymentMethodsByCountry(user.getId(),country,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
-        PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByCountry(user.getId(),country,pageRequest);
-        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
         Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 

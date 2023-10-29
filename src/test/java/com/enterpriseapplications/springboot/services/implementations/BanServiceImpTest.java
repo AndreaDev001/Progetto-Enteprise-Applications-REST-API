@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import javax.swing.text.html.Option;
@@ -112,6 +113,13 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
 
     @Test
     void getBansBySpec() {
+        BanSpecifications.Filter filter = new BanSpecifications.Filter();
+        Specification<Ban> specification = BanSpecifications.withFilter(filter);
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.banDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> pagedModel = this.banServiceImp.getBansBySpec(specification,pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
