@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.entities;
 
 
+import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
 import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,20 @@ public class Order implements OwnableEntity
     @JoinColumn(name = "ADDRESS")
     private Address address;
 
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "PAYMENT_METHOD")
+    private PaymentMethod paymentMethod;
+
     @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
+
+    @Column(name = "STATUS",nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus status;
+
+    @Column(name = "DELIVERY_DATE",nullable = false)
+    private LocalDate deliveryDate;
 
     @Column(name = "PRICE",unique = false)
     private BigDecimal price;

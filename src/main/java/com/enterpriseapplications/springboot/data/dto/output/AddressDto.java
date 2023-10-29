@@ -23,5 +23,6 @@ public class AddressDto extends GenericOutput<AddressDto>
     private String street;
     private String locality;
     private String postalCode;
+    private String ownerName;
     private LocalDate createdDate;
 }

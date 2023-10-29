@@ -1,6 +1,7 @@
 package com.enterpriseapplications.springboot.data.dao.images;
 
 
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,5 @@ import java.util.UUID;
 public interface ImageDao extends JpaRepository<Image, UUID>
 {
     @Query("select i from Image i where i.type = :requiredType")
-    List<Image> getImagesByType(@Param("requiredType") String type);
+    List<Image> getImagesByType(@Param("requiredType") ImageType type);
 }

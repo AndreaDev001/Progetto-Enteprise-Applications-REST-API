@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.controllers.images;
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,8 @@ public class ImageController
 
     @GetMapping("/private/type/{type}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<ImageDto>> getImagesByType(@PathVariable("type") String type) {
-        return ResponseEntity.ok(this.imageService.getImagesByType(type));
+    public ResponseEntity<List<ImageDto>> getImagesByType(@PathVariable("type") ImageType imageType) {
+        return ResponseEntity.ok(this.imageService.getImagesByType(imageType));
     }
 
     @DeleteMapping("/private/{id}")

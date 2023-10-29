@@ -15,6 +15,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Table(name = "PAYMENT_METHODS",uniqueConstraints = {@UniqueConstraint(columnNames = {"OWNER","NUMBER"})})
@@ -42,6 +44,9 @@ public class PaymentMethod implements OwnableEntity
 
     @Column(name = "EXPIRATION_DATE",unique = false)
     private LocalDate expirationDate;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "paymentMethod")
+    private Set<Order> orders = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OWNER")

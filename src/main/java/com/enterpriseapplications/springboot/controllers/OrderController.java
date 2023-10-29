@@ -7,11 +7,13 @@ import com.enterpriseapplications.springboot.data.dto.input.create.CreatePayment
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.Order;
+import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -42,11 +45,21 @@ public class OrderController
         return ResponseEntity.ok(this.orderService.getOrder(orderID));
     }
 
-    @GetMapping("/public/buyer/{userID}")
+    @GetMapping("/private/buyer/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<OrderDto>> getOrders(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<OrderDto> orders = this.orderService.getOrders(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/public/statues")
+    public ResponseEntity<OrderStatus[]> getStatues() {
+        return ResponseEntity.ok(this.orderService.getStatues());
+    }
+
+    @GetMapping("/private/status/{status}")
+    public ResponseEntity<List<OrderDto>> getOrdersByStatus(@PathVariable("status") OrderStatus status) {
+        return ResponseEntity.ok(this.orderService.getOrders(status));
     }
 
     @PostMapping("/private")

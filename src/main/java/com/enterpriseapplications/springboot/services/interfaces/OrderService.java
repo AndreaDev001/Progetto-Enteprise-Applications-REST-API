@@ -5,10 +5,12 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDt
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.Order;
+import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface OrderService
@@ -16,8 +18,12 @@ public interface OrderService
     OrderDto getOrder(UUID orderID);
     PagedModel<OrderDto> getOrders(Pageable pageable);
     PagedModel<OrderDto> getOrders(UUID userID, Pageable pageable);
+    List<OrderDto> getOrders(OrderStatus status);
     OrderDto getOrderByProduct(UUID productID);
     OrderDto createOrder(CreateOrderDto createOrderDto);
     OrderDto updateOrder(UpdateOrderDto updateOrderDto);
+    OrderStatus[] getStatues();
+    void updateProcessing();
+    void updateShipping();
     void deleteOrder(UUID orderID);
 }

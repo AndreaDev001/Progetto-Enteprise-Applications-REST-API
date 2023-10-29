@@ -22,6 +22,13 @@ public class CreateOrderDto
     private UUID productID;
 
     @NotNull
+    private UUID paymentMethodID;
+
+    @NotNull
+    private UUID addressID;
+
+    @NotNull
     @Positive
     private BigDecimal price;
+
 }

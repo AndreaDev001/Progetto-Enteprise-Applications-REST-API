@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.services.implementations.images;
 import com.enterpriseapplications.springboot.config.util.ImageUtils;
 import com.enterpriseapplications.springboot.data.dao.images.ImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
+import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.services.implementations.GenericServiceImp;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
@@ -46,8 +47,8 @@ public class ImageServiceImp extends GenericServiceImp<Image,ImageDto> implement
     }
 
     @Override
-    public List<ImageDto> getImagesByType(String type) {
-        List<Image> images = this.imageDao.getImagesByType(type);
+    public List<ImageDto> getImagesByType(ImageType imageType) {
+        List<Image> images = this.imageDao.getImagesByType(imageType);
         return images.stream().map(image -> this.modelMapper.map(image,ImageDto.class)).collect(Collectors.toList());
     }
 
