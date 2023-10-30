@@ -39,7 +39,9 @@ public class AuthenticationHandler
         if(userOptional.isEmpty()) {
             String username = (String)jwtAuthenticationToken.getTokenAttributes().get("username");
             String email = (String)jwtAuthenticationToken.getTokenAttributes().get("email");
-            User requiredUser = User.builder().id(userID).username(username).email(email).gender(Gender.NOT_SPECIFIED).visibility(UserVisibility.PUBLIC).build();
+            String name = (String)jwtAuthenticationToken.getTokenAttributes().get("name");
+            String surname = (String)jwtAuthenticationToken.getTokenAttributes().get("surname");
+            User requiredUser = User.builder().id(userID).username(username).email(email).name(name).surname(surname).gender(Gender.NOT_SPECIFIED).visibility(UserVisibility.PUBLIC).build();
             this.userDao.save(requiredUser);
         }
     }

@@ -1,9 +1,7 @@
 package com.enterpriseapplications.springboot.data.dto.input.create;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +23,7 @@ public class CreateReviewDto {
     private String text;
 
     @NotNull
-    @PositiveOrZero
+    @Positive
+    @Max(10)
     private Integer rating;
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,4 +22,6 @@ public interface ReviewDao extends JpaRepository<Review,UUID> {
     Page<Review> findAllReviewsReceived(@Param("requiredID") UUID receiverID, Pageable pageable);
     @Query("select r from Review r where r.writer.id = :requiredWriterID and r.receiver.id = :requiredReceiverID")
     Optional<Review> findReview(@Param("requiredWriterID") UUID writerID,@Param("requiredReceiverID") UUID receiverID);
+    @Query("select r from Review r where r.receiver.id = :requiredReceiverID")
+    List<Review> getReviews(@Param("requiredReceiverID") UUID receiverID);
 }

@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -76,7 +77,9 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
         review.setReceiver(reviewed);
         review.setText(createReviewDto.getText());
         review.setRating(createReviewDto.getRating());
-        return this.modelMapper.map(this.reviewDao.save(review),ReviewDto.class);
+        review = this.reviewDao.save(review);
+        this.updateRating(reviewed.getId());
+        return this.modelMapper.map(review,ReviewDto.class);
     }
 
     @Override
@@ -88,7 +91,21 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
         if(updateReviewDto.getText() != null)
             requiredReview.setText(updateReviewDto.getText());
         this.reviewDao.save(requiredReview);
+        this.updateRating(requiredReview.getReceiver().getId());
         return this.modelMapper.map(requiredReview,ReviewDto.class);
+    }
+
+    @Transactional
+    private void updateRating(UUID userID) {
+        User requiredUser = this.userDao.findById(userID).orElseThrow();
+        List<Review> reviews = this.reviewDao.getReviews(userID);
+        Long sum = 0L;
+        for(Review review : reviews) {
+            sum += review.getRating();
+        }
+        Long rating = sum / reviews.size();
+        requiredUser.setRating(rating);
+        this.userDao.save(requiredUser);
     }
 
     @Override
