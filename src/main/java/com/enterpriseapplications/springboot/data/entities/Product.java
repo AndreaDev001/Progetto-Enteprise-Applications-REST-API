@@ -74,7 +74,7 @@ public class Product implements OwnableEntity {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private User seller;
 
-    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<ProductImage> productImages = new HashSet<>();
 
     @CreatedDate
