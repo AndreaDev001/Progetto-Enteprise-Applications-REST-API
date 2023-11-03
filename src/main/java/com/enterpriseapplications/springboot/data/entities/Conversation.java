@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name = "CONVERSATIONS",uniqueConstraints = {@UniqueConstraint(columnNames = {"FIRST_ID","SECOND_ID","PRODUCT_ID"})})
+@Table(name = "CONVERSATIONS",uniqueConstraints = {@UniqueConstraint(columnNames = {"STARTER_ID","PRODUCT_ID"})})
 @Entity
 @EntityListeners(value = {AuditingEntityListener.class})
 @Data
@@ -29,12 +29,8 @@ public class Conversation implements MultiOwnableEntity
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "FIRST_ID")
-    private User first;
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "SECOND_ID")
-    private User second;
+    @JoinColumn(name = "STARTER_ID")
+    private User starter;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
@@ -51,6 +47,6 @@ public class Conversation implements MultiOwnableEntity
 
     @Override
     public List<UUID> getOwners() {
-        return List.of(first.getId(),second.getId());
+        return List.of(starter.getId(),product.getSeller().getId());
     }
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class UpdateOfferBuyerDto
 {
     @NotNull
-    private UUID offerID;
-    private String description;
-    private BigDecimal price;
+    public UUID offerID;
+    public  String description;
+    public BigDecimal price;
 }

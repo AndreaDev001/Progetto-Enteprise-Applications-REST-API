@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 
 public class ProductImageServiceImp extends GenericServiceImp<ProductImage,ProductImageDto> implements ProductImageService
 {
@@ -69,13 +70,11 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
     @Override
     @Transactional
     @SneakyThrows
-    public List<ProductImageDto> uploadImages(CreateProductImageDto createProductImageDto) {
+    public List<ProductImageDto> uploadImages(UUID productID,List<MultipartFile> files) {
         List<ProductImageDto> results = new ArrayList<>();
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
-        Product requiredProduct = this.productDao.findById(createProductImageDto.getProductID()).orElseThrow();
-        if(!requiredProduct.getSeller().getId().equals(requiredUser.getId()))
-            throw new InvalidFormat("errors.productImage.invalidUploader");
-        for(MultipartFile multipartFile : createProductImageDto.getFiles()) {
+        Product requiredProduct = this.productDao.findById(productID).orElseThrow();
+        for(MultipartFile multipartFile : files) {
             ProductImage productImage = new ProductImage();
             productImage.setProduct(requiredProduct);
             productImage.setImage(ImageUtils.compressImage(multipartFile.getBytes()));

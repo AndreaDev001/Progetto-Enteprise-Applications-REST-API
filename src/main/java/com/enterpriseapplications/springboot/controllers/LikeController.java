@@ -43,7 +43,7 @@ public class LikeController {
         return ResponseEntity.ok(this.likeService.getLike(likeID));
     }
     @GetMapping("/private/user/{userID}")
-    @PreAuthorize("@permissionHandler.hasAccess(@likeDao,#userID)")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<PagedModel<LikeDto>> getLikesByUser(@PathVariable("userID") UUID userID, @Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<LikeDto> likes = this.likeService.getLikesByUser(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(likes);

@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReplyDt
 import com.enterpriseapplications.springboot.data.dto.output.ReplyDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.services.interfaces.ReplyService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/replies")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class ReplyController
 {
     private final ReplyService replyService;

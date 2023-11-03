@@ -100,7 +100,6 @@ public class ProductController
     }
 
     @PostMapping("/private")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
         return ResponseEntity.ok(this.productService.createProduct(createProductDto));
     }

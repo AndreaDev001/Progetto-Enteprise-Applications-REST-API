@@ -32,6 +32,7 @@ import java.util.UUID;
 
 
 @Service
+@Transactional
 public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implements ReportService {
 
     private final ReportDao reportDao;
@@ -98,6 +99,12 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
         ReportSpecifications.Filter filter = new ReportSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,requiredReport);
         Page<Report> reports = this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageable);
         return this.pagedResourcesAssembler.toModel(reports,this.modelAssembler);
+    }
+
+    @Override
+    public ReportDto getReportBetween(UUID reporterID, UUID reportedID) {
+        Report report = this.reportDao.getReport(reporterID,reportedID).orElseThrow();
+        return this.modelMapper.map(report,ReportDto.class);
     }
 
     @Override

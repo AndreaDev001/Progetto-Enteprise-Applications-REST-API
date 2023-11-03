@@ -26,6 +26,7 @@ import java.util.UUID;
 
 
 @Service
+@Transactional
 public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implements ReviewService {
 
     private final ReviewDao reviewDao;

@@ -21,6 +21,9 @@ public class CreateMessageDto
     private UUID receiverID;
 
     @NotNull
+    private UUID conversationID;
+
+    @NotNull
     @NotBlank
     private String text;
 }

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ReplyServiceImp extends GenericServiceImp<Reply,ReplyDto> implements ReplyService
 {
     private final ReplyDao replyDao;
@@ -67,7 +68,8 @@ public class ReplyServiceImp extends GenericServiceImp<Reply,ReplyDto> implement
         reply.setWriter(requiredUser);
         reply.setReview(requiredReview);
         reply.setText(createReplyDto.getText());
-        return this.modelMapper.map(this.replyDao.save(reply),ReplyDto.class);
+        this.replyDao.save(reply);
+        return this.modelMapper.map(reply,ReplyDto.class);
     }
 
     @Override

@@ -16,7 +16,5 @@ import java.util.UUID;
 public class CreateConversationDto
 {
     @NotNull
-    private UUID second;
-    @NotNull
     private UUID productID;
 }

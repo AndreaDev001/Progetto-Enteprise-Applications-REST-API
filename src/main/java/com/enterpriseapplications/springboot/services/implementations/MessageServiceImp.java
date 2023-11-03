@@ -3,10 +3,12 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.config.hateoas.GenericModelAssembler;
 import com.enterpriseapplications.springboot.config.exceptions.InvalidFormat;
+import com.enterpriseapplications.springboot.data.dao.ConversationDao;
 import com.enterpriseapplications.springboot.data.dao.MessageDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
+import com.enterpriseapplications.springboot.data.entities.Conversation;
 import com.enterpriseapplications.springboot.data.entities.Message;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.services.interfaces.MessageService;
@@ -26,10 +28,12 @@ public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> imp
 {
     private final MessageDao messageDao;
     private final UserDao userDao;
+    private final ConversationDao conversationDao;
 
-    public MessageServiceImp(MessageDao messageDao,UserDao userDao,ModelMapper modelMapper,PagedResourcesAssembler<Message> pagedResourcesAssembler) {
+    public MessageServiceImp(MessageDao messageDao,UserDao userDao,ConversationDao conversationDao,ModelMapper modelMapper,PagedResourcesAssembler<Message> pagedResourcesAssembler) {
         super(modelMapper,Message.class,MessageDto.class,pagedResourcesAssembler);
         this.messageDao = messageDao;
+        this.conversationDao = conversationDao;
         this.userDao = userDao;
     }
 
@@ -84,11 +88,13 @@ public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> imp
     public MessageDto createMessage(CreateMessageDto createMessageDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         User receiver = this.userDao.findById(createMessageDto.getReceiverID()).orElseThrow();
+        Conversation requiredConversation = this.conversationDao.findById(createMessageDto.getConversationID()).orElseThrow();
         if(requiredUser.getId().equals(receiver.getId()))
-            throw new InvalidFormat("errors.message.invalidSender");
+            throw new InvalidFormat("error.messages.invalidSender");
         Message message = new Message();
         message.setSender(requiredUser);
         message.setReceiver(receiver);
+        message.setConversation(requiredConversation);
         message.setText(createMessageDto.getText());
         return this.modelMapper.map(this.messageDao.save(message),MessageDto.class);
     }

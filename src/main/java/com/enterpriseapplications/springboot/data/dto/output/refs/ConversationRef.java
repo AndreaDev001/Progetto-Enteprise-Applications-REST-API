@@ -19,15 +19,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ConversationRef extends GenericOutput<ConversationRef>
 {
     private UUID id;
-    private UserRef first;
-    private UserRef second;
-    private ProductRef productRef;
+    private UserRef starter;
+    private ProductRef product;
 
     public ConversationRef(Conversation conversation) {
         this.id = conversation.getId();
-        this.productRef = new ProductRef(conversation.getProduct());
-        this.first = new UserRef(conversation.getFirst());
-        this.second = new UserRef(conversation.getSecond());
+        this.product = new ProductRef(conversation.getProduct());
+        this.starter = new UserRef(conversation.getStarter());
     }
 
     @Override

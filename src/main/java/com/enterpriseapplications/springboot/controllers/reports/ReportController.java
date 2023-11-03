@@ -40,6 +40,13 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
+    @GetMapping("/private/report/{reporterID}/{reportedID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#reporterID)")
+    public ResponseEntity<ReportDto> getReportBetween(@PathVariable("reporterID") UUID reporterID,@PathVariable("reportedID") UUID reportedID) {
+        ReportDto reportDto = this.reportService.getReportBetween(reporterID,reportedID);
+        return ResponseEntity.ok(reportDto);
+    }
+
     @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<ReportDto> getReport(@PathVariable("reportID") UUID reportID) {

@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ConversationServiceImp extends GenericServiceImp<Conversation,ConversationDto> implements ConversationService
 {
     private final ConversationDao conversationDao;
@@ -53,21 +54,15 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
     }
 
     @Override
-    public List<ConversationDto> getConversationByFirst(UUID id) {
-        List<Conversation> conversations = this.conversationDao.getConversationByFirst(id);
+    public List<ConversationDto> getConversationsByStarter(UUID starter) {
+        List<Conversation> conversations = this.conversationDao.getConversationByStarter(starter);
         return conversations.stream().map(conversation -> this.modelMapper.map(conversation,ConversationDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<ConversationDto> getConversationBySecond(UUID id) {
-        List<Conversation> conversations = this.conversationDao.getConversationBySecond(id);
-        return conversations.stream().map(conversation -> this.modelMapper.map(conversation,ConversationDto.class)).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ConversationDto> getConversation(UUID first, UUID second) {
-        List<Conversation> conversations = this.conversationDao.getConversations(first,second);
-        return conversations.stream().map(conversation -> this.modelMapper.map(conversation,ConversationDto.class)).collect(Collectors.toList());
+    public ConversationDto getConversation(UUID starter,UUID productID) {
+        Conversation conversation = this.conversationDao.getConversation(starter,productID).orElseThrow();
+        return this.modelMapper.map(conversation,ConversationDto.class);
     }
 
     @Override
@@ -87,13 +82,10 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
     public ConversationDto createConversation(CreateConversationDto createConversationDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(createConversationDto.getProductID()).orElseThrow();
-        User secondUser = this.userDao.findById(createConversationDto.getSecond()).orElseThrow();
         if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
             throw new InvalidFormat("errors.conversation.invalidStarter");
-        if(requiredUser.getId().equals(createConversationDto.getSecond()))
-            throw new InvalidFormat("errors.conversation.invalidReceiver");
         Conversation conversation = Conversation.builder().product(requiredProduct)
-                .first(requiredUser).second(secondUser).build();;
+                .starter(requiredUser).build();
         return this.modelMapper.map(this.conversationDao.save(conversation),ConversationDto.class);
     }
 

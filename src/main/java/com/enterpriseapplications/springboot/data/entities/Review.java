@@ -4,10 +4,7 @@ package com.enterpriseapplications.springboot.data.entities;
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,7 +15,8 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "REVIEWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"WRITER","RECEIVER"})})
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -32,7 +30,7 @@ public class Review implements OwnableEntity
     @Convert(converter = TrimConverter.class)
     private String text;
 
-    @OneToOne(optional = true)
+    @OneToOne(mappedBy = "review",cascade = CascadeType.ALL,orphanRemoval = true)
     private Reply reply;
 
     @Column(name = "RATING",unique = false)

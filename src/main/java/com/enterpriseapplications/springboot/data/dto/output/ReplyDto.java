@@ -10,7 +10,8 @@ import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = false)
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

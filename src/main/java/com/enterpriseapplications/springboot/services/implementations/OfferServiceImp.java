@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 @Slf4j
 public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implements OfferService
 {
@@ -186,7 +187,7 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         Offer requiredOffer = this.offerDao.findById(updateOfferSeller.getOfferID()).orElseThrow();
         Optional<Offer> offerOptional = this.offerDao.getOfferByStatus(requiredOffer.getId(),OfferStatus.ACCEPTED);
         OfferStatus offerStatus = updateOfferSeller.getOfferStatus();
-        if(!requiredProduct.getId().equals(requiredOffer.getProduct().getSeller().getId()))
+        if(!requiredProduct.getSeller().getId().equals(requiredOffer.getProduct().getSeller().getId()))
             throw new InvalidFormat("errors.product.updateSeller.invalidProduct");
         if(offerOptional.isPresent())
             throw new InvalidFormat("errors.offer.updateSeller.alreadyAccepted");

@@ -20,8 +20,7 @@ import java.util.UUID;
 public class ConversationDto extends GenericOutput<ConversationDto>
 {
     private UUID id;
-    private UserRef first;
-    private UserRef second;
+    private UserRef starter;
     private ProductRef product;
     private LocalDate createdDate;
 }

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,12 +19,12 @@ public interface ReportDao extends JpaRepository<Report, UUID>, JpaSpecification
 
     @Query("select r from Report r where r.reporter.id = :requiredID")
     Page<Report> getCreatedReports(@Param("requiredID") UUID reporterID, Pageable pageable);
-
     @Query("select r from Report r where r.reporter.id = :requiredID")
     Page<Report> getReceivedReports(@Param("requiredID") UUID reportedID, Pageable pageable);
-
     @Query("select r from Report r where r.reason = :requiredReason")
     Page<Report> getReportsByReason(@Param("requiredReason") ReportReason reason,Pageable pageable);
     @Query("select r from Report r where r.type = :requiredType")
     Page<Report> getReportsByType(@Param("requiredType") ReportType type,Pageable pageable);
+    @Query("select r from Report r where r.reporter.id = :reporterID or r.reported.id = :reportedID")
+    Optional<Report> getReport(@Param("reporterID") UUID reporterID,@Param("reportedID") UUID reportedID);
 }

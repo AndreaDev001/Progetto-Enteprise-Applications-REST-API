@@ -22,6 +22,6 @@ public class MessageDto extends GenericOutput<MessageDto>
     private UserRef sender;
     private UserRef receiver;
     private String text;
-    private ConversationRef conversatio;
+    private ConversationRef conversation;
     private LocalDateTime createdDate;
 }

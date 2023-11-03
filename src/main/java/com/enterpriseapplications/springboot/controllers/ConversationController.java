@@ -26,7 +26,8 @@ public class ConversationController
 {
     private final ConversationService conversationService;
 
-    @GetMapping("/public")
+    @GetMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ConversationDto>> getConversations(@Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<ConversationDto> conversations = this.conversationService.getConversations(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(conversations);
@@ -38,24 +39,26 @@ public class ConversationController
         return ResponseEntity.ok(this.conversationService.find(conversation));
     }
 
-    @GetMapping("/private/first/{userID}")
+    @GetMapping("/private/starter/{userID}")
     @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<List<ConversationDto>> getConversationsByFirst(@PathVariable("userID") UUID userID) {
-        return ResponseEntity.ok(this.conversationService.getConversationByFirst(userID));
+    public ResponseEntity<List<ConversationDto>> getConversationsByStarter(@PathVariable("userID") UUID userID) {
+        return ResponseEntity.ok(this.conversationService.getConversationsByStarter(userID));
     }
 
-    @GetMapping("/private/second/{userID}")
-    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
-    public ResponseEntity<List<ConversationDto>> getConversationsBySecond(@PathVariable("userID") UUID userID) {
-        return ResponseEntity.ok(this.conversationService.getConversationBySecond(userID));
-    }
-
-    @GetMapping("/public/{userID}")
+    @GetMapping("/private/{userID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@conversationDao,#userID)")
     public ResponseEntity<List<ConversationDto>> getConversations(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.conversationService.getConversations(userID));
     }
 
+    @GetMapping("/private/conversation/{userID}/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
+    public ResponseEntity<ConversationDto> getConversation(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
+        return ResponseEntity.ok(this.conversationService.getConversation(userID,productID));
+    }
+
     @GetMapping("/private/product/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
     public ResponseEntity<PagedModel<ConversationDto>> getConversations(@PathVariable("productID") UUID productID,@Valid @ParameterObject PaginationRequest paginationRequest) {
         PagedModel<ConversationDto> conversations = this.conversationService.getConversationByProduct(productID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(conversations);

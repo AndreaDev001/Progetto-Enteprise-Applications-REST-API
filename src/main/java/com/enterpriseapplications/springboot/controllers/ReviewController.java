@@ -40,7 +40,7 @@ public class ReviewController {
     }
 
     @GetMapping("/public/{userID}/written")
-    public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") UUID userID, @Parameter @Valid PaginationRequest paginationRequest)
+    public ResponseEntity<PagedModel<ReviewDto>> findAllWrittenReviews(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest)
     {
         PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
@@ -48,7 +48,7 @@ public class ReviewController {
 
     @GetMapping("/public/{userID}/received")
     public ResponseEntity<PagedModel<ReviewDto>> findAllReceivedReviews(@PathVariable("userID") UUID userID,@ParameterObject @Valid PaginationRequest paginationRequest) {
-        PagedModel<ReviewDto> reviews = this.reviewService.findAllWrittenReviews(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+        PagedModel<ReviewDto> reviews = this.reviewService.findAllReceivedReviews(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(reviews);
     }
 

@@ -60,8 +60,7 @@ public class UserDetailsDto extends GenericOutput<UserDetailsDto> {
         this.add(linkTo(methodOn(OrderController.class).getOrders(id,paginationRequest)).slash(paginationQuery).withRel("orders").withName("orders"));
         this.add(linkTo(methodOn(ReviewController.class).findAllWrittenReviews(id,paginationRequest)).slash(paginationQuery).withRel("written_reviews").withName("writtenReviews"));
         this.add(linkTo(methodOn(ReviewController.class).findAllReceivedReviews(id,paginationRequest)).slash(paginationQuery).withRel("received_reviews").withName("receivedReviews"));
-        this.add(linkTo(methodOn(ConversationController.class).getConversationsByFirst(id)).withRel("created_conversations").withRel("createdConversations"));
-        this.add(linkTo(methodOn(ConversationController.class).getConversationsBySecond(id)).withRel("received_conversations").withRel("receivedConversations"));
+        this.add(linkTo(methodOn(ConversationController.class).getConversationsByStarter(id)).withRel("created_conversations").withRel("createdConversations"));
         this.add(linkTo(methodOn(ReplyController.class).getReplies(id,paginationRequest)).slash(paginationQuery).withRel("replies").withName("replies"));
         this.add(linkTo(methodOn(UserImageController.class).getUserImage(id)).withRel("image").withName("image"));
     }

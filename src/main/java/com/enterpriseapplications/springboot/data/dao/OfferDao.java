@@ -42,5 +42,4 @@ public interface OfferDao extends JpaRepository<Offer,UUID>, JpaSpecificationExe
     Page<Offer> getOffersByProductAndStatus(@Param("requiredID") UUID productID,@Param("requiredStatus") OfferStatus status,Pageable pageable);
     @Query("select o from Offer o where o.product.id = :requiredID and o.status = :requiredStatus")
     Optional<Offer> getOfferByStatus(@Param("requiredID") UUID productID, @Param("requiredStatus") OfferStatus status);
-
 }

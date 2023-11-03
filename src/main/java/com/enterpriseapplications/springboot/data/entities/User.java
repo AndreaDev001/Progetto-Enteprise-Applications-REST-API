@@ -95,14 +95,11 @@ public class User
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "sender",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Message> sentMessages = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "first",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Conversation> createdConversations = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "second",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Conversation> receivedConversations = new HashSet<>();
-
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "receiver",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Message> receivedMessages = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "starter",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Conversation> createdConversations = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Like> createdLikes = new HashSet<>();

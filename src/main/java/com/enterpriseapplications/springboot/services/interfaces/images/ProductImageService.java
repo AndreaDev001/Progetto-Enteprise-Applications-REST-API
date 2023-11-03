@@ -15,7 +15,7 @@ public interface ProductImageService
     ProductImageDto getProductImage(UUID id);
     PagedModel<ProductImageDto> getImages(Pageable pageable);
     List<ProductImageDto> getProductImages(UUID productID);
-    List<ProductImageDto> uploadImages(CreateProductImageDto createProductImageDto);
+    List<ProductImageDto> uploadImages(UUID productID,List<MultipartFile> files);
     Integer getAmount(UUID productID);
     ProductImageDto getFirstProductImage(UUID productID);
     ProductImageDto getLastProductImage(UUID productID);

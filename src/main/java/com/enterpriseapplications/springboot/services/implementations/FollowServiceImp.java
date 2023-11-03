@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implements FollowService {
 
     private final FollowDao followDao;
@@ -63,7 +64,8 @@ public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implem
     }
     @Override
     public FollowDto findFollow(UUID followerID, UUID followedID) {
-        return this.modelMapper.map(this.followDao.findFollow(followerID,followedID),FollowDto.class);
+        Follow follow = this.followDao.findFollow(followerID,followedID).orElseThrow();
+        return this.modelMapper.map(follow,FollowDto.class);
     }
 
     @Override

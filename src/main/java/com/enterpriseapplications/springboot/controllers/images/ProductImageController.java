@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -64,10 +65,10 @@ public class ProductImageController
         ProductImageDto productImageDto = this.productImageService.getProductImage(productID,index);
         return ResponseEntity.ok().contentType(MediaType.valueOf(productImageDto.getType().getName())).body(productImageDto.getImage());
     }
-    @PostMapping(value = "/private",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
-    public ResponseEntity<List<ProductImageDto>> uploadProductImages(@ModelAttribute @Valid CreateProductImageDto productImageDto) {
-        return ResponseEntity.ok(this.productImageService.uploadImages(productImageDto));
+    @PostMapping(value = "/private/{productID}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")
+    public ResponseEntity<List<ProductImageDto>> uploadProductImages(@PathVariable("productID") UUID productID,@ModelAttribute List<MultipartFile> files) {
+        return ResponseEntity.ok(this.productImageService.uploadImages(productID,files));
     }
     @DeleteMapping("/private/{productID}")
     @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")

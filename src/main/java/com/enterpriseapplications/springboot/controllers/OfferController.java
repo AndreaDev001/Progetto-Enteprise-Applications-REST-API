@@ -121,13 +121,13 @@ public class OfferController
     }
 
     @PutMapping("/private/seller")
-    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#updateOfferSellerDto.productID")
+    @PreAuthorize("@permissionHandler.hasAccess(@productDao,#updateOfferSellerDto.productID)")
     public ResponseEntity<OfferDto> updateOfferSeller(@RequestBody @Valid UpdateOfferSellerDto updateOfferSellerDto) {
         return ResponseEntity.ok(this.offerService.updateOfferSeller(updateOfferSellerDto));
     }
 
     @PutMapping("/private/buyer")
-    @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#updateOfferBuyerDto.offerID")
+    @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#updateOfferBuyerDto.offerID)")
     public ResponseEntity<OfferDto> updateOfferBuyer(@RequestBody @Valid UpdateOfferBuyerDto updateOfferBuyerDto) {
         return ResponseEntity.ok(this.offerService.updateOfferBuyer(updateOfferBuyerDto));
     }

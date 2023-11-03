@@ -1,17 +1,13 @@
 package com.enterpriseapplications.springboot.config;
 
 
-import com.enterpriseapplications.springboot.data.dto.output.refs.AddressRef;
-import com.enterpriseapplications.springboot.data.dto.output.refs.PaymentMethodRef;
-import com.enterpriseapplications.springboot.data.dto.output.refs.ProductRef;
-import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
-import com.enterpriseapplications.springboot.data.entities.Address;
-import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
-import com.enterpriseapplications.springboot.data.entities.Product;
-import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.dto.output.ConversationDto;
+import com.enterpriseapplications.springboot.data.dto.output.refs.*;
+import com.enterpriseapplications.springboot.data.entities.*;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,6 +40,12 @@ public class ModelMapperConfig
             return new PaymentMethodRef(paymentMethod);
         }
     };
+    public Converter<Conversation,ConversationRef> conversationRefConverter = new AbstractConverter<Conversation,ConversationRef>() {
+        @Override
+        protected ConversationRef convert(Conversation conversation) {
+            return new ConversationRef(conversation);
+        }
+    };
 
     @Bean
     public ModelMapper modelMapper() {
@@ -53,6 +55,7 @@ public class ModelMapperConfig
         modelMapper.addConverter(productRefConverter);
         modelMapper.addConverter(addressRefConverter);
         modelMapper.addConverter(paymentMethodRefConverter);
+        modelMapper.addConverter(conversationRefConverter);
         return modelMapper;
     }
 }
