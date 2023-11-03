@@ -33,7 +33,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @Slf4j
 public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implements OrderService {
 

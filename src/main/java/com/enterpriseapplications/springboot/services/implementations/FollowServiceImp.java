@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implements FollowService {
 
     private final FollowDao followDao;

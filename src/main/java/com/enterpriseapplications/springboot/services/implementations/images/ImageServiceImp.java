@@ -40,10 +40,7 @@ public class ImageServiceImp extends GenericServiceImp<Image,ImageDto> implement
     @Override
     public ImageDto getImage(UUID imageID) {
         Image image = this.imageDao.findById(imageID).orElseThrow();
-        ImageDto imageDto = new ImageDto();
-        imageDto.setType(image.getType());
-        imageDto.setImage(ImageUtils.decompressImage(image.getImage()));
-        return imageDto;
+        return this.modelMapper.map(image,ImageDto.class);
     }
 
     @Override

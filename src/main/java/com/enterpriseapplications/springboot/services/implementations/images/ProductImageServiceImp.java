@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Transactional
-
 public class ProductImageServiceImp extends GenericServiceImp<ProductImage,ProductImageDto> implements ProductImageService
 {
     private final ProductDao productDao;
@@ -77,7 +75,7 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
         for(MultipartFile multipartFile : files) {
             ProductImage productImage = new ProductImage();
             productImage.setProduct(requiredProduct);
-            productImage.setImage(ImageUtils.compressImage(multipartFile.getBytes()));
+            productImage.setImage(multipartFile.getBytes());
             productImage.setType(ImageUtils.getImageType(multipartFile.getContentType()));
             productImage = this.productImageDao.save(productImage);
             ProductImageDto productImageDto = this.modelMapper.map(productImage,ProductImageDto.class);
@@ -112,7 +110,7 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
             throw new InvalidFormat("error.productImage.invalidSize");
         ProductImage requiredImage = productImages.get(index);
         ProductImageDto productImageDto = this.modelMapper.map(requiredImage,ProductImageDto.class);
-        productImageDto.setImage(ImageUtils.decompressImage(requiredImage.getImage()));
+        productImageDto.setImage(requiredImage.getImage());
         return productImageDto;
     }
 

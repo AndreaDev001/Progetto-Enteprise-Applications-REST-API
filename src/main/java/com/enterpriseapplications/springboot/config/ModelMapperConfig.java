@@ -4,12 +4,12 @@ package com.enterpriseapplications.springboot.config;
 import com.enterpriseapplications.springboot.data.dto.output.ConversationDto;
 import com.enterpriseapplications.springboot.data.dto.output.refs.*;
 import com.enterpriseapplications.springboot.data.entities.*;
-import org.modelmapper.AbstractConverter;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
+import org.modelmapper.*;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.UUID;
 
 @Configuration
 public class ModelMapperConfig
@@ -21,6 +21,7 @@ public class ModelMapperConfig
             return new UserRef(user);
         }
     };
+
 
     public Converter<Product, ProductRef> productRefConverter = new AbstractConverter<Product, ProductRef>() {
         @Override
@@ -50,6 +51,8 @@ public class ModelMapperConfig
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         modelMapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
         modelMapper.addConverter(userRefConverter);
         modelMapper.addConverter(productRefConverter);

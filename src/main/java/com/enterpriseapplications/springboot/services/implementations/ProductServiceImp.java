@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> implements ProductService
 {
     private final UserDao userDao;

@@ -41,7 +41,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional
 @Slf4j
 public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implements OfferService
 {

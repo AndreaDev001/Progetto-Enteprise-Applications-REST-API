@@ -27,7 +27,6 @@ import java.util.UUID;
 
 
 @Service
-@Transactional
 public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDto> implements UserImageService
 {
     private final UserImageDao userImageDao;
@@ -54,7 +53,6 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
     public UserImageDto getUserImageDetails(UUID userID) {
         UserImage userImage = this.userImageDao.getUserImage(userID).orElseThrow();
         UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
-        userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
         return userImageDto;
     }
 
@@ -69,14 +67,13 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
                 InputStream inputStream = getClass().getClassLoader().getResourceAsStream("defaultUserImage.jpg");
                 userImage = new UserImage();
                 userImage.setType(ImageType.IMAGE_JPEG);
-                userImage.setImage(ImageUtils.compressImage(inputStream.readAllBytes()));
+                userImage.setImage(inputStream.readAllBytes());
                 userImage.setUser(requiredUser);
                 this.userImageDao.save(userImage);
             }
             else
                 userImage = userImageOptional.get();
             UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
-            userImageDto.setImage(ImageUtils.decompressImage(userImage.getImage()));
             return userImageDto;
     }
 
@@ -87,7 +84,7 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Optional<UserImage> userImageOptional = this.userImageDao.getUserImage(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName()));
         UserImage userImage = userImageOptional.orElseGet(UserImage::new);
-        userImage.setImage(ImageUtils.compressImage(createUserImageDto.getFile().getBytes()));
+        userImage.setImage(createUserImageDto.getFile().getBytes());
         userImage.setType(ImageUtils.getImageType(createUserImageDto.getFile().getContentType()));
         userImage.setUser(requiredUser);
         this.userImageDao.save(userImage);

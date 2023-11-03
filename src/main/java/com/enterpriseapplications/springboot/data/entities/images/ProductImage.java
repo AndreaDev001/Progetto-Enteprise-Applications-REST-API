@@ -13,16 +13,15 @@ import java.io.IOException;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class ProductImage extends Image
 {
     public ProductImage(Image image) {
         this.setId(image.getId());
         this.setType(image.getType());
         this.setImage(image.getImage());
-        this.setCreatedDate(image.getCreatedDate());
-        this.setLastModifiedDate(image.getLastModifiedDate());
     }
+
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;

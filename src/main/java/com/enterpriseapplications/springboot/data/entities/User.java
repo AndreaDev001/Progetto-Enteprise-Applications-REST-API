@@ -9,6 +9,7 @@ import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -71,8 +72,8 @@ public class User
     @Column(name = "LAST_MODIFIED_DATE",unique = false)
     private LocalDate lastModifiedDate;
 
-    @OneToOne(mappedBy = "user")
-    private UserImage userImage;
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    private UserImage image;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Product> products = new HashSet<>();

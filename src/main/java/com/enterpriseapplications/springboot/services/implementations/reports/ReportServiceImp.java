@@ -32,7 +32,6 @@ import java.util.UUID;
 
 
 @Service
-@Transactional
 public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implements ReportService {
 
     private final ReportDao reportDao;

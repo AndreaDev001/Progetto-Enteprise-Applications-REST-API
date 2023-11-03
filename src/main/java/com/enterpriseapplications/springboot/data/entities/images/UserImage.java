@@ -13,19 +13,13 @@ import java.io.IOException;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class UserImage extends Image
 {
     public UserImage(Image image) {
         this.setId(image.getId());
         this.setType(image.getType());
         this.setImage(image.getImage());
-        this.setCreatedDate(image.getCreatedDate());
-        this.setLastModifiedDate(image.getLastModifiedDate());
-    }
-    public UserImage(User user, MultipartFile multipartFile) throws IOException {
-        super(multipartFile);
-        this.setUser(user);
     }
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

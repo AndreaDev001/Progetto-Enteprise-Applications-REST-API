@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,PaymentMethodDto> implements PaymentMethodService
 {
     private final PaymentMethodDao paymentMethodDao;

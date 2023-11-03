@@ -28,7 +28,6 @@ import java.util.UUID;
 
 
 @Service
-@Transactional
 public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> implements UserService {
 
     private final UserDao userDao;

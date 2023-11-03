@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> implements AddressService
 {
     private final UserDao userDao;

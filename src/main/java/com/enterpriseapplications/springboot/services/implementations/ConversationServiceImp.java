@@ -27,7 +27,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ConversationServiceImp extends GenericServiceImp<Conversation,ConversationDto> implements ConversationService
 {
     private final ConversationDao conversationDao;
