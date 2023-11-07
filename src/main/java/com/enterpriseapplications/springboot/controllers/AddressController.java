@@ -71,11 +71,13 @@ public class AddressController
     }
 
     @PutMapping("/private")
+    @PreAuthorize("@permissionHandler.hasAccess(@addressDao,#updateAddressDto.addressID)")
     public ResponseEntity<AddressDto> updateAddress(@RequestBody @Valid UpdateAddressDto updateAddressDto) {
         return ResponseEntity.ok(this.addressService.updateAddress(updateAddressDto));
     }
 
     @DeleteMapping("/private/{addressID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@addressDao,#addressID")
     public ResponseEntity<AddressDto> deleteAddress(@PathVariable("addressID") UUID addressID) {
         this.addressService.deleteAddress(addressID);
         return ResponseEntity.noContent().build();

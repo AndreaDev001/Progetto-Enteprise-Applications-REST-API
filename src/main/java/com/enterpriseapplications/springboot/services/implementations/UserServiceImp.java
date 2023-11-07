@@ -42,14 +42,6 @@ public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> imple
     public UserDetailsDto getUserDetails(UUID userID) {
         User requiredUser = this.userDao.findById(userID).orElseThrow();
         UserDetailsDto userDetails = this.modelMapper.map(requiredUser,UserDetailsDto.class);
-        userDetails.setAmountOfFollowers(requiredUser.getFollowers().size());
-        userDetails.setAmountOfFollowed(requiredUser.getFollows().size());
-        userDetails.setAmountOfProducts(requiredUser.getProducts().size());
-        userDetails.setAmountOfWrittenReviews(requiredUser.getWrittenReviews().size());
-        userDetails.setAmountOfReceivedReviews(requiredUser.getReceivedReviews().size());
-        userDetails.setAmountOfReceivedBans(requiredUser.getReceivedBans().size());
-        userDetails.setAmountOfReplies(requiredUser.getWrittenReplies().size());
-        userDetails.setAmountOfLikes(requiredUser.getCreatedLikes().size());
         userDetails.addLinks();
         return userDetails;
     }

@@ -74,7 +74,7 @@ public class AddressServiceImp extends GenericServiceImp<Address, AddressDto> im
         if(!this.addressValidationHandler.validateAddress(createAddressDto))
             throw new InvalidFormat("errors.address.invalidAddress");
         Address address = Address.builder().countryCode(createAddressDto.getCountryCode()).postalCode(createAddressDto.getPostalCode()).locality(createAddressDto.getLocality()).street(createAddressDto.getStreet()).ownerName(createAddressDto.getOwnerName()).user(requiredUser).build();
-        this.addressDao.save(address);
+        address = this.addressDao.save(address);
         return this.modelMapper.map(address,AddressDto.class);
     }
 

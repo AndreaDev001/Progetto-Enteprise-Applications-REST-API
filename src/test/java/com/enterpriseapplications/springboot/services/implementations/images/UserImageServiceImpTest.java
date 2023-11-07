@@ -46,11 +46,13 @@ class UserImageServiceImpTest extends GenericTestImp<UserImage,UserImageDto> {
         this.secondElement = new UserImage(images.get(1));
         this.firstElement.setUser(firstUser);
         this.secondElement.setUser(secondUser);
+        this.elements = List.of(firstElement,secondElement);
     }
 
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(UserImage userImage, UserImageDto userImageDto) {
@@ -62,25 +64,26 @@ class UserImageServiceImpTest extends GenericTestImp<UserImage,UserImageDto> {
     @Test
     void getImage() {
         given(this.userImageDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        UserImageDto userImageDto = this.userImageServiceImp.getImage(firstElement.getId());
+        Assert.assertTrue(valid(firstElement,userImageDto));
         given(this.userImageDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
-        UserImageDto firstImage = this.userImageServiceImp.getImage(this.firstElement.getId());
-        UserImageDto secondImage = this.userImageServiceImp.getImage(this.secondElement.getId());
-        Assert.assertTrue(valid(this.firstElement,firstImage));
-        Assert.assertTrue(valid(this.secondElement,secondImage));
+        userImageDto = this.userImageServiceImp.getImage(secondElement.getId());
+        Assert.assertTrue(valid(secondElement,userImageDto));
     }
 
     @Test
     void getImages() {
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.userImageDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
-        PagedModel<UserImageDto> userImages = this.userImageServiceImp.getImages(pageRequest);
-        Assert.assertTrue(compare(elements,userImages.getContent().stream().toList()));
-        Assert.assertTrue(validPage(userImages,20,0,1,2));
+        PagedModel<UserImageDto> pagedModel = this.userImageServiceImp.getImages(pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 
     @Test
     void getUserImageDetails() {
         User user = User.builder().id(UUID.randomUUID()).build();
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
         given(this.userImageDao.getUserImage(user.getId())).willReturn(Optional.of(firstElement));
         UserImageDto userImageDto = this.userImageServiceImp.getUserImage(user.getId());
         Assert.assertTrue(valid(firstElement,userImageDto));
@@ -88,10 +91,10 @@ class UserImageServiceImpTest extends GenericTestImp<UserImage,UserImageDto> {
 
     @Test
     void getUserImage() {
-
-    }
-
-    @Test
-    void uploadImage() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.userImageDao.getUserImage(user.getId())).willReturn(Optional.of(firstElement));
+        UserImageDto userImageDto = this.userImageServiceImp.getUserImage(user.getId());
+        Assert.assertTrue(valid(firstElement,userImageDto));
     }
 }

@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProduct
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ public interface ProductService
     ProductDto createProduct(CreateProductDto createProductDto);
     ProductDto updateProduct(UpdateProductDto updateProductDto);
     void deleteProduct(UUID productID);
+    ProductStatus[] getStatues();
     ProductCondition[] getConditions();
     ProductVisibility[] getVisibilities();
     ProductSpecifications.OrderType[] getOrderTypes();

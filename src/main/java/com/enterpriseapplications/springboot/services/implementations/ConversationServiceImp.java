@@ -85,7 +85,8 @@ public class ConversationServiceImp extends GenericServiceImp<Conversation,Conve
             throw new InvalidFormat("errors.conversation.invalidStarter");
         Conversation conversation = Conversation.builder().product(requiredProduct)
                 .starter(requiredUser).build();
-        return this.modelMapper.map(this.conversationDao.save(conversation),ConversationDto.class);
+        conversation = this.conversationDao.save(conversation);
+        return this.modelMapper.map(conversation,ConversationDto.class);
     }
 
     @Override

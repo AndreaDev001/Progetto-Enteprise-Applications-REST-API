@@ -5,13 +5,17 @@ import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpecifications;
 import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
+import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +30,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
@@ -47,6 +53,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
 
 
     @Override
+    @SneakyThrows
     protected void init() {
         super.init();
         this.productServiceImp = new ProductServiceImp(productDao,userDao,categoryDao,modelMapper,pagedResourcesAssembler);
@@ -61,6 +68,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(Product product, ProductDto productDto) {
@@ -110,7 +118,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @Test
     void getRecentlyCreatedProducts() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getRecentlyCreatedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
         Assert.assertTrue(validPage(products,20,0,1,2));
@@ -119,7 +127,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @Test
     void getMostLikedProducts() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getMostLikedProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
         Assert.assertTrue(validPage(products,20,0,1,2));
@@ -128,7 +136,7 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
     @Test
     void getMostExpensiveProducts() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        given(this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<ProductDto> products = this.productServiceImp.getMostExpensiveProducts(pageRequest);
         Assert.assertTrue(compare(elements,products.getContent().stream().toList()));
         Assert.assertTrue(validPage(products,20,0,1,2));
@@ -156,5 +164,17 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         PagedModel<ProductDto> pagedModel = this.productServiceImp.getProductsBySpec(specification,pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
         Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
+    public void createProduct() {
+        given(this.productDao.save(any())).willReturn(firstElement);
+        Category category = Category.builder().id(UUID.randomUUID()).primaryCat("Primary").secondaryCat("Secondary").tertiaryCat("Tertiary").build();
+        CreateProductDto createProductDto = CreateProductDto.builder().name("name").description("description").brand("brand").primaryCat("Primary").secondaryCat("Secondary").tertiaryCat("Tertiary").condition(ProductCondition.NEW).visibility(ProductVisibility.PUBLIC).price(new BigDecimal(100)).minPrice(new BigDecimal(20)).build();
+        given(this.categoryDao.getCategory(createProductDto.getPrimaryCat(),createProductDto.getSecondaryCat(),createProductDto.getTertiaryCat())).willReturn(Optional.of(category));
+        given(this.userDao.findById(this.authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productDao.save(any())).willReturn(firstElement);
+        ProductDto productDto = this.productServiceImp.createProduct(createProductDto);
+        Assert.assertTrue(valid(firstElement,productDto));
     }
 }

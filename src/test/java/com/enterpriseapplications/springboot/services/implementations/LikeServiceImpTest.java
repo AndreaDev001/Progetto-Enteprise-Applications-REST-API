@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.data.entities.Like;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +47,11 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
         super.init();
         likeServiceImp = new LikeServiceImp(likeDao,productDao,userDao,modelMapper,pagedResourcesAssembler);
         User user = User.builder().id(UUID.randomUUID()).build();
-        Product product = Product.builder().id(UUID.randomUUID()).build();
+        User seller = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(seller).build();
+        TestUtils.generateValues(user);
+        TestUtils.generateValues(product);
+        TestUtils.generateValues(seller);
         firstElement = Like.builder().id(UUID.randomUUID()).user(user).product(product).build();
         secondElement = Like.builder().id(UUID.randomUUID()).user(user).product(product).build();
         elements = List.of(firstElement,secondElement);
@@ -54,6 +60,7 @@ public class LikeServiceImpTest extends GenericTestImp<Like, LikeDto> {
     @Before
     public void before() {
         this.init();
+        this.defaultBefore();
     }
 
 

@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,23 +50,24 @@ public class ConversationServiceImpTest extends GenericTestImp<Conversation, Con
         conversationServiceImp = new ConversationServiceImp(userDao,productDao,conversationDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        Product product = Product.builder().id(UUID.randomUUID()).build();
-        firstElement = Conversation.builder().id(UUID.randomUUID()).first(firstUser).second(secondUser).product(product).build();
-        secondElement = Conversation.builder().id(UUID.randomUUID()).first(firstUser).second(secondUser).product(product).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(secondUser).receivedLikes(new HashSet<>()).conversations(new HashSet<>()).build();
+
+        firstElement = Conversation.builder().id(UUID.randomUUID()).starter(firstUser).product(product).build();
+        secondElement = Conversation.builder().id(UUID.randomUUID()).starter(firstUser).product(product).build();
         elements = List.of(firstElement,secondElement);
     }
 
     @Before
     public void before() {
         this.init();
+        this.defaultBefore();
     }
 
     @Override
     protected boolean valid(Conversation entity, ConversationDto dto) {
         Assert.assertNotNull(dto);
         Assert.assertEquals(entity.getId(),dto.getId());
-        Assert.assertEquals(entity.getFirst().getId(),dto.getFirst().getId());
-        Assert.assertEquals(entity.getSecond().getId(),dto.getSecond().getId());
+        Assert.assertEquals(entity.getStarter().getId(),dto.getStarter().getId());
         Assert.assertEquals(entity.getProduct().getId(),dto.getProduct().getId());
         Assert.assertEquals(entity.getCreatedDate(),dto.getCreatedDate());
         return true;
@@ -93,28 +95,25 @@ public class ConversationServiceImpTest extends GenericTestImp<Conversation, Con
     }
 
     @Test
-    public void getConversationByFirst() {
+    public void getConversationByStarter() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        given(this.conversationDao.getConversationByFirst(user.getId())).willReturn(elements);
-        List<ConversationDto> conversations = this.conversationServiceImp.getConversationByFirst(user.getId());
-        Assert.assertTrue(compare(elements,conversations));
-    }
-
-    @Test
-    public void getConversationBySecond() {
-        User user = User.builder().id(UUID.randomUUID()).build();
-        given(this.conversationDao.getConversationBySecond(user.getId())).willReturn(elements);
-        List<ConversationDto> conversations = this.conversationServiceImp.getConversationBySecond(user.getId());
+        given(this.conversationDao.getConversationByStarter(user.getId())).willReturn(elements);
+        List<ConversationDto> conversations = this.conversationServiceImp.getConversationsByStarter(user.getId());
         Assert.assertTrue(compare(elements,conversations));
     }
 
     @Test
     public void getConversation() {
         User firstUser = User.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        given(this.conversationDao.getConversations(firstUser.getId(),secondUser.getId())).willReturn(elements);
-        List<ConversationDto> conversations = this.conversationServiceImp.getConversation(firstUser.getId(),secondUser.getId());
-        Assert.assertTrue(compare(elements,conversations));
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        given(this.conversationDao.getConversation(firstUser.getId(),firstProduct.getId())).willReturn(Optional.of(firstElement));
+        given(this.conversationDao.getConversation(secondUser.getId(),secondProduct.getId())).willReturn(Optional.of(secondElement));
+        ConversationDto firstConversation = this.conversationServiceImp.getConversation(firstUser.getId(),firstProduct.getId());
+        ConversationDto secondConversation = this.conversationServiceImp.getConversation(secondUser.getId(),secondProduct.getId());
+        Assert.assertTrue(valid(firstElement,firstConversation));
+        Assert.assertTrue(valid(secondElement,secondConversation));
     }
 
     @Test
@@ -130,13 +129,21 @@ public class ConversationServiceImpTest extends GenericTestImp<Conversation, Con
     @Test
     public void createConversation() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        Product product = Product.builder().id(UUID.randomUUID()).build();
-        CreateConversationDto createConversationDto = CreateConversationDto.builder().productID(product.getId()).second(user.getId()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        CreateConversationDto createConversationDto = CreateConversationDto.builder().productID(product.getId()).build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
         given(this.conversationDao.save(any(Conversation.class))).willReturn(firstElement);
         ConversationDto conversationDto = this.conversationServiceImp.createConversation(createConversationDto);
         Assert.assertTrue(valid(firstElement,conversationDto));
+    }
+
+    @Test
+    public void getConversationsByStarter() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        given(this.conversationDao.getConversationByStarter(user.getId())).willReturn(elements);
+        List<ConversationDto> conversations = this.conversationServiceImp.getConversationsByStarter(user.getId());
+        Assert.assertTrue(compare(elements,conversations));
     }
 }

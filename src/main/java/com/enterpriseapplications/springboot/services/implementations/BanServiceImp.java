@@ -75,6 +75,7 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         return this.modelMapper.map(ban,BanDto.class);
     }
 
+
     @Override
     @CacheEvict(value = {CacheConfig.CACHE_ALL_BANS,CacheConfig.CACHE_SEARCH_BANS},allEntries = true)
     @Transactional
@@ -92,7 +93,8 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         ban.setReason(createBanDto.getReason());
         ban.setExpired(false);
         ban.setExpirationDate(createBanDto.getExpirationDate());
-        return this.modelMapper.map(this.banDao.save(ban),BanDto.class);
+        ban = this.banDao.save(ban);
+        return this.modelMapper.map(ban,BanDto.class);
     }
 
     @Override

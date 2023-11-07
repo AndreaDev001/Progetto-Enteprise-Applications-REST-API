@@ -73,6 +73,7 @@ public class AddressServiceImpTest extends GenericTestImp<Address,AddressDto>
     @Before
     public void before() {
         this.init();
+        this.defaultBefore();
     }
 
     @Test

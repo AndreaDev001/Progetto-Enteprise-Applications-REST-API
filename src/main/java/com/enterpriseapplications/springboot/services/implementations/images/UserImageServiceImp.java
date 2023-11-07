@@ -87,7 +87,7 @@ public class UserImageServiceImp extends GenericServiceImp<UserImage,UserImageDt
         userImage.setImage(createUserImageDto.getFile().getBytes());
         userImage.setType(ImageUtils.getImageType(createUserImageDto.getFile().getContentType()));
         userImage.setUser(requiredUser);
-        this.userImageDao.save(userImage);
+        userImage = this.userImageDao.save(userImage);
         UserImageDto userImageDto = this.modelMapper.map(userImage,UserImageDto.class);
         userImageDto.addLinks();
         return userImageDto;

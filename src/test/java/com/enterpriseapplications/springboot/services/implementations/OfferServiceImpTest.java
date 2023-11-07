@@ -11,6 +11,7 @@ import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.OfferStatus;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,8 +51,12 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
         offerServiceImp = new OfferServiceImp(offerDao,userDao,productDao,modelMapper,pagedResourcesAssembler);
         User firstUser = User.builder().id(UUID.randomUUID()).build();
         User secondUser = User.builder().id(UUID.randomUUID()).build();
-        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
-        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).seller(User.builder().id(UUID.randomUUID()).build()).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).seller(User.builder().id(UUID.randomUUID()).build()).build();
+        TestUtils.generateValues(firstUser);
+        TestUtils.generateValues(secondUser);
+        TestUtils.generateValues(firstProduct);
+        TestUtils.generateValues(secondProduct);
         firstElement = Offer.builder().id(UUID.randomUUID()).description("description").price(BigDecimal.valueOf(100)).status(OfferStatus.OPEN).buyer(firstUser).product(firstProduct).build();
         secondElement = Offer.builder().id(UUID.randomUUID()).description("description").price(BigDecimal.valueOf(200)).status(OfferStatus.ACCEPTED).buyer(secondUser).product(secondProduct).build();
         elements = List.of(firstElement,secondElement);
@@ -60,6 +65,7 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(Offer offer, OfferDto offerDto) {
@@ -78,12 +84,18 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
 
     @Test
     void getOffer() {
+        given(this.offerDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        given(this.offerDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        OfferDto firstOffer = this.offerServiceImp.getOffer(firstElement.getId());
+        OfferDto secondOffer = this.offerServiceImp.getOffer(secondElement.getId());
+        Assert.assertTrue(valid(firstElement,firstOffer));
+        Assert.assertTrue(valid(secondElement,secondOffer));
     }
 
     @Test
     void getOffers() {
         PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.offerDao.findAll()).willReturn(elements);
+        given(this.offerDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<OfferDto> offers = this.offerServiceImp.getOffers(pageRequest);
         Assert.assertTrue(compare(elements,offers.getContent().stream().toList()));
     }
@@ -145,7 +157,7 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
     @Test
     void createOffer() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        Product product = Product.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).price(BigDecimal.valueOf(3000)).minPrice(BigDecimal.valueOf(100)).build();
         product.setSeller(user);
         CreateOfferDto createOfferDto = CreateOfferDto.builder().description("description").price(new BigDecimal(100)).productID(product.getId()).build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
@@ -153,5 +165,26 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
         given(this.offerDao.save(any(Offer.class))).willReturn(firstElement);
         OfferDto offerDto = this.offerServiceImp.createOffer(createOfferDto);
         Assert.assertTrue(valid(firstElement,offerDto));
+    }
+
+
+    @Test
+    public void getCreatedOffers() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.offerDao.getCreatedOffers(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<OfferDto> pagedModel = this.offerServiceImp.getCreatedOffers(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
+    public void getReceivedOffers() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.offerDao.getReceivedOffers(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<OfferDto> pagedModel = this.offerServiceImp.getReceivedOffers(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }

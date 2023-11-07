@@ -27,14 +27,14 @@ public class FollowController {
     private final FollowService followService;
 
 
-    @GetMapping("private")
+    @GetMapping("/private")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<FollowDto>> getFollows(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<FollowDto> follows = this.followService.getFollows(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(follows);
     }
 
-    @GetMapping("public/{followID}")
+    @GetMapping("private/{followID}")
     @PreAuthorize("@permissionHandler.hasAccess(@followDao,#followID)")
     public ResponseEntity<FollowDto> getFollow(@PathVariable("followID") UUID followID) {
         return ResponseEntity.ok(this.followService.getFollow(followID));
@@ -58,6 +58,7 @@ public class FollowController {
     }
 
     @PostMapping("private/{followedID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.createFollow(followedID));
     }

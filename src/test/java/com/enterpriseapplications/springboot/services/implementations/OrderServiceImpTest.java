@@ -1,14 +1,11 @@
 package com.enterpriseapplications.springboot.services.implementations;
 
-import com.enterpriseapplications.springboot.data.dao.OrderDao;
-import com.enterpriseapplications.springboot.data.dao.ProductDao;
-import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dao.*;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
-import com.enterpriseapplications.springboot.data.entities.Order;
-import com.enterpriseapplications.springboot.data.entities.Product;
-import com.enterpriseapplications.springboot.data.entities.User;
+import com.enterpriseapplications.springboot.data.entities.*;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,23 +37,39 @@ class OrderServiceImpTest extends GenericTestImp<Order,OrderDto> {
     private ProductDao productDao;
     @Mock
     private OrderDao orderDao;
-
+    @Mock
+    private AddressDao addressDao;
+    @Mock
+    private PaymentMethodDao paymentMethodDao;
     @Override
     protected void init() {
         super.init();
-        orderServiceImp = new OrderServiceImp(orderDao,userDao,productDao,modelMapper,pagedResourcesAssembler);
+        orderServiceImp = new OrderServiceImp(orderDao,userDao,paymentMethodDao,addressDao,productDao,modelMapper,pagedResourcesAssembler);
         User firstBuyer = User.builder().id(UUID.randomUUID()).build();
         User secondBuyer = User.builder().id(UUID.randomUUID()).build();
-        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
-        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
-        firstElement = Order.builder().id(UUID.randomUUID()).buyer(firstBuyer).product(firstProduct).price(BigDecimal.valueOf(100)).build();
-        secondElement = Order.builder().id(UUID.randomUUID()).buyer(secondBuyer).product(secondProduct).price(BigDecimal.valueOf(200)).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).seller(secondBuyer).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).seller(firstBuyer).build();
+        Address firstAddress = Address.builder().id(UUID.randomUUID()).user(firstBuyer).build();
+        Address secondAddress = Address.builder().id(UUID.randomUUID()).user(secondBuyer).build();
+        PaymentMethod firstPaymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).user(firstBuyer).build();
+        PaymentMethod secondPaymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).user(secondBuyer).build();
+        TestUtils.generateValues(firstBuyer);
+        TestUtils.generateValues(secondBuyer);
+        TestUtils.generateValues(firstProduct);
+        TestUtils.generateValues(secondProduct);
+        TestUtils.generateValues(firstAddress);
+        TestUtils.generateValues(secondAddress);
+        TestUtils.generateValues(firstPaymentMethod);
+        TestUtils.generateValues(secondPaymentMethod);
+        firstElement = Order.builder().id(UUID.randomUUID()).buyer(firstBuyer).paymentMethod(firstPaymentMethod).address(firstAddress).product(firstProduct).price(BigDecimal.valueOf(100)).build();
+        secondElement = Order.builder().id(UUID.randomUUID()).buyer(secondBuyer).paymentMethod(secondPaymentMethod).address(secondAddress).product(secondProduct).price(BigDecimal.valueOf(200)).build();
         elements = List.of(firstElement,secondElement);
     }
 
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(Order order, OrderDto orderDto) {
@@ -97,10 +110,13 @@ class OrderServiceImpTest extends GenericTestImp<Order,OrderDto> {
     @Test
     void createOrder() {
         User user = User.builder().id(UUID.randomUUID()).build();
-        Product product = Product.builder().id(UUID.randomUUID()).build();
-        product.setSeller(user);
-        CreateOrderDto createOrderDto = CreateOrderDto.builder().productID(product.getId()).price(new BigDecimal(100)).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        Address address = Address.builder().id(UUID.randomUUID()).build();
+        PaymentMethod paymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).build();
+        CreateOrderDto createOrderDto = CreateOrderDto.builder().productID(product.getId()).addressID(address.getId()).paymentMethodID(paymentMethod.getId()).price(new BigDecimal(100)).build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.addressDao.findById(address.getId())).willReturn(Optional.of(address));
+        given(this.paymentMethodDao.findById(paymentMethod.getId())).willReturn(Optional.of(paymentMethod));
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
         given(this.orderDao.save(any(Order.class))).willReturn(firstElement);
         OrderDto orderDto = this.orderServiceImp.createOrder(createOrderDto);

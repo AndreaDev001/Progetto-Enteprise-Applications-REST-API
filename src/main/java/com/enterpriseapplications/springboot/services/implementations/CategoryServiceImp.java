@@ -56,7 +56,8 @@ public class CategoryServiceImp implements CategoryService {
         category.setPrimaryCat(createCategoryDto.getPrimary());
         category.setSecondaryCat(createCategoryDto.getSecondary());
         category.setTertiaryCat(createCategoryDto.getTertiary());
-        return this.modelMapper.map(this.categoryDao.save(category),CategoryDto.class);
+        category = this.categoryDao.save(category);
+        return this.modelMapper.map(category,CategoryDto.class);
     }
 
     @Override

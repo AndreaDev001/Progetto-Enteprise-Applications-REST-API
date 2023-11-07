@@ -13,6 +13,7 @@ import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.MessageReport;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,8 +50,14 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
     protected void init() {
         super.init();
         messageReportServiceImp = new MessageReportServiceImp(messageReportDao,userDao,messageDao,modelMapper,pagedResourcesAssembler);
-        Message firstMessage = Message.builder().id(UUID.randomUUID()).build();
-        Message secondMessage = Message.builder().id(UUID.randomUUID()).build();
+        User sender = User.builder().id(UUID.randomUUID()).build();
+        User receiver = User.builder().id(UUID.randomUUID()).build();
+        Message firstMessage = Message.builder().id(UUID.randomUUID()).sender(sender).receiver(receiver).build();
+        Message secondMessage = Message.builder().id(UUID.randomUUID()).sender(receiver).receiver(sender).build();
+        TestUtils.generateValues(firstMessage);
+        TestUtils.generateValues(secondMessage);
+        TestUtils.generateValues(sender);
+        TestUtils.generateValues(receiver);
         List<Report> reports = ReportServiceImpTest.createReports();
         this.firstElement = new MessageReport(reports.get(0));
         this.secondElement = new MessageReport(reports.get(1));
@@ -62,6 +69,7 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(MessageReport messageReport, MessageReportDto messageReportDto) {
@@ -102,9 +110,9 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
 
     @Test
     void createMessageReport() {
-        User user = User.builder().id(UUID.randomUUID()).build();
-        Message message = Message.builder().id(UUID.randomUUID()).build();
-        message.setReceiver(user);
+        User sender = User.builder().id(UUID.randomUUID()).build();
+        User receiver = User.builder().id(UUID.randomUUID()).build();
+        Message message = Message.builder().id(UUID.randomUUID()).sender(sender).receiver(receiver).build();
         CreateReportDto createReportDto = CreateReportDto.builder().reason(ReportReason.RACISM).description("description").build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.messageDao.findById(message.getId())).willReturn(Optional.of(message));

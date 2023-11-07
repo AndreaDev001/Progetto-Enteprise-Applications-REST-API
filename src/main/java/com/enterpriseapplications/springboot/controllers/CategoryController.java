@@ -55,6 +55,7 @@ public class CategoryController
     }
 
     @DeleteMapping("private/{categoryID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable("categoryID") UUID categoryID) {
         this.categoryService.deleteCategory(categoryID);
         return ResponseEntity.noContent().build();

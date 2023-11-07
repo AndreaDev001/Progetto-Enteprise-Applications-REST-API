@@ -50,6 +50,7 @@ class FollowServiceImpTest extends GenericTestImp<Follow,FollowDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     @Test

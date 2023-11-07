@@ -56,6 +56,7 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(Ban ban, BanDto banDto) {
@@ -155,5 +156,15 @@ class BanServiceImpTest extends GenericTestImp<Ban,BanDto> {
         given(this.banDao.save(any(Ban.class))).willReturn(firstElement);
         BanDto banDto = this.banServiceImp.createBan(createBanDto);
         Assert.assertTrue(valid(firstElement,banDto));
+    }
+
+    @Test
+    public void getReceivedBans() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        PageRequest pageRequest = PageRequest.of(0,20);
+        given(this.banDao.getReceivedBans(user.getId(),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
+        PagedModel<BanDto> pagedModel = this.banServiceImp.getReceivedBans(user.getId(),pageRequest);
+        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
+        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
     }
 }

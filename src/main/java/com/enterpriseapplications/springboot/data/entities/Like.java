@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "LIKES")
+@Table(name = "LIKES",uniqueConstraints = {@UniqueConstraint(columnNames = {"USER_ID","PRODUCT_ID"})})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data
@@ -27,9 +27,11 @@ public class Like
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
     @CreatedDate

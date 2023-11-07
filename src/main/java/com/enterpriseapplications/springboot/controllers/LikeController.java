@@ -55,6 +55,7 @@ public class LikeController {
         return ResponseEntity.ok(likes);
     }
     @PostMapping("/private/{productID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<LikeDto> createLike(@PathVariable("productID") UUID productID) {
         return ResponseEntity.ok(this.likeService.createLike(productID));
     }
@@ -66,9 +67,9 @@ public class LikeController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/private/product/{productID}")
-    public ResponseEntity<Void> deleteLikeByProduct(@PathVariable("productID") UUID productID) {
-        this.likeService.deleteLikeByProduct(productID);
+    @DeleteMapping("/private/{userID}/{productID}")
+    public ResponseEntity<Void> deleteLikeByProduct(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
+        this.likeService.deleteLikeByProduct(userID,productID);
         return ResponseEntity.noContent().build();
     }
 }

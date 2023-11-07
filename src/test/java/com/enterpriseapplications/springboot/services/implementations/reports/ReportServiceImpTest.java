@@ -57,6 +57,7 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     static List<Report> createReports() {

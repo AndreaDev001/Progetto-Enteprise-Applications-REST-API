@@ -40,6 +40,7 @@ class CategoryServiceImpTest extends GenericTestImp<Category,CategoryDto>
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     @Override

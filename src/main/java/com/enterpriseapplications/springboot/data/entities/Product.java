@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.data.entities;
 
 import com.enterpriseapplications.springboot.data.converters.TrimConverter;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
@@ -22,7 +23,8 @@ import java.util.UUID;
 @Table
 @Entity(name = "PRODUCTS")
 @EntityListeners(AuditingEntityListener.class)
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -59,13 +61,17 @@ public class Product implements OwnableEntity {
     @Enumerated(EnumType.STRING)
     private ProductVisibility visibility;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Like> receivedLikes = new HashSet<>();
+    @Column(name = "STATUS",unique = false)
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Conversation> conversations = new HashSet<>();
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    public Set<Like> receivedLikes = new HashSet<>(0);
 
-    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    public Set<Conversation> conversations = new HashSet<>(0);
+
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)

@@ -9,6 +9,7 @@ import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDt
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
 import com.enterpriseapplications.springboot.data.entities.*;
 import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -91,6 +92,8 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
         PaymentMethod requiredPaymentMethod = this.paymentMethodDao.findById(createOrderDto.getPaymentMethodID()).orElseThrow();
         if(requiredUser.getId().equals(requiredProduct.getSeller().getId()))
             throw new InvalidFormat("error.order.invalidBuyer");
+        if(requiredProduct.getStatus() == ProductStatus.BOUGHT)
+            throw new InvalidFormat("error.order.alreadyBought");
         Order order = new Order();
         order.setBuyer(requiredUser);
         order.setProduct(requiredProduct);
@@ -98,8 +101,14 @@ public class OrderServiceImp extends GenericServiceImp<Order,OrderDto> implement
         order.setAddress(requiredAddress);
         order.setPaymentMethod(requiredPaymentMethod);
         order.setStatus(OrderStatus.PROCESSING);
-        order.setDeliveryDate(LocalDate.now().plus(Duration.ofDays(3)));
-        return this.modelMapper.map(this.orderDao.save(order),OrderDto.class);
+        LocalDate localDate = LocalDate.now();
+        localDate = localDate.plusDays(3);
+        requiredProduct.setStatus(ProductStatus.BOUGHT);
+        order.setDeliveryDate(localDate);
+        requiredProduct.setStatus(ProductStatus.BOUGHT);
+        this.productDao.save(requiredProduct);
+        order = this.orderDao.save(order);
+        return this.modelMapper.map(order,OrderDto.class);
     }
 
     @Override

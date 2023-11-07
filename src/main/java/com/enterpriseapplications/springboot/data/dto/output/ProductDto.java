@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.controllers.images.ProductImageCont
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.refs.UserRef;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
@@ -34,6 +35,7 @@ public class ProductDto extends GenericOutput<ProductDto>
     private UserRef seller;
     private ProductCondition condition;
     private ProductVisibility visibility;
+    private ProductStatus status;
     private BigDecimal price;
     private BigDecimal minPrice;
     private CategoryDto category;

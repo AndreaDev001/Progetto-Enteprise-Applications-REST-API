@@ -16,5 +16,5 @@ public interface LikeService
     LikeDto getLike(UUID userID,UUID productID);
     LikeDto createLike(UUID productID);
     void deleteLike(UUID likeID);
-    void deleteLikeByProduct(UUID productID);
+    void deleteLikeByProduct(UUID userID,UUID productID);
 }

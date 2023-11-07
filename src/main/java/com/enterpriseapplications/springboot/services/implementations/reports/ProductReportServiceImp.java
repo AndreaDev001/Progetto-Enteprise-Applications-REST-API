@@ -72,7 +72,8 @@ public class ProductReportServiceImp extends GenericServiceImp<ProductReport,Pro
         productReport.setDescription(createReportDto.getDescription());
         productReport.setReason(createReportDto.getReason());
         productReport.setType(ReportType.PRODUCT);
-        return this.modelMapper.map(this.productReportDao.save(productReport),ProductReportDto.class);
+        productReport = this.productReportDao.save(productReport);
+        return this.modelMapper.map(productReport,ProductReportDto.class);
     }
 
     @Override

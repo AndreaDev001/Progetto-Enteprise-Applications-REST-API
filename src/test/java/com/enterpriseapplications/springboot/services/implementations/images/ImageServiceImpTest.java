@@ -44,6 +44,7 @@ class ImageServiceImpTest extends GenericTestImp<Image,ImageDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     static List<Image> createImages() {
@@ -87,10 +88,7 @@ class ImageServiceImpTest extends GenericTestImp<Image,ImageDto> {
     @Test
     void getImagesByType() {
         given(this.imageDao.getImagesByType(ImageType.IMAGE_PNG)).willReturn(elements);
-        List<ImageDto> images = this.imageServiceImp.getImagesByType(ImageType.IMAGE_JPEG);
-        Assert.assertTrue(compare(elements,images));
-        given(this.imageDao.getImagesByType(ImageType.IMAGE_PNG)).willReturn(elements);
-        images = this.imageServiceImp.getImagesByType(ImageType.IMAGE_PNG);
+        List<ImageDto> images = this.imageServiceImp.getImagesByType(ImageType.IMAGE_PNG);
         Assert.assertTrue(compare(elements,images));
     }
 }

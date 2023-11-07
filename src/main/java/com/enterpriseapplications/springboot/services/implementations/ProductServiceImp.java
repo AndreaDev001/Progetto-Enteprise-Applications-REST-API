@@ -16,9 +16,11 @@ import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -70,7 +72,6 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     public ProductDto getProductDetails(UUID productID) {
         Product product = this.productDao.findById(productID).orElseThrow();
         ProductDto productDto = this.modelMapper.map(product,ProductDto.class);
-        productDto.setAmountOfLikes(product.getReceivedLikes().size());
         productDto.addLinks();
         return productDto;
     }
@@ -81,7 +82,7 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Category requiredCategory = this.categoryDao.getCategory(createProductDto.getPrimaryCat(), createProductDto.getSecondaryCat(), createProductDto.getTertiaryCat()).orElseThrow();
         Product requiredProduct = buildProduct(createProductDto, requiredCategory, requiredUser);
-        this.productDao.save(requiredProduct);
+        requiredProduct = this.productDao.save(requiredProduct);
         ProductDto productDto = this.modelMapper.map(requiredProduct, ProductDto.class);
         productDto.addLinks();
         return productDto;
@@ -100,6 +101,7 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
         requiredProduct.setMinPrice(createProductDto.getMinPrice());
         requiredProduct.setCategory(requiredCategory);
         requiredProduct.setSeller(requiredUser);
+        requiredProduct.setStatus(ProductStatus.AVAILABLE);
         return requiredProduct;
     }
 
@@ -112,21 +114,21 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     @Override
     @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getRecentlyCreatedProducts(Pageable pageable) {
-        Page<Product> products = this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,pageable);
+        Page<Product> products = this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
     @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getMostLikedProducts(Pageable pageable) {
-        Page<Product> products = this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,pageable);
+        Page<Product> products = this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
     @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getMostExpensiveProducts(Pageable pageable) {
-        Page<Product> products = this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,pageable);
+        Page<Product> products = this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
@@ -159,6 +161,11 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     public void deleteProduct(UUID productID) {
         this.productDao.findById(productID);
         this.productDao.deleteById(productID);
+    }
+
+    @Override
+    public ProductStatus[] getStatues() {
+        return ProductStatus.values();
     }
 
     @Override

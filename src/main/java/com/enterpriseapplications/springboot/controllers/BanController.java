@@ -19,8 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -33,72 +33,74 @@ public class BanController
 {
     private final BanService banService;
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getBans(PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping("/private/{banID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanDto> getBan(@PathVariable("banID") UUID banID) {
         return ResponseEntity.ok(this.banService.getBan(banID));
     }
 
-    @GetMapping("/public/orderTypes")
+    @GetMapping("/private/orderTypes")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanSpecifications.OrderType[]> getOrderTypes() {
         return ResponseEntity.ok(this.banService.getOrderTypes());
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping("/private/banner/{userID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getCreatedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getCreatedBans(userID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping("private/banned/{userID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getReceivedBans(@PathVariable("userID") UUID userID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getReceivedBans(userID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
-    @Cacheable(value = CacheConfig.CACHE_SEARCH_BANS,key = "{#filter.toString(),#paginationRequest.toString()}")
     @GetMapping("/private/spec")
+    @Cacheable(value = CacheConfig.CACHE_SEARCH_BANS,key = "{#filter.toString(),#paginationRequest.toString()}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getBans(@ParameterObject @Valid BanSpecifications.Filter filter, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getBansBySpec(BanSpecifications.withFilter(filter),PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @GetMapping("private/banned/{userID}/active")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanDto> findBan(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.banService.getCurrentBan(userID));
     }
 
     @GetMapping("/private/{banID}/similar")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<BanDto>> getSimilarBans(@PathVariable("banID") UUID banID,@ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<BanDto> bans = this.banService.getSimilarBans(banID,PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(bans);
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanDto> createBan(@RequestBody @Valid CreateBanDto createBanDto) {
         return ResponseEntity.ok(this.banService.createBan(createBanDto));
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @PutMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanDto> updateBan(@RequestBody @Valid UpdateBanDto updateBanDto) {
         return ResponseEntity.ok(this.banService.updateBan(updateBanDto));
     }
 
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     @DeleteMapping("/private/{banID}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<BanDto> deleteBan(@PathVariable("banID") UUID banID) {
         this.banService.deleteBan(banID);
         return ResponseEntity.noContent().build();

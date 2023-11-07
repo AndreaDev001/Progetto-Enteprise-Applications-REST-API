@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.data.dto.input.create.CreateProduct
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.interfaces.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -94,12 +96,18 @@ public class ProductController
         return ResponseEntity.ok(this.productService.getVisibilities());
     }
 
+    @GetMapping("/public/statues")
+    public ResponseEntity<ProductStatus[]> getStatues() {
+        return ResponseEntity.ok(this.productService.getStatues());
+    }
+
     @GetMapping("/public/orderTypes")
     public ResponseEntity<ProductSpecifications.OrderType[]> getOrderTypes() {
         return ResponseEntity.ok(this.productService.getOrderTypes());
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
         return ResponseEntity.ok(this.productService.createProduct(createProductDto));
     }

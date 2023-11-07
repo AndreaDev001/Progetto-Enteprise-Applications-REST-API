@@ -45,7 +45,8 @@ public class OfferController
         return ResponseEntity.ok(this.offerService.getOffer(offerID));
     }
 
-    @GetMapping("/public/orderTypes")
+    @GetMapping("/private/orderTypes")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<OfferSpecifications.OrderType[]> getOrderTypes()
     {
         return ResponseEntity.ok(this.offerService.getOrderTypes());
@@ -89,6 +90,7 @@ public class OfferController
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<OfferDto> createOffer(@RequestBody @Valid CreateOfferDto createOfferDto) {
         return ResponseEntity.ok(this.offerService.createOffer(createOfferDto));
     }

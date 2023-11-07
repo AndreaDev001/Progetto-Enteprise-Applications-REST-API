@@ -58,6 +58,7 @@ public class OrderController
     }
 
     @GetMapping("/private/status/{status}")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<OrderDto>> getOrdersByStatus(@PathVariable("status") OrderStatus status) {
         return ResponseEntity.ok(this.orderService.getOrders(status));
     }

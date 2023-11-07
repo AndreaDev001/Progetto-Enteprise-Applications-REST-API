@@ -67,7 +67,7 @@ public class ReplyServiceImp extends GenericServiceImp<Reply,ReplyDto> implement
         reply.setWriter(requiredUser);
         reply.setReview(requiredReview);
         reply.setText(createReplyDto.getText());
-        this.replyDao.save(reply);
+        reply = this.replyDao.save(reply);
         return this.modelMapper.map(reply,ReplyDto.class);
     }
 

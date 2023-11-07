@@ -12,6 +12,7 @@ import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.data.entities.reports.ProductReport;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,8 +51,14 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
         super.init();
         productReportServiceImp = new ProductReportServiceImp(productReportDao,userDao,productDao,modelMapper,pagedResourcesAssembler);
         List<Report> reports = ReportServiceImpTest.createReports();
-        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
-        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        User firstSeller = User.builder().id(UUID.randomUUID()).build();
+        User secondSeller = User.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).seller(firstSeller).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).seller(secondSeller).build();
+        TestUtils.generateValues(firstProduct);
+        TestUtils.generateValues(secondProduct);
+        TestUtils.generateValues(firstSeller);
+        TestUtils.generateValues(secondSeller);
         this.firstElement = new ProductReport(reports.get(0));
         this.secondElement = new ProductReport(reports.get(1));
         this.firstElement.setProduct(firstProduct);
@@ -61,6 +69,7 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
 

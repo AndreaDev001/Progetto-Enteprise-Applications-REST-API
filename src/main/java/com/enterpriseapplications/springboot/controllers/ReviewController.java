@@ -58,6 +58,7 @@ public class ReviewController {
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ReviewDto> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) {
         return ResponseEntity.ok(this.reviewService.createReview(createReviewDto));
     }

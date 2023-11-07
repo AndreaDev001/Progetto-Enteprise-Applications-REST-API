@@ -50,6 +50,7 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(PaymentMethod paymentMethod, PaymentMethodDto paymentMethodDto) {
@@ -80,6 +81,14 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethods(pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
         Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
+    void getPaymentMethodByOwner() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        given(this.paymentMethodDao.getPaymentMethods(user.getId())).willReturn(elements);
+        List<PaymentMethodDto> paymentMethods = this.paymentMethodServiceImp.getPaymentMethods(user.getId());
+        Assert.assertTrue(compare(elements,paymentMethods));
     }
 
     @Test

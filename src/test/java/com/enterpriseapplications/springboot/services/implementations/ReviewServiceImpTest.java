@@ -52,6 +52,7 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
     public void before()
     {
         init();
+        this.defaultBefore();
     }
 
     @Test
@@ -124,6 +125,7 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
         CreateReviewDto createReviewDto = CreateReviewDto.builder().reviewedID(user.getId()).rating(10).text("TEXT").build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.reviewDao.getReviews(user.getId())).willReturn(elements);
         given(this.reviewDao.save(any(Review.class))).willReturn(firstElement);
         ReviewDto reviewDto = this.reviewServiceImp.createReview(createReviewDto);
         Assert.assertTrue(valid(firstElement,reviewDto));

@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.data.dao.specifications;
 
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductCondition;
+import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import jakarta.persistence.criteria.*;
 import lombok.*;
@@ -87,6 +88,7 @@ public class ProductSpecifications
 
             Predicate requiredPredicate = SpecificationsUtils.generateExcludedPredicate(root,criteriaBuilder,filter.excludedIDs);
             requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("visibility"), ProductVisibility.PUBLIC));
+            requiredPredicate = criteriaBuilder.and(requiredPredicate,criteriaBuilder.equal(root.get("status"), ProductStatus.AVAILABLE));
             requiredPredicate = SpecificationsUtils.generatePredicate(requiredPredicate,requiredPredicates,criteriaBuilder);
             requiredOrders = SpecificationsUtils.generateOrders(root,criteriaBuilder,filter.getOrderTypes(),filter.orderMode);
             return criteriaQuery.where(requiredPredicate).orderBy(requiredOrders).getRestriction();

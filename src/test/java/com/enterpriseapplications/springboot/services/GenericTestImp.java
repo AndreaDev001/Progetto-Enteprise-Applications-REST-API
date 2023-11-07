@@ -1,5 +1,6 @@
 package com.enterpriseapplications.springboot.services;
 
+import com.enterpriseapplications.springboot.config.ModelMapperConfig;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.output.GenericOutput;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -19,10 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -47,10 +46,23 @@ public abstract class GenericTestImp<T,U extends GenericOutput<?>>
         httpServletRequest = new MockHttpServletRequest();
         httpServletRequest.setContextPath("/api/v1");
         pagedResourcesAssembler = new PagedResourcesAssembler<>(null,null);
-        modelMapper = new ModelMapper();
+        modelMapper = ModelMapperConfig.generateModelMapper();
         ServletRequestAttributes attributes = new ServletRequestAttributes(httpServletRequest);
         RequestContextHolder.setRequestAttributes(attributes);
     }
+
+    @SneakyThrows
+    protected void defaultBefore() {
+        this.generateValues(firstElement);
+        this.generateValues(secondElement);
+    }
+
+
+    @SneakyThrows
+    protected void generateValues(T entity) throws IllegalAccessException {
+        TestUtils.generateValues(entity);
+    }
+
     protected abstract boolean valid(T entity, U dto);
 
     @SneakyThrows

@@ -5,9 +5,11 @@ import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.images.ProductImageDao;
 import com.enterpriseapplications.springboot.data.dto.output.images.ProductImageDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
+import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,8 +46,14 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
         super.init();
         productImageServiceImp = new ProductImageServiceImp(userDao,productDao,productImageDao,modelMapper,pagedResourcesAssembler);
         List<Image> images = ImageServiceImpTest.createImages();
-        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
-        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        User firstSeller = User.builder().id(UUID.randomUUID()).build();
+        User secondSeller = User.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).seller(firstSeller).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).seller(secondSeller).build();
+        TestUtils.generateValues(firstSeller);
+        TestUtils.generateValues(secondSeller);
+        TestUtils.generateValues(firstProduct);
+        TestUtils.generateValues(secondProduct);
         firstElement = new ProductImage(images.get(0));
         secondElement = new ProductImage(images.get(1));
         firstElement.setProduct(firstProduct);
@@ -56,6 +64,7 @@ class ProductImageServiceImpTest extends GenericTestImp<ProductImage,ProductImag
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
 
     public boolean valid(ProductImage productImage, ProductImageDto productImageDto) {

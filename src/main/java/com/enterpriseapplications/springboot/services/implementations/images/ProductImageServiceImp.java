@@ -70,7 +70,6 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
     @SneakyThrows
     public List<ProductImageDto> uploadImages(UUID productID,List<MultipartFile> files) {
         List<ProductImageDto> results = new ArrayList<>();
-        User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
         Product requiredProduct = this.productDao.findById(productID).orElseThrow();
         for(MultipartFile multipartFile : files) {
             ProductImage productImage = new ProductImage();

@@ -79,7 +79,7 @@ public class PaymentMethodServiceImp extends GenericServiceImp<PaymentMethod,Pay
         paymentMethod.setNumber(createPaymentMethodDto.getNumber());
         paymentMethod.setExpirationDate(createPaymentMethodDto.getExpirationDate());
         paymentMethod.setUser(requiredUser);
-        this.paymentMethodDao.save(paymentMethod);
+        paymentMethod = this.paymentMethodDao.save(paymentMethod);
         return this.modelMapper.map(paymentMethod,PaymentMethodDto.class);
     }
 

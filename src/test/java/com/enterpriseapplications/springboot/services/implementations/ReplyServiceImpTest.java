@@ -60,6 +60,7 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
     @BeforeEach
     public void before() {
         init();
+        this.defaultBefore();
     }
     public boolean valid(Reply reply, ReplyDto replyDto) {
         Assert.assertNotNull(replyDto);
@@ -73,6 +74,14 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
 
     @Test
     void getReplyByReview() {
+        Review firstReview = Review.builder().id(UUID.randomUUID()).build();
+        Review secondReview = Review.builder().id(UUID.randomUUID()).build();
+        given(this.replyDao.findByReview(firstReview.getId())).willReturn(Optional.of(firstElement));
+        given(this.replyDao.findByReview(secondReview.getId())).willReturn(Optional.of(secondElement));
+        ReplyDto firstReply = this.replyServiceImp.getReplyByReview(firstReview.getId());
+        ReplyDto secondReply = this.replyServiceImp.getReplyByReview(secondReview.getId());
+        Assert.assertTrue(valid(firstElement,firstReply));
+        Assert.assertTrue(valid(secondElement,secondReply));
     }
 
     @Test
@@ -96,7 +105,8 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
 
     @Test
     void createReply() {
-        Review review = Review.builder().id(UUID.randomUUID()).build();
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Review review = Review.builder().id(UUID.randomUUID()).writer(user).build();
         CreateReplyDto createReplyDto = CreateReplyDto.builder().reviewID(review.getId()).text("TEXT").build();
         given(this.userDao.findById(this.authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
         given(this.reviewDao.findById(review.getId())).willReturn(Optional.of(review));
