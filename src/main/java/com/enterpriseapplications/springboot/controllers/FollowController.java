@@ -59,7 +59,7 @@ public class FollowController {
 
     @PostMapping("private/{followedID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
-    public ResponseEntity<FollowDto> createFollow(@PositiveOrZero @PathVariable("followedID") UUID followedID) {
+    public ResponseEntity<FollowDto> createFollow(@PathVariable("followedID") UUID followedID) {
         return ResponseEntity.ok(this.followService.createFollow(followedID));
     }
 

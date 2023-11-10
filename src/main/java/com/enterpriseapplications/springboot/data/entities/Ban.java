@@ -33,28 +33,28 @@ public class Ban implements OwnableEntity
     private User banner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BANNED",unique = false)
+    @JoinColumn(name = "BANNED",unique = false,nullable = false)
     private User banned;
 
-    @Column(name = "DESCRIPTION",unique = false)
+    @Column(name = "DESCRIPTION",unique = false,nullable = false)
     private String description;
 
-    @Column(name = "REASON",unique = false)
+    @Column(name = "REASON",unique = false,nullable = false)
     @Enumerated(EnumType.STRING)
     private ReportReason reason;
 
-    @Column(name = "EXPIRATION_DATE",unique = false)
+    @Column(name = "EXPIRATION_DATE",unique = false,nullable = false)
     private LocalDate expirationDate;
 
-    @Column(name = "EXPIRED",unique = false)
+    @Column(name = "EXPIRED",unique = false,nullable = false)
     private boolean expired;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",unique = false,nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",unique = false,nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

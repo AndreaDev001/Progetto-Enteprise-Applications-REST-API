@@ -62,7 +62,8 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
 
     @Override
     public ReviewDto findReview(UUID writerID, UUID receiverID) {
-        return this.modelMapper.map(this.reviewDao.findReview(writerID,receiverID).orElseThrow(),ReviewDto.class);
+        Review review = this.reviewDao.findReview(writerID,receiverID).orElseThrow();
+        return this.modelMapper.map(review,ReviewDto.class);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
         for(Review review : reviews) {
             sum += review.getRating();
         }
-        Long rating = sum / reviews.size();
+        Long rating = !reviews.isEmpty() ? sum / reviews.size() : 0;
         requiredUser.setRating(rating);
         this.userDao.save(requiredUser);
     }
@@ -111,7 +112,8 @@ public class ReviewServiceImp extends GenericServiceImp<Review,ReviewDto> implem
     @Override
     @Transactional
     public void deleteReview(UUID reviewID) {
-        this.reviewDao.findById(reviewID).orElseThrow();
+        Review review = this.reviewDao.findById(reviewID).orElseThrow();
+        this.updateRating(review.getReceiver().getId());
         this.reviewDao.deleteById(reviewID);
     }
 }

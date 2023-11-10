@@ -90,7 +90,7 @@ public class MessageServiceImp extends GenericServiceImp<Message,MessageDto> imp
         User receiver = this.userDao.findById(createMessageDto.getReceiverID()).orElseThrow();
         Conversation requiredConversation = this.conversationDao.findById(createMessageDto.getConversationID()).orElseThrow();
         if(requiredUser.getId().equals(receiver.getId()))
-            throw new InvalidFormat("error.messages.invalidSender");
+            throw new InvalidFormat("errors.message.invalidSender");
         Message message = new Message();
         message.setSender(requiredUser);
         message.setReceiver(receiver);

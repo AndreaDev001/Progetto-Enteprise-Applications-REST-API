@@ -92,6 +92,12 @@ public class ProductReportServiceImp extends GenericServiceImp<ProductReport,Pro
     }
 
     @Override
+    public ProductReportDto getReport(UUID userID, UUID productID) {
+        ProductReport productReport = this.productReportDao.getProductReport(productID,userID).orElseThrow();
+        return this.modelMapper.map(productReport,ProductReportDto.class);
+    }
+
+    @Override
     @Transactional
     public void deleteProductReport(UUID productReportID) {
         this.productReportDao.findById(productReportID).orElseThrow();

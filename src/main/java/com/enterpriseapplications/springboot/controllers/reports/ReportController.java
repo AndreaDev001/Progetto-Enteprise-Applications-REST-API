@@ -11,6 +11,7 @@ import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ReportService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/reports")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class ReportController {
     private final ReportService reportService;
 
@@ -40,10 +42,10 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
-    @GetMapping("/private/report/{reporterID}/{reportedID}")
+    @GetMapping("/private/report/{reporterID}/{reportedID}/{reportType}")
     @PreAuthorize("@permissionHandler.hasAccess(#reporterID)")
-    public ResponseEntity<ReportDto> getReportBetween(@PathVariable("reporterID") UUID reporterID,@PathVariable("reportedID") UUID reportedID) {
-        ReportDto reportDto = this.reportService.getReportBetween(reporterID,reportedID);
+    public ResponseEntity<ReportDto> getReportBetween(@PathVariable("reporterID") UUID reporterID,@PathVariable("reportedID") UUID reportedID,@PathVariable("reportType") ReportType reportType) {
+        ReportDto reportDto = this.reportService.getReportBetween(reporterID,reportedID,reportType);
         return ResponseEntity.ok(reportDto);
     }
 
@@ -112,7 +114,7 @@ public class ReportController {
     }
 
     @PostMapping("/private/{userID}")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<ReportDto> createReport(@RequestBody @Valid CreateReportDto createReportDto, @PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.reportService.createReport(createReportDto,userID));
     }

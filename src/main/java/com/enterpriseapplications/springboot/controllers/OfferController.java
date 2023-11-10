@@ -39,6 +39,12 @@ public class OfferController
         return ResponseEntity.ok(offers);
     }
 
+    @GetMapping("/private/offer/{userID}/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
+    public ResponseEntity<OfferDto> getOffer(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
+        return ResponseEntity.ok(this.offerService.getOffer(userID,productID));
+    }
+
     @GetMapping("private/{offerID}")
     @PreAuthorize("@permissionHandler.hasAccess(@offerDao,#offerID)")
     public ResponseEntity<OfferDto> getOffer(@PathVariable("offerID") UUID offerID) {

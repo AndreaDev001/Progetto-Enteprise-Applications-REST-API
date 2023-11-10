@@ -7,6 +7,7 @@ import com.enterpriseapplications.springboot.data.dao.specifications.ProductSpec
 import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateProductDto;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateProductDto;
 import com.enterpriseapplications.springboot.data.dto.output.ProductDto;
 import com.enterpriseapplications.springboot.data.entities.Category;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -15,6 +16,7 @@ import com.enterpriseapplications.springboot.data.entities.enums.ProductConditio
 import com.enterpriseapplications.springboot.data.entities.enums.ProductStatus;
 import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibility;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -176,5 +178,17 @@ class ProductServiceImpTest extends GenericTestImp<Product,ProductDto> {
         given(this.productDao.save(any())).willReturn(firstElement);
         ProductDto productDto = this.productServiceImp.createProduct(createProductDto);
         Assert.assertTrue(valid(firstElement,productDto));
+    }
+
+    @Test
+    public void updateProduct() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        TestUtils.generateValues(product);
+        UpdateProductDto updateProductDto = UpdateProductDto.builder().productID(product.getId()).description("description").brand("brand").build();
+        given(this.productDao.save(any(Product.class))).willReturn(product);
+        given(this.productDao.findById(product.getId())).willReturn(Optional.of(firstElement));
+        ProductDto result = this.productServiceImp.updateProduct(updateProductDto);
+        Assert.assertTrue(valid(firstElement,result));
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -131,6 +132,12 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
     }
 
     @Override
+    public OfferDto getOffer(UUID userID, UUID productID) {
+        Offer offer = this.offerDao.getOffer(userID,productID).orElseThrow();
+        return this.modelMapper.map(offer,OfferDto.class);
+    }
+
+    @Override
     @Transactional
     public OfferDto createOffer(CreateOfferDto createOfferDto) {
         User requiredUser = this.userDao.findById(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName())).orElseThrow();
@@ -145,6 +152,9 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         offer.setStatus(OfferStatus.OPEN);
         offer.setDescription(createOfferDto.getDescription());
         offer.setPrice(createOfferDto.getPrice());
+        LocalDate localDate = LocalDate.now();
+        localDate = localDate.plusDays(3);
+        offer.setExpirationDate(localDate);
         offer = this.offerDao.save(offer);
         return this.modelMapper.map(offer,OfferDto.class);
     }
@@ -169,10 +179,12 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
     @Transactional
     public OfferDto updateOfferBuyer(UpdateOfferBuyerDto updateOfferBuyerDto) {
         Offer requiredOffer = this.offerDao.findById(updateOfferBuyerDto.getOfferID()).orElseThrow();
+        if(requiredOffer.isExpired())
+            throw new InvalidFormat("errors.offer.alreadyExpired");
         if(updateOfferBuyerDto.getDescription() != null)
             requiredOffer.setDescription(updateOfferBuyerDto.getDescription());
         if(updateOfferBuyerDto.getPrice() != null) {
-            if(updateOfferBuyerDto.getPrice().compareTo(requiredOffer.getProduct().getPrice()) < 0)
+            if(updateOfferBuyerDto.getPrice().compareTo(requiredOffer.getProduct().getMinPrice()) < 0)
                 throw new InvalidFormat("errors.offers.updateBuyer.invalidPrice");
             requiredOffer.setPrice(updateOfferBuyerDto.getPrice());
         }
@@ -187,6 +199,8 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         Offer requiredOffer = this.offerDao.findById(updateOfferSeller.getOfferID()).orElseThrow();
         Optional<Offer> offerOptional = this.offerDao.getOfferByStatus(requiredOffer.getId(),OfferStatus.ACCEPTED);
         OfferStatus offerStatus = updateOfferSeller.getOfferStatus();
+        if(requiredOffer.isExpired())
+            throw new InvalidFormat("errors.offer.alreadyExpired");
         if(!requiredProduct.getSeller().getId().equals(requiredOffer.getProduct().getSeller().getId()))
             throw new InvalidFormat("errors.product.updateSeller.invalidProduct");
         if(offerOptional.isPresent())
@@ -210,6 +224,7 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
         expiredOffers.forEach(offer -> {
             log.info(String.format("Offer [%s] has expired at [%s]",offer.getId().toString(),this.dateTimeFormatter.format(LocalDateTime.now())));
             offer.setExpired(true);
+            offer.setStatus(OfferStatus.EXPIRED);
             this.offerDao.save(offer);
         });
     }
@@ -218,9 +233,9 @@ public class OfferServiceImp extends GenericServiceImp<Offer,OfferDto> implement
     @Transactional
     @Scheduled(fixedDelay = 24 * 5 * 60 * 60 * 1000,initialDelay = 24 * 60 * 5000)
     public void deleteExpiredOffers() {
-        log.info(String.format("Expired offers have been deleted at [%s]",this.dateTimeFormatter.format(LocalDateTime.now())));
         List<Offer> expiredOffers = this.offerDao.getExpiredOffers(true);
         this.offerDao.deleteAll(expiredOffers);
+        log.info(String.format("Expired offers have been deleted at [%s]",this.dateTimeFormatter.format(LocalDateTime.now())));
     }
 
     @Override

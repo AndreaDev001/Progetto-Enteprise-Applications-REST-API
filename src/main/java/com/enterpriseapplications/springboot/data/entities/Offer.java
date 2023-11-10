@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "OFFERS")
+@Table(name = "OFFERS",uniqueConstraints = {@UniqueConstraint(columnNames = {"BUYER_ID","PRODUCT_ID"})})
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
 @Data
@@ -29,36 +29,36 @@ public class Offer implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "DESCRIPTION",unique = false)
+    @Column(name = "DESCRIPTION",nullable = false)
     private String description;
 
-    @Column(name = "PRICE",unique = false)
+    @Column(name = "PRICE",nullable = false)
     private BigDecimal price;
 
-    @Column(name = "STATUS",unique = false)
+    @Column(name = "STATUS",nullable = false)
     @Enumerated(EnumType.STRING)
     private OfferStatus status;
 
-    @Column(name = "EXPIRATION_DATE",unique = false)
+    @Column(name = "EXPIRATION_DATE",nullable = false)
     private LocalDate expirationDate;
 
-    @Column(name = "expired",unique = false)
+    @Column(name = "expired",nullable = false)
     private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BUYER_ID")
+    @JoinColumn(name = "BUYER_ID",nullable = false)
     private User buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRODUCT_ID")
+    @JoinColumn(name = "PRODUCT_ID",nullable = false)
     private Product product;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

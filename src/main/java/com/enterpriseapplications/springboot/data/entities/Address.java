@@ -35,32 +35,32 @@ public class Address implements OwnableEntity
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,optional = false)
     private User user;
 
-    @Column(name = "STREET",unique = false)
+    @Column(name = "STREET",unique = false,nullable = false)
     private String street;
 
-    @Column(name = "LOCALITY",unique = false)
+    @Column(name = "LOCALITY",unique = false,nullable = false)
     private String locality;
 
-    @Column(name = "POSTAL_CODE",unique = false)
+    @Column(name = "POSTAL_CODE",unique = false,nullable = false)
     private String postalCode;
 
-    @Column(name = "OWNER_NAME",unique = false)
+    @Column(name = "OWNER_NAME",unique = false,nullable = false)
     private String ownerName;
 
-    @Column(name = "COUNTRY_CODE",unique = false)
+    @Column(name = "COUNTRY_CODE",unique = false,nullable = false)
     @Enumerated(EnumType.STRING)
     private CountryCode countryCode;
 
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",unique = false,nullable = false)
     @CreatedDate
     private LocalDate createdDate;
 
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",unique = false,nullable = false)
     @LastModifiedDate
     private LocalDate lastModifiedDate;
 
     @Override
     public UUID getOwnerID() {
-        return id;
+        return user.getId();
     }
 }

@@ -41,10 +41,12 @@ class OrderServiceImpTest extends GenericTestImp<Order,OrderDto> {
     private AddressDao addressDao;
     @Mock
     private PaymentMethodDao paymentMethodDao;
+    @Mock
+    private OfferDao offerDao;
     @Override
     protected void init() {
         super.init();
-        orderServiceImp = new OrderServiceImp(orderDao,userDao,paymentMethodDao,addressDao,productDao,modelMapper,pagedResourcesAssembler);
+        orderServiceImp = new OrderServiceImp(orderDao,userDao,paymentMethodDao,offerDao,addressDao,productDao,modelMapper,pagedResourcesAssembler);
         User firstBuyer = User.builder().id(UUID.randomUUID()).build();
         User secondBuyer = User.builder().id(UUID.randomUUID()).build();
         Product firstProduct = Product.builder().id(UUID.randomUUID()).seller(secondBuyer).build();

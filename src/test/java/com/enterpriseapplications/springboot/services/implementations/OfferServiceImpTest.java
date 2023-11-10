@@ -5,6 +5,10 @@ import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.OfferSpecifications;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferBuyerDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.offers.UpdateOfferSellerDto;
+import com.enterpriseapplications.springboot.data.dto.output.ConversationDto;
 import com.enterpriseapplications.springboot.data.dto.output.OfferDto;
 import com.enterpriseapplications.springboot.data.entities.Offer;
 import com.enterpriseapplications.springboot.data.entities.Product;
@@ -25,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.PagedModel;
 
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -186,5 +191,54 @@ class OfferServiceImpTest extends GenericTestImp<Offer,OfferDto> {
         PagedModel<OfferDto> pagedModel = this.offerServiceImp.getReceivedOffers(user.getId(),pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
         Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
+    public void getOfferBetween() {
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        given(this.offerDao.getOffer(firstUser.getId(),firstProduct.getId())).willReturn(Optional.of(firstElement));
+        given(this.offerDao.getOffer(secondUser.getId(),secondProduct.getId())).willReturn(Optional.of(secondElement));
+        OfferDto firstOffer = this.offerServiceImp.getOffer(firstUser.getId(),firstProduct.getId());
+        OfferDto secondOffer = this.offerServiceImp.getOffer(secondUser.getId(),secondProduct.getId());
+        Assert.assertTrue(valid(firstElement,firstOffer));
+        Assert.assertTrue(valid(secondElement,secondOffer));
+    }
+
+    @Test
+    public void updateOffer() {
+        Offer offer = Offer.builder().id(UUID.randomUUID()).build();
+        UpdateOfferDto updateOfferDto = UpdateOfferDto.builder().offerID(offer.getId()).offerStatus(OfferStatus.OPEN).price(new BigDecimal(200)).build();
+        given(this.offerDao.findById(offer.getId())).willReturn(Optional.of(firstElement));
+        given(this.offerDao.save(any(Offer.class))).willReturn(firstElement);
+        OfferDto offerDto = this.offerServiceImp.updateOffer(updateOfferDto);
+        Assert.assertTrue(valid(firstElement,offerDto));
+    }
+
+    @Test
+    public void updateOfferBuyer() {
+        Offer offer = Offer.builder().id(UUID.randomUUID()).build();
+        UpdateOfferBuyerDto updateOfferBuyerDto = UpdateOfferBuyerDto.builder().offerID(offer.getId()).build();
+        given(this.offerDao.findById(offer.getId())).willReturn(Optional.of(firstElement));
+        given(this.offerDao.save(any(Offer.class))).willReturn(firstElement);
+        OfferDto offerDto = this.offerServiceImp.updateOfferBuyer(updateOfferBuyerDto);
+        Assert.assertTrue(valid(firstElement,offerDto));
+    }
+
+    @Test
+    public void updateOfferSeller() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
+        Offer offer = Offer.builder().id(UUID.randomUUID()).product(product).build();
+        TestUtils.generateValues(product);
+        firstElement.setProduct(product);
+        UpdateOfferSellerDto updateOfferSellerDto = UpdateOfferSellerDto.builder().productID(product.getId()).offerID(offer.getId()).build();
+        given(this.productDao.findById(updateOfferSellerDto.getProductID())).willReturn(Optional.of(product));
+        given(this.offerDao.findById(offer.getId())).willReturn(Optional.of(firstElement));
+        given(this.offerDao.save(any(Offer.class))).willReturn(firstElement);
+        OfferDto offerDto = this.offerServiceImp.updateOfferSeller(updateOfferSellerDto);
+        Assert.assertTrue(valid(firstElement,offerDto));
     }
 }

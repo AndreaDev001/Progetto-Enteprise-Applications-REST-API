@@ -61,7 +61,7 @@ public class UserServiceImp extends GenericServiceImp<User,UserDetailsDto> imple
             requiredUser.setGender(updateUserDto.getGender());
         if(updateUserDto.getVisibility() != null)
             requiredUser.setVisibility(updateUserDto.getVisibility());
-        this.userDao.save(requiredUser);
+        requiredUser = this.userDao.save(requiredUser);
         UserDetailsDto userDetailsDto = this.modelMapper.map(requiredUser,UserDetailsDto.class);
         userDetailsDto.addLinks();
         return userDetailsDto;

@@ -101,8 +101,8 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
     }
 
     @Override
-    public ReportDto getReportBetween(UUID reporterID, UUID reportedID) {
-        Report report = this.reportDao.getReport(reporterID,reportedID).orElseThrow();
+    public ReportDto getReportBetween(UUID reporterID, UUID reportedID,ReportType reportType) {
+        Report report = this.reportDao.getReport(reporterID,reportedID,reportType).orElseThrow();
         return this.modelMapper.map(report,ReportDto.class);
     }
 
@@ -133,7 +133,7 @@ public class ReportServiceImp extends GenericServiceImp<Report,ReportDto> implem
             requiredReport.setDescription(updateReportDto.getDescription());
         if(updateReportDto.getReason() != null)
             requiredReport.setReason(updateReportDto.getReason());
-        this.reportDao.save(requiredReport);
+        requiredReport = this.reportDao.save(requiredReport);
         return this.modelMapper.map(requiredReport,ReportDto.class);
     }
 

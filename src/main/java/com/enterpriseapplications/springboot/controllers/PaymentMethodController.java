@@ -55,7 +55,7 @@ public class PaymentMethodController
     }
 
     @PostMapping("/private")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<PaymentMethodDto> createPaymentMethod(@RequestBody @Valid CreatePaymentMethodDto createPaymentMethodDto) {
         return ResponseEntity.ok(this.paymentMethodService.createPaymentMethod(createPaymentMethodDto));
     }

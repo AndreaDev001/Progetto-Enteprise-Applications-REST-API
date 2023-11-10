@@ -33,43 +33,43 @@ public class User
     @Column(name = "ID")
     private UUID id;
 
-    @Column(name = "EMAIL",unique = false)
+    @Column(name = "EMAIL",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String email;
 
-    @Column(name = "USERNAME",unique = true)
+    @Column(name = "USERNAME",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String username;
 
-    @Column(name = "NAME",unique = false)
+    @Column(name = "NAME",nullable = true)
     @Convert(converter = TrimConverter.class)
     private String name;
 
-    @Column(name = "SURNAME",unique = false)
+    @Column(name = "SURNAME",nullable = true)
     @Convert(converter = TrimConverter.class)
     private String surname;
 
-    @Column(name = "GENDER",unique = false)
+    @Column(name = "GENDER",nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "DESCRIPTION",unique = false)
+    @Column(name = "DESCRIPTION",nullable = true)
     @Convert(converter = TrimConverter.class)
     private String description;
 
-    @Column(name = "VISIBILITY",unique = false)
+    @Column(name = "VISIBILITY",nullable = false)
     @Enumerated(EnumType.STRING)
     private UserVisibility visibility;
 
-    @Column(name = "RATING",unique = false)
+    @Column(name = "RATING",nullable = true)
     private Long rating;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)

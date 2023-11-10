@@ -5,8 +5,10 @@ import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.MessageReportDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.data.entities.Message;
+import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
@@ -122,6 +124,30 @@ class MessageReportServiceImpTest extends GenericTestImp<MessageReport,MessageRe
     }
 
     @Test
+    void getReportBetween() {
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        Message firstMessage = Message.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
+        Message secondMessage = Message.builder().id(UUID.randomUUID()).build();
+        given(this.messageReportDao.getMessageReport(firstMessage.getId(),firstUser.getId())).willReturn(Optional.of(firstElement));
+        given(this.messageReportDao.getMessageReport(secondMessage.getId(),secondUser.getId())).willReturn(Optional.of(secondElement));
+        MessageReportDto firstReport = this.messageReportServiceImp.getReport(firstUser.getId(),firstMessage.getId());
+        MessageReportDto secondReport = this.messageReportServiceImp.getReport(secondUser.getId(),secondMessage.getId());
+        Assert.assertTrue(valid(firstElement,firstReport));
+        Assert.assertTrue(valid(secondElement,secondReport));
+    }
+
+    @Test
     void updateMessageReport() {
+        MessageReport messageReport = new MessageReport();
+        Message message = Message.builder().id(UUID.randomUUID()).build();
+        messageReport.setId(UUID.randomUUID());
+        messageReport.setMessage(message);
+        UpdateReportDto updateReportDto = UpdateReportDto.builder().reportID(messageReport.getId()).description("description").build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.messageReportDao.findById(updateReportDto.getReportID())).willReturn(Optional.of(firstElement));
+        given(this.messageReportDao.save(any(MessageReport.class))).willReturn(messageReport);
+        MessageReportDto result = this.messageReportServiceImp.updateMessageReport(updateReportDto);
+        Assert.assertTrue(valid(firstElement,result));
     }
 }

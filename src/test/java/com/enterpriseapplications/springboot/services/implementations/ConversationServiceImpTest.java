@@ -132,7 +132,6 @@ public class ConversationServiceImpTest extends GenericTestImp<Conversation, Con
         Product product = Product.builder().id(UUID.randomUUID()).seller(user).build();
         CreateConversationDto createConversationDto = CreateConversationDto.builder().productID(product.getId()).build();
         given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
-        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
         given(this.productDao.findById(product.getId())).willReturn(Optional.of(product));
         given(this.conversationDao.save(any(Conversation.class))).willReturn(firstElement);
         ConversationDto conversationDto = this.conversationServiceImp.createConversation(createConversationDto);

@@ -94,6 +94,12 @@ public class MessageReportServiceImp extends GenericServiceImp<MessageReport,Mes
     }
 
     @Override
+    public MessageReportDto getReport(UUID userID, UUID messageID) {
+        MessageReport messageReport = this.messageReportDao.getMessageReport(messageID,userID).orElseThrow();
+        return this.modelMapper.map(messageReport,MessageReportDto.class);
+    }
+
+    @Override
     @Transactional
     public void deleteMessageReport(UUID messageID) {
         this.messageReportDao.findById(messageID);

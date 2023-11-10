@@ -49,13 +49,14 @@ public class UserSpecifications
         private List<OrderType> orderTypes;
 
         public Filter(SpecificationsUtils.OrderMode orderMode,User user) {
-            super(orderMode,List.of(user.getId()));
-            this.email = user.getEmail();
-            this.username = user.getUsername();
-            if(user.getName() != null)
-                this.name = user.getName();
-            if(user.getSurname() != null)
-                 this.surname = user.getSurname();
+                super(orderMode,List.of(user.getId()));
+                this.username = user.getUsername();
+                if(user.getName() != null)
+                    this.name = user.getName();
+                if(user.getSurname() != null)
+                    this.surname = user.getSurname();
+                if(user.getRating() != null)
+                    this.minRating = Math.toIntExact(user.getRating());
             this.gender = user.getGender();
         }
     }
@@ -74,7 +75,7 @@ public class UserSpecifications
             if(filter.surname != null)
                 requiredPredicates.add(criteriaBuilder.like(root.get("surname"),SpecificationsUtils.likePattern(filter.surname)));
             if(filter.description != null)
-                requiredPredicates.add(criteriaBuilder.like(root.get("email"),SpecificationsUtils.likePattern(filter.description)));
+                requiredPredicates.add(criteriaBuilder.like(root.get("description"),SpecificationsUtils.likePattern(filter.description)));
             if(filter.gender != null)
                 requiredPredicates.add(criteriaBuilder.equal(root.get("gender"),filter.gender));
             if(filter.minRating != null && filter.minRating > 0)

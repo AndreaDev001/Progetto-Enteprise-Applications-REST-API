@@ -5,6 +5,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.images.ImageDto;
 import com.enterpriseapplications.springboot.data.entities.enums.ImageType;
 import com.enterpriseapplications.springboot.services.interfaces.images.ImageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/images")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class ImageController
 {
     private final ImageService imageService;
@@ -44,9 +46,9 @@ public class ImageController
         return ResponseEntity.ok(this.imageService.getImagesByType(imageType));
     }
 
-    @DeleteMapping("/private/{id}")
+    @DeleteMapping("/private/{imageID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteImage(@PathVariable("id") UUID imageID) {
+    public ResponseEntity<Void> deleteImage(@PathVariable("imageID") UUID imageID) {
         this.imageService.deleteImage(imageID);
         return ResponseEntity.noContent().build();
     }

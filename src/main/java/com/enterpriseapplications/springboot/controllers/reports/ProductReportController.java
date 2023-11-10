@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.reports.ProductReportService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/productReports")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class ProductReportController {
 
     private final ProductReportService productReportService;
@@ -34,13 +36,19 @@ public class ProductReportController {
         return ResponseEntity.ok(productReports);
     }
 
+    @GetMapping("/private/productReport/{userID}/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
+    public ResponseEntity<ProductReportDto> getProductReport(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
+        return ResponseEntity.ok(this.productReportService.getReport(userID,productID));
+    }
+
     @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@productReportDao,#reportID)")
     public ResponseEntity<ProductReportDto> getProductReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.productReportService.getReport(reportID));
     }
 
-    @GetMapping("/private/{productID}")
+    @GetMapping("/private/product/{productID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<ProductReportDto>> getProductReports(@PathVariable("productID") UUID productID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<ProductReportDto> productReports = this.productReportService.getReports(productID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

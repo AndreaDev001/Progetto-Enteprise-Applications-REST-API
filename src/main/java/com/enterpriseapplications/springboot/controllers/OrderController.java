@@ -3,22 +3,17 @@ package com.enterpriseapplications.springboot.controllers;
 
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateOrderDto;
-import com.enterpriseapplications.springboot.data.dto.input.create.CreatePaymentMethodDto;
-import com.enterpriseapplications.springboot.data.dto.input.update.UpdateOrderDto;
 import com.enterpriseapplications.springboot.data.dto.output.OrderDto;
-import com.enterpriseapplications.springboot.data.entities.Order;
 import com.enterpriseapplications.springboot.data.entities.enums.OrderStatus;
 import com.enterpriseapplications.springboot.services.interfaces.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,11 +64,6 @@ public class OrderController
         return ResponseEntity.ok(this.orderService.createOrder(createOrderDto));
     }
 
-    @PutMapping("/private")
-    @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderDto> updateOrder(@RequestBody @Valid UpdateOrderDto updateOrderDto) {
-        return ResponseEntity.ok(this.orderService.updateOrder(updateOrderDto));
-    }
 
     @GetMapping("/private/product/{productID}")
     @PreAuthorize("@permissionHandler.hasAccess(@productDao,#productID)")

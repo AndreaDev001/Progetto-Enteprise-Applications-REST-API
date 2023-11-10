@@ -34,7 +34,8 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/public/{reviewID}")
+    @GetMapping("/private/{reviewID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@reviewDao,#reviewID)")
     public ResponseEntity<ReviewDto> getReview(@PathVariable("reviewID") UUID reviewID) {
         return ResponseEntity.ok(this.reviewService.getReview(reviewID));
     }
@@ -54,7 +55,8 @@ public class ReviewController {
 
     @GetMapping("/public/review")
     public ResponseEntity<ReviewDto> findReview(@RequestParam("writerID") UUID writerID,@RequestParam("receiverID") UUID receiverID) {
-        return ResponseEntity.ok(this.reviewService.findReview(writerID,receiverID));
+        ReviewDto reviewDto = this.reviewService.findReview(writerID,receiverID);
+        return ResponseEntity.ok(reviewDto);
     }
 
     @PostMapping("/private")

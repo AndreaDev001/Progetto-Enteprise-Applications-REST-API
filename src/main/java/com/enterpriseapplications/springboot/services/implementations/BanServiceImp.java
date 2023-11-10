@@ -139,7 +139,7 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
     public void handleExpiredBans() {
         List<Ban> expiredBans = this.banDao.getBansByDate(LocalDate.now());
         expiredBans.forEach(ban -> {
-            log.info(String.format("Ban [%s] has expired at [%s]"),ban.getId().toString(),dateTimeFormatter.format(LocalDateTime.now()));
+            log.info(String.format("Ban [%s] has expired at [%s]",ban.getId().toString(),dateTimeFormatter.format(LocalDateTime.now())));
             ban.setExpired(true);
             this.banDao.save(ban);
         });

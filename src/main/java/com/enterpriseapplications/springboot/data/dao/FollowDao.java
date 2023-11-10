@@ -19,6 +19,6 @@ public interface FollowDao extends JpaRepository<Follow, UUID> {
     Page<Follow> findAllFollowers(@Param("requiredID") UUID id, Pageable pageable);
     @Query("select f from Follow f where f.follower.id = :requiredID")
     Page<Follow> findAllFollows(@Param("requiredID") UUID id,Pageable pageable);
-    @Query("select f from Follow f where f.follower.id = :requiredFollowerID and f.follower.id = :requiredFollowedID")
+    @Query("select f from Follow f where f.follower.id = :requiredFollowerID and f.followed.id = :requiredFollowedID")
     Optional<Follow> findFollow(@Param("requiredFollowerID") UUID followerID,@Param("requiredFollowedID") UUID followedID);
 }

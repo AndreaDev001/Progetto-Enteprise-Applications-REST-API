@@ -2,6 +2,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 
 import com.enterpriseapplications.springboot.data.dao.PaymentMethodDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdatePaymentMethodDto;
 import com.enterpriseapplications.springboot.data.dto.output.PaymentMethodDto;
 import com.enterpriseapplications.springboot.data.entities.PaymentMethod;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -111,5 +113,15 @@ class PaymentMethodServiceImpTest extends GenericTestImp<PaymentMethod,PaymentMe
         PagedModel<PaymentMethodDto> pagedModel = this.paymentMethodServiceImp.getPaymentMethodsByHolderName(user.getId(),holderName,pageRequest);
         Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
         Assert.assertTrue(validPage(pagedModel,20,0,1,2));
+    }
+
+    @Test
+    void updatePaymentMethod() {
+        PaymentMethod paymentMethod = PaymentMethod.builder().id(UUID.randomUUID()).build();
+        UpdatePaymentMethodDto updatePaymentMethod = UpdatePaymentMethodDto.builder().paymentMethodID(paymentMethod.getId()).brand(PaymentMethodBrand.VISA).build();
+        given(this.paymentMethodDao.findById(paymentMethod.getId())).willReturn(Optional.of(firstElement));
+        given(this.paymentMethodDao.save(any(PaymentMethod.class))).willReturn(firstElement);
+        PaymentMethodDto result = this.paymentMethodServiceImp.updatePaymentMethod(updatePaymentMethod);
+        Assert.assertTrue(valid(firstElement,result));
     }
 }

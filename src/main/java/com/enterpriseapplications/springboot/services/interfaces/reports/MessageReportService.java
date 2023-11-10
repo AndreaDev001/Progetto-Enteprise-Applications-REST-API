@@ -16,5 +16,6 @@ public interface MessageReportService
     PagedModel<MessageReportDto> getMessageReports(UUID messageID, Pageable pageable);
     MessageReportDto createMessageReport(CreateReportDto createReportDto,UUID messageID);
     MessageReportDto updateMessageReport(UpdateReportDto updateReportDto);
+    MessageReportDto getReport(UUID userID,UUID messageID);
     void deleteMessageReport(UUID messageID);
 }

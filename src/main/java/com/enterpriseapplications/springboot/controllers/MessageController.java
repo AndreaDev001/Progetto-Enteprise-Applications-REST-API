@@ -4,6 +4,7 @@ package com.enterpriseapplications.springboot.controllers;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateMessageDto;
 import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.output.MessageDto;
+import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.MessageService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

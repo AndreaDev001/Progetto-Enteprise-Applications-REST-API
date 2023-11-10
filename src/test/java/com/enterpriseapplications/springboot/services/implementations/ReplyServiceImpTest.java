@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.data.dao.ReplyDao;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReplyDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReplyDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReplyDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.data.entities.Reply;
@@ -117,6 +118,14 @@ class ReplyServiceImpTest extends GenericTestImp<Reply,ReplyDto> {
 
     @Test
     void updateReply() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Reply reply = Reply.builder().id(UUID.randomUUID()).build();
+        reply.setWriter(user);
+        UpdateReplyDto updateReplyDto = UpdateReplyDto.builder().replyID(reply.getId()).text("TEXT").build();
+        given(this.replyDao.findById(reply.getId())).willReturn(Optional.of(firstElement));
+        given(this.replyDao.save(any(Reply.class))).willReturn(firstElement);
+        ReplyDto replyDto = this.replyServiceImp.updateReply(updateReplyDto);
+        Assert.assertTrue(valid(firstElement,replyDto));
     }
 
     @Test

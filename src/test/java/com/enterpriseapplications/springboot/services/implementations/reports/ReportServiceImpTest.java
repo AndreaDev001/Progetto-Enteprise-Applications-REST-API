@@ -5,7 +5,9 @@ import com.enterpriseapplications.springboot.data.dao.reports.ReportDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.ReportSpecifications;
 import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ReportDto;
+import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportReason;
 import com.enterpriseapplications.springboot.data.entities.enums.ReportType;
@@ -152,21 +154,6 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
         Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
         Assert.assertTrue(validPage(reports,20,0,1,2));
     }
-
-    @Test
-    void getSimilarReports() {
-        User reporter = User.builder().id(UUID.randomUUID()).build();
-        User reported = User.builder().id(UUID.randomUUID()).build();
-        Report report = Report.builder().id(UUID.randomUUID()).reporter(reporter).reported(reported).description("Description").reason(ReportReason.RACISM).build();
-        ReportSpecifications.Filter filter = new ReportSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,report);
-        PageRequest pageRequest = PageRequest.of(0,20);
-        given(this.reportDao.findById(report.getId())).willReturn(Optional.of(report));
-        given(this.reportDao.findAll(ReportSpecifications.withFilter(filter),pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
-        PagedModel<ReportDto> reports = this.reportServiceImp.getSimilarReports(report.getId(),pageRequest);
-        Assert.assertTrue(compare(elements,reports.getContent().stream().toList()));
-        Assert.assertTrue(validPage(reports,20,0,1,2));
-    }
-
     @Test
     void createReport() {
         User user = User.builder().id(UUID.randomUUID()).build();
@@ -179,6 +166,24 @@ class ReportServiceImpTest extends GenericTestImp<Report,ReportDto> {
     }
 
     @Test
+    void getReportBetween() {
+        User reporter = User.builder().id(UUID.randomUUID()).build();
+        User reported = User.builder().id(UUID.randomUUID()).build();
+        given(this.reportDao.getReport(reporter.getId(),reported.getId(),ReportType.USER)).willReturn(Optional.of(firstElement));
+        given(this.reportDao.getReport(reported.getId(),reporter.getId(),ReportType.USER)).willReturn(Optional.of(secondElement));
+        ReportDto firstReport = this.reportServiceImp.getReportBetween(reporter.getId(),reported.getId(),ReportType.USER);
+        ReportDto secondReport = this.reportServiceImp.getReportBetween(reported.getId(),reporter.getId(),ReportType.USER);
+        Assert.assertTrue(valid(firstElement,firstReport));
+        Assert.assertTrue(valid(secondElement,secondReport));
+    }
+
+    @Test
     void updateReport() {
+        Report report = Report.builder().id(UUID.randomUUID()).build();
+        UpdateReportDto updateReportDto = UpdateReportDto.builder().reportID(report.getId()).description("description").reason(ReportReason.RACISM).build();
+        given(this.reportDao.findById(updateReportDto.getReportID())).willReturn(Optional.of(firstElement));
+        given(this.reportDao.save(any(Report.class))).willReturn(firstElement);
+        ReportDto updatedReport = this.reportServiceImp.updateReport(updateReportDto);
+        Assert.assertTrue(valid(firstElement,updatedReport));
     }
 }

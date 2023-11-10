@@ -32,32 +32,32 @@ public class PaymentMethod implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "HOLDER_NAME",unique = false)
+    @Column(name = "HOLDER_NAME",nullable = false)
     private String holderName;
 
-    @Column(name = "NUMBER",unique = false)
+    @Column(name = "NUMBER",nullable = false)
     @Pattern(regexp = "[0-9]{16,19}")
     private String number;
 
-    @Column(name = "BRAND",unique = false)
+    @Column(name = "BRAND",nullable = false)
     private PaymentMethodBrand brand;
 
-    @Column(name = "EXPIRATION_DATE",unique = false)
+    @Column(name = "EXPIRATION_DATE",nullable = false)
     private LocalDate expirationDate;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "paymentMethod")
     private Set<Order> orders = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "OWNER")
+    @JoinColumn(name = "OWNER",nullable = false)
     private User user;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

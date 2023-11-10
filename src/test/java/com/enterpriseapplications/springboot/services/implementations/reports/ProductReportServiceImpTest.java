@@ -4,6 +4,7 @@ import com.enterpriseapplications.springboot.data.dao.ProductDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.reports.ProductReportDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReportDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.ProductReportDto;
 import com.enterpriseapplications.springboot.data.entities.Product;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -120,8 +121,32 @@ class ProductReportServiceImpTest extends GenericTestImp<ProductReport,ProductRe
         Assert.assertTrue(valid(firstElement,productReportDto));
     }
 
+    @Test
+    void getProductReportBetween() {
+        User firstUser = User.builder().id(UUID.randomUUID()).build();
+        Product firstProduct = Product.builder().id(UUID.randomUUID()).build();
+        User secondUser = User.builder().id(UUID.randomUUID()).build();
+        Product secondProduct = Product.builder().id(UUID.randomUUID()).build();
+        given(this.productReportDao.getProductReport(firstProduct.getId(),firstUser.getId())).willReturn(Optional.of(firstElement));
+        given(this.productReportDao.getProductReport(secondProduct.getId(),secondUser.getId())).willReturn(Optional.of(secondElement));
+        ProductReportDto firstReport = this.productReportServiceImp.getReport(firstUser.getId(),firstProduct.getId());
+        ProductReportDto secondReport = this.productReportServiceImp.getReport(secondUser.getId(),secondProduct.getId());
+        Assert.assertTrue(valid(firstElement,firstReport));
+        Assert.assertTrue(valid(secondElement,secondReport));
+    }
+
 
     @Test
     void updateProductReport() {
+        Product product = Product.builder().id(UUID.randomUUID()).build();
+        ProductReport productReport = new ProductReport();
+        productReport.setId(UUID.randomUUID());
+        productReport.setProduct(product);
+        UpdateReportDto updateReportDto = UpdateReportDto.builder().reportID(productReport.getId()).description("description").reason(ReportReason.RACISM).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.productReportDao.findById(updateReportDto.getReportID())).willReturn(Optional.of(firstElement));
+        given(this.productReportDao.save(any(ProductReport.class))).willReturn(firstElement);
+        ProductReportDto result = this.productReportServiceImp.updateProductReport(updateReportDto);
+        Assert.assertTrue(valid(firstElement,result));
     }
 }

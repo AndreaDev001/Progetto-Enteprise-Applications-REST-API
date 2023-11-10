@@ -29,7 +29,7 @@ public interface BanDao extends JpaRepository<Ban, UUID>, JpaSpecificationExecut
     @Query("select b from Ban b where b.expired = :requiredExpired")
     List<Ban> getExpiredBans(@Param("requiredExpired") boolean expired);
 
-    @Query("select b from Ban b where b.expirationDate > :requiredDate")
+    @Query("select b from Ban b where b.expirationDate < :requiredDate and b.expired = false")
     List<Ban> getBansByDate(@Param("requiredDate") LocalDate requiredDate);
 
     @Query("select b from Ban b where b.banned.id = :requiredID and b.expired = false")

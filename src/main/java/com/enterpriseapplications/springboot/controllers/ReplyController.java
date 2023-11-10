@@ -35,20 +35,21 @@ public class ReplyController
         return ResponseEntity.ok(replies);
     }
 
-    @GetMapping("/public/{replyID}")
+    @GetMapping("/private/{replyID}")
+    @PreAuthorize("@permissionHandler.hasAccess(@replyDao,#replyID)")
     public ResponseEntity<ReplyDto> getReply(@PathVariable("replyID") UUID replyID) {
         return ResponseEntity.ok(this.replyService.getReply(replyID));
     }
 
     @GetMapping("/public/review/{reviewID}")
-    public ResponseEntity<ReplyDto> getReplyByReviews(@PathVariable("reviewID") UUID reviewID) {
+    public ResponseEntity<ReplyDto> getReplyByReview(@PathVariable("reviewID") UUID reviewID) {
         return ResponseEntity.ok(this.replyService.getReplyByReview(reviewID));
     }
 
     @GetMapping("/private/writer/{writerID}")
-    @PreAuthorize("@permissionHandler.hasAccess(#id)")
-    public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") UUID id, @ParameterObject @Valid PaginationRequest paginationRequest) {
-        PagedModel<ReplyDto> replies = this.replyService.getWrittenReplies(id, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
+    @PreAuthorize("@permissionHandler.hasAccess(#writerID)")
+    public ResponseEntity<PagedModel<ReplyDto>> getReplies(@PathVariable("writerID") UUID writerID, @ParameterObject @Valid PaginationRequest paginationRequest) {
+        PagedModel<ReplyDto> replies = this.replyService.getWrittenReplies(writerID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));
         return ResponseEntity.ok(replies);
     }
 

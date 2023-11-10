@@ -28,20 +28,20 @@ public class Conversation implements MultiOwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "STARTER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STARTER_ID",nullable = false)
     private User starter;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRODUCT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_ID",nullable = false)
     private Product product;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",unique = false,nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",unique = false,nullable = false)
     private LocalDate lastModifiedDate;
 
 

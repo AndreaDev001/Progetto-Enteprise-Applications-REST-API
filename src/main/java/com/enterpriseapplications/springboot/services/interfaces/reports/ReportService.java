@@ -23,7 +23,7 @@ public interface ReportService {
     PagedModel<ReportDto> getReportsByType(ReportType type,Pageable pageable);
     PagedModel<ReportDto> getReportsBySpec(Specification<Report> specification,Pageable pageable);
     PagedModel<ReportDto> getSimilarReports(UUID reportID,Pageable pageable);
-    ReportDto getReportBetween(UUID reporterID,UUID reportedID);
+    ReportDto getReportBetween(UUID reporterID,UUID reportedID,ReportType reportType);
     ReportDto createReport(CreateReportDto createReportDto,UUID reportedID);
     ReportDto updateReport(UpdateReportDto updateReportDto);
     ReportReason[] getReasons();

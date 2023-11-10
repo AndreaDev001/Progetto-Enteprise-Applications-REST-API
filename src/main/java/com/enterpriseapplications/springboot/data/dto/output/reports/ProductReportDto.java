@@ -17,7 +17,4 @@ import java.util.UUID;
 @Relation(collectionRelation = "content")
 public class ProductReportDto extends ReportDto {
     private ProductRef product;
-    private String details;
-    private String name;
-    private String description;
 }

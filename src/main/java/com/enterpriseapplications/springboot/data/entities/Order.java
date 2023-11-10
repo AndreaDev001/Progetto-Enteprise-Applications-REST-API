@@ -28,19 +28,19 @@ public class Order implements OwnableEntity
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "BUYER")
+    @JoinColumn(name = "BUYER",nullable = false)
     private User buyer;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "ADDRESS")
+    @JoinColumn(name = "ADDRESS_ID",nullable = false)
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "PAYMENT_METHOD")
+    @JoinColumn(name = "PAYMENT_METHOD_ID",nullable = false)
     private PaymentMethod paymentMethod;
 
     @OneToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "PRODUCT_ID")
+    @JoinColumn(name = "PRODUCT_ID",nullable = false)
     private Product product;
 
     @Column(name = "STATUS",nullable = false)
@@ -50,15 +50,15 @@ public class Order implements OwnableEntity
     @Column(name = "DELIVERY_DATE",nullable = false)
     private LocalDate deliveryDate;
 
-    @Column(name = "PRICE",unique = false)
+    @Column(name = "PRICE",nullable = false)
     private BigDecimal price;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

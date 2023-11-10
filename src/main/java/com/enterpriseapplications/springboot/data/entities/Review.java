@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "REVIEWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"WRITER","RECEIVER"})})
+@Table(name = "REVIEWS",uniqueConstraints = {@UniqueConstraint(columnNames = {"WRITER_ID","RECEIVER_ID"})})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,30 +26,31 @@ public class Review implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "TEXT",unique = false)
+    @Column(name = "TEXT",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String text;
 
     @OneToOne(mappedBy = "review",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "REPLY_ID",nullable = false)
     private Reply reply;
 
-    @Column(name = "RATING",unique = false)
+    @Column(name = "RATING",nullable = false)
     private Integer rating;
 
     @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "WRITER")
+    @JoinColumn(name = "WRITER_ID",nullable = false)
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RECEIVER")
+    @JoinColumn(name = "RECEIVER_ID",nullable = false)
     private User receiver;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE")
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE")
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

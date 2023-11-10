@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTED","REPORTER","TYPE"})})
+@Table(name = "REPORTS",uniqueConstraints = {@UniqueConstraint(columnNames = {"REPORTER_ID","REPORTED_ID","TYPE"})})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -32,32 +32,32 @@ public class Report implements OwnableEntity
     @GeneratedValue(strategy = GenerationType.UUID)
     protected UUID id;
 
-    @Column(name = "DESCRIPTION",unique = false)
+    @Column(name = "DESCRIPTION",nullable = false)
     @Convert(converter = TrimConverter.class)
     protected String description;
 
-    @Column(name = "REASON",unique = false)
+    @Column(name = "REASON",nullable = false)
     @Enumerated(EnumType.STRING)
     protected ReportReason reason;
 
-    @Column(name = "TYPE",unique = false)
+    @Column(name = "TYPE",nullable = false)
     @Enumerated(EnumType.STRING)
     protected ReportType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REPORTER")
+    @JoinColumn(name = "REPORTER_ID",nullable = false)
     protected User reporter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REPORTED")
+    @JoinColumn(name = "REPORTED_ID",nullable = false)
     protected User reported;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     protected LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     protected LocalDate lastModifiedDate;
 
     @Override

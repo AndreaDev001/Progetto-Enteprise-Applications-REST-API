@@ -29,15 +29,15 @@ public class Category
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "PRIMARY_CAT",unique = false)
+    @Column(name = "PRIMARY_CAT",unique = false,nullable = false)
     @Convert(converter = TrimConverter.class)
     private String primaryCat;
 
-    @Column(name = "SECONDARY_CAT",unique = false)
+    @Column(name = "SECONDARY_CAT",unique = false,nullable = false)
     @Convert(converter = TrimConverter.class)
     private String secondaryCat;
 
-    @Column(name = "TERTIARY_CAT",unique = false)
+    @Column(name = "TERTIARY_CAT",unique = false,nullable = false)
     @Convert(converter = TrimConverter.class)
     private String tertiaryCat;
 

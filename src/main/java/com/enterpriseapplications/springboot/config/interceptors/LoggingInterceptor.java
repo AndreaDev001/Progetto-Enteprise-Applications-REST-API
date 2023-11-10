@@ -22,6 +22,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
             userID = String.valueOf(authenticationToken.getName());
             username = String.valueOf(authenticationToken.getTokenAttributes().get("username"));
         }
-        log.info("Response to User {},username {}, ip address {} to request {} with response code {}",userID,username,remoteIPAddress,request.getRequestURI(),response.getStatus());
+        log.info("Response to User {},username {}, ip address {} to request {} {} with response code {}",userID,username,remoteIPAddress,request.getMethod(),request.getRequestURI(),response.getStatus());
     }
 }

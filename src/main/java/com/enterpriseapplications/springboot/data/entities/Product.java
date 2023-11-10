@@ -35,60 +35,62 @@ public class Product implements OwnableEntity {
     @Column(name = "PRODUCT_ID")
     private UUID id;
 
-    @Column(name = "NAME",unique = false)
+    @Column(name = "NAME",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String name;
 
-    @Column(name = "DESCRIPTION",unique = false)
+    @Column(name = "DESCRIPTION",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String description;
 
-    @Column(name = "BRAND",unique = false)
+    @Column(name = "BRAND",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String brand;
 
-    @Column(name = "PRICE",unique = false)
+    @Column(name = "PRICE",nullable = false)
     private BigDecimal price;
 
-    @Column(name = "MIN_PRICE",unique = false)
+    @Column(name = "MIN_PRICE",nullable = false)
     private BigDecimal minPrice;
 
-    @Column(name = "CONDITION",unique = false)
+    @Column(name = "CONDITION",nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductCondition condition;
 
-    @Column(name = "VISIBILITY",unique = false)
+    @Column(name = "VISIBILITY",nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductVisibility visibility;
 
-    @Column(name = "STATUS",unique = false)
+    @Column(name = "STATUS",nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
-    public Set<Like> receivedLikes = new HashSet<>(0);
+    @OneToMany(mappedBy = "product",orphanRemoval = true,fetch = FetchType.LAZY)
+    public Set<Like> receivedLikes = new HashSet<>();
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
-    public Set<Conversation> conversations = new HashSet<>(0);
+    @OneToMany(mappedBy = "product",orphanRemoval = true,fetch = FetchType.LAZY)
+    public Set<Conversation> conversations = new HashSet<>();
 
-    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "CATEGORY_ID",nullable = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    @JoinColumn(name = "SELLER_ID",nullable = false)
     private User seller;
 
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<ProductImage> productImages = new HashSet<>();
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

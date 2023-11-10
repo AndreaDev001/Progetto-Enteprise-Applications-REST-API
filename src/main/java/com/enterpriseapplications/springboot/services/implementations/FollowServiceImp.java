@@ -84,7 +84,7 @@ public class FollowServiceImp extends GenericServiceImp<Follow,FollowDto> implem
     @Override
     @Transactional
     public void deleteFollows(UUID followId) {
-        this.followDao.findById(followId);
+        this.followDao.findById(followId).orElseThrow();
         this.followDao.deleteById(followId);
     }
 

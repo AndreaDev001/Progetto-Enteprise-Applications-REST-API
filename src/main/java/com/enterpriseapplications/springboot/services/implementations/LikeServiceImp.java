@@ -96,6 +96,6 @@ public class LikeServiceImp extends GenericServiceImp<Like,LikeDto> implements L
     @Transactional
     public void deleteLikeByProduct(UUID userID,UUID productID) {
         Like like = this.likeDao.getLikeByProductAndUser(userID,productID).orElseThrow();
-        this.likeDao.delete(like);
+        this.likeDao.deleteById(like.getId());
     }
 }

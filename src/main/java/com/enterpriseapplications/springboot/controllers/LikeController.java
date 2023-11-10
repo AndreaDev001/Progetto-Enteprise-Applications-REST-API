@@ -68,6 +68,7 @@ public class LikeController {
     }
 
     @DeleteMapping("/private/{userID}/{productID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<Void> deleteLikeByProduct(@PathVariable("userID") UUID userID,@PathVariable("productID") UUID productID) {
         this.likeService.deleteLikeByProduct(userID,productID);
         return ResponseEntity.noContent().build();

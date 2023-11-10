@@ -104,9 +104,9 @@ public class ProductImageServiceImp extends GenericServiceImp<ProductImage,Produ
     public ProductImageDto getProductImage(UUID productID, Integer index) {
         List<ProductImage> productImages = this.productImageDao.getProductImages(productID);
         if(productImages.isEmpty())
-            throw new InvalidFormat("error.productImage.emptySet");
+            throw new InvalidFormat("errors.productImage.emptySet");
         if(productImages.size() < index)
-            throw new InvalidFormat("error.productImage.invalidSize");
+            throw new InvalidFormat("errors.productImage.invalidSize");
         ProductImage requiredImage = productImages.get(index);
         ProductImageDto productImageDto = this.modelMapper.map(requiredImage,ProductImageDto.class);
         productImageDto.setImage(requiredImage.getImage());

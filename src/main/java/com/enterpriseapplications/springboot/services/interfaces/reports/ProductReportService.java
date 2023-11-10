@@ -17,5 +17,6 @@ public interface ProductReportService
     PagedModel<ProductReportDto> getReports(UUID productID, Pageable pageable);
     ProductReportDto createProductReport(CreateReportDto createReportDto,UUID productID);
     ProductReportDto updateProductReport(UpdateReportDto updateReportDto);
+    ProductReportDto getReport(UUID userID,UUID productID);
     void deleteProductReport(UUID productReportID);
 }

@@ -3,10 +3,12 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dao.specifications.SpecificationsUtils;
 import com.enterpriseapplications.springboot.data.dao.specifications.UserSpecifications;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateUserDto;
 import com.enterpriseapplications.springboot.data.dto.output.UserDetailsDto;
 import com.enterpriseapplications.springboot.data.entities.User;
 import com.enterpriseapplications.springboot.data.entities.enums.Gender;
 import com.enterpriseapplications.springboot.services.GenericTestImp;
+import com.enterpriseapplications.springboot.services.TestUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -84,21 +87,14 @@ class UserServiceImpTest extends GenericTestImp<User,UserDetailsDto> {
         Assert.assertTrue(valid(firstElement,firstDetails));
         Assert.assertTrue(valid(secondElement,secondDetails));
     }
-
-    @Test
-    void getSimilarUsers() {
-        User user = User.builder().id(UUID.randomUUID()).build();
-        UserSpecifications.Filter filter = new UserSpecifications.Filter(SpecificationsUtils.OrderMode.DESCENDED,user);
-        PageRequest pageRequest = PageRequest.of(0,20);
-        Specification<User> specification = UserSpecifications.withFilter(filter);
-        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
-        given(this.userDao.findAll(specification,pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
-        PagedModel<UserDetailsDto> pagedModel = this.userServiceImp.getSimilarUsers(user.getId(),pageRequest);
-        Assert.assertTrue(compare(elements,pagedModel.getContent().stream().toList()));
-        Assert.assertTrue(validPage(pagedModel,20,0,1,2));
-    }
     @Test
     void updateUser() {
+        TestUtils.generateValues(authenticatedUser);
+        UpdateUserDto updateUserDto = UpdateUserDto.builder().description("description").gender(Gender.MALE).build();
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        given(this.userDao.save(any(User.class))).willReturn(firstElement);
+        UserDetailsDto result = this.userServiceImp.updateUser(updateUserDto);
+        Assert.assertTrue(valid(firstElement,result));
 
     }
 

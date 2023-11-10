@@ -27,6 +27,6 @@ public class ProductReport extends Report
     }
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "REPORTED_PRODUCT")
+    @JoinColumn(name = "REPORTED_PRODUCT",nullable = false)
     private Product product;
 }

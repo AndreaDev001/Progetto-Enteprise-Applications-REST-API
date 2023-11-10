@@ -27,23 +27,23 @@ public class Reply implements OwnableEntity
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "REVIEW_ID")
+    @JoinColumn(name = "REVIEW_ID",nullable = false)
     private Review review;
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
-    @JoinColumn(name = "WRITER")
+    @JoinColumn(name = "WRITER",nullable = false)
     private User writer;
 
-    @Column(name = "TEXT",unique = false)
+    @Column(name = "TEXT",nullable = false)
     @Convert(converter = TrimConverter.class)
     private String text;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE",unique = false)
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE",unique = false)
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

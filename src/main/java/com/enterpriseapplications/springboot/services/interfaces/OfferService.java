@@ -27,6 +27,7 @@ public interface OfferService
     PagedModel<OfferDto> getOffersByProductIDAndStatus(UUID productID,OfferStatus status,Pageable pageable);
     PagedModel<OfferDto> getOffersBySpec(Specification<Offer> specification, Pageable pageable);
     PagedModel<OfferDto> getSimilarOffers(UUID offerID,Pageable pageable);
+    OfferDto getOffer(UUID userID,UUID productID);
     OfferDto createOffer(CreateOfferDto createOfferDto);
     OfferDto updateOffer(UpdateOfferDto updateOfferDto);
     OfferDto updateOfferBuyer(UpdateOfferBuyerDto updateOfferBuyerDto);

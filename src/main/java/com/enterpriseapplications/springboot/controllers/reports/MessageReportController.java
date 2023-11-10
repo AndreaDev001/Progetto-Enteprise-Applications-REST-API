@@ -6,6 +6,7 @@ import com.enterpriseapplications.springboot.data.dto.input.PaginationRequest;
 import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReportDto;
 import com.enterpriseapplications.springboot.data.dto.output.reports.MessageReportDto;
 import com.enterpriseapplications.springboot.services.interfaces.reports.MessageReportService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/messageReports")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Authorization")
 public class MessageReportController {
 
     private final MessageReportService messageReportService;
@@ -32,13 +34,19 @@ public class MessageReportController {
         return ResponseEntity.ok(reports);
     }
 
+    @GetMapping("/private/messageReport/{userID}/{messageID}")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
+    public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("userID") UUID userID,@PathVariable("messageID") UUID messageID) {
+        return ResponseEntity.ok(this.messageReportService.getReport(userID,messageID));
+    }
+
     @GetMapping("/private/{reportID}")
     @PreAuthorize("@permissionHandler.hasAccess(@reportDao,#reportID)")
     public ResponseEntity<MessageReportDto> getMessageReport(@PathVariable("reportID") UUID reportID) {
         return ResponseEntity.ok(this.messageReportService.getReport(reportID));
     }
 
-    @GetMapping("/private/{messageID}")
+    @GetMapping("/private/message/{messageID}")
     @PreAuthorize("@permissionHandler.hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<MessageReportDto>> getMessageReports(@PathVariable("messageID") UUID messageID, @ParameterObject @Valid PaginationRequest paginationRequest) {
         PagedModel<MessageReportDto> reports = this.messageReportService.getMessageReports(messageID, PageRequest.of(paginationRequest.getPage(),paginationRequest.getPageSize()));

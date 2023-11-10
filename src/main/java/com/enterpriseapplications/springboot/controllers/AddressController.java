@@ -66,6 +66,7 @@ public class AddressController
     }
 
     @PostMapping("/private")
+    @PreAuthorize("@permissionHandler.hasRole('ROLE_USER')")
     public ResponseEntity<AddressDto> createAddress(@RequestBody @Valid CreateAddressDto createAddressDto) {
         return ResponseEntity.ok(this.addressService.createAddress(createAddressDto));
     }

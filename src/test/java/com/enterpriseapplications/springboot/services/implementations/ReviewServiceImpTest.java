@@ -3,6 +3,7 @@ package com.enterpriseapplications.springboot.services.implementations;
 import com.enterpriseapplications.springboot.data.dao.ReviewDao;
 import com.enterpriseapplications.springboot.data.dao.UserDao;
 import com.enterpriseapplications.springboot.data.dto.input.create.CreateReviewDto;
+import com.enterpriseapplications.springboot.data.dto.input.update.UpdateReviewDto;
 import com.enterpriseapplications.springboot.data.dto.output.ReviewDto;
 import com.enterpriseapplications.springboot.data.entities.Review;
 import com.enterpriseapplications.springboot.data.entities.User;
@@ -58,11 +59,11 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
     @Test
     void getReview() {
         given(this.reviewDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
+        ReviewDto firstReview = this.reviewServiceImp.getReview(firstElement.getId());
+        Assert.assertTrue(valid(firstElement,firstReview));
         given(this.reviewDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
-        ReviewDto firstReviewDto = this.reviewServiceImp.getReview(firstElement.getId());
-        ReviewDto secondReviewDto = this.reviewServiceImp.getReview(secondElement.getId());
-        Assert.assertTrue(valid(firstElement,firstReviewDto));
-        Assert.assertTrue(valid(secondElement,secondReviewDto));
+        ReviewDto secondReview = this.reviewServiceImp.getReview(secondElement.getId());
+        Assert.assertTrue(valid(secondElement,secondReview));
     }
 
     @Override
@@ -133,5 +134,14 @@ class ReviewServiceImpTest extends GenericTestImp<Review,ReviewDto> {
 
     @Test
     void updateReview() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+        Review review = Review.builder().id(UUID.randomUUID()).build();
+        firstElement.setReceiver(user);
+        UpdateReviewDto updateReviewDto = UpdateReviewDto.builder().reviewID(review.getId()).rating(10).build();
+        given(this.userDao.findById(user.getId())).willReturn(Optional.of(user));
+        given(this.reviewDao.findById(review.getId())).willReturn(Optional.of(firstElement));
+        given(this.reviewDao.save(any(Review.class))).willReturn(firstElement);
+        ReviewDto reviewDto = this.reviewServiceImp.updateReview(updateReviewDto);
+        Assert.assertTrue(valid(firstElement,reviewDto));
     }
 }

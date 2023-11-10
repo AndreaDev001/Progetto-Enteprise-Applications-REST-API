@@ -112,21 +112,18 @@ public class ProductServiceImp extends GenericServiceImp<Product,ProductDto> imp
     }
 
     @Override
-    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getRecentlyCreatedProducts(Pageable pageable) {
         Page<Product> products = this.productDao.getRecentlyCreatedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
-    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getMostLikedProducts(Pageable pageable) {
         Page<Product> products = this.productDao.getMostLikedProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);
     }
 
     @Override
-    @Cacheable(CacheConfig.CACHE_ALL_PRODUCTS)
     public PagedModel<ProductDto> getMostExpensiveProducts(Pageable pageable) {
         Page<Product> products = this.productDao.getMostExpensiveProducts(ProductVisibility.PUBLIC,ProductStatus.AVAILABLE,pageable);
         return this.pagedResourcesAssembler.toModel(products,modelAssembler);

@@ -28,19 +28,19 @@ public class Follow implements OwnableEntity {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOLLOWED_ID")
+    @JoinColumn(name = "FOLLOWED_ID",nullable = false)
     private User followed;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOLLOWER_ID")
+    @JoinColumn(name = "FOLLOWER_ID",nullable = false)
     private User follower;
 
     @CreatedDate
-    @Column(name = "CREATED_DATE")
+    @Column(name = "CREATED_DATE",nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name = "LAST_MODIFIED_DATE")
+    @Column(name = "LAST_MODIFIED_DATE",nullable = false)
     private LocalDate lastModifiedDate;
 
     @Override

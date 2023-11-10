@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
@@ -77,11 +78,11 @@ public class AddressServiceImpTest extends GenericTestImp<Address,AddressDto>
     }
 
     @Test
-    public void getAddresses() {
+    public void getAddress() {
         given(this.addressDao.findById(firstElement.getId())).willReturn(Optional.of(firstElement));
-        given(this.addressDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
         AddressDto firstAddress = this.addressServiceImp.getAddress(firstElement.getId());
-        AddressDto secondAddress  = this.addressServiceImp.getAddress(secondElement.getId());
+        given(this.addressDao.findById(secondElement.getId())).willReturn(Optional.of(secondElement));
+        AddressDto secondAddress = this.addressServiceImp.getAddress(secondElement.getId());
         Assert.assertTrue(valid(firstElement,firstAddress));
         Assert.assertTrue(valid(secondElement,secondAddress));
     }
@@ -95,7 +96,7 @@ public class AddressServiceImpTest extends GenericTestImp<Address,AddressDto>
     }
 
     @Test
-    public void getAddress() {
+    public void getAddresses() {
         PageRequest pageRequest = PageRequest.of(0,20);
         given(this.addressDao.findAll(pageRequest)).willReturn(new PageImpl<>(elements,pageRequest,2));
         PagedModel<AddressDto> pagedModel = this.addressServiceImp.getAddresses(pageRequest);
@@ -105,7 +106,12 @@ public class AddressServiceImpTest extends GenericTestImp<Address,AddressDto>
 
     @Test
     public void createAddress() {
-        CreateAddressDto createAddressDto = new CreateAddressDto();
+        CreateAddressDto createAddressDto = CreateAddressDto.builder().ownerName("owner").postalCode("88900").countryCode(CountryCode.EN).build();
         given(this.addressValidationHandler.validateAddress(createAddressDto)).willReturn(true);
+        given(this.addressDao.save(any())).willReturn(firstElement);
+        given(this.userDao.findById(authenticatedUser.getId())).willReturn(Optional.of(authenticatedUser));
+        AddressDto address = this.addressServiceImp.createAddress(createAddressDto);
+        Assert.assertTrue(valid(firstElement,address));
     }
+
 }

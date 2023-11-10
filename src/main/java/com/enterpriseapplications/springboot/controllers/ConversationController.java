@@ -34,9 +34,9 @@ public class ConversationController
     }
 
     @GetMapping("/private/conversation/{conversationID}")
-    @PreAuthorize("@permissionHandler.hasAccess(@conversationDao,#conversationID)")
-    public ResponseEntity<ConversationDto> getConversation(@PathVariable("conversationID") UUID conversation) {
-        return ResponseEntity.ok(this.conversationService.find(conversation));
+    @PreAuthorize("@permissionHandler.hasAccessMulti(@conversationDao,#conversationID)")
+    public ResponseEntity<ConversationDto> getConversation(@PathVariable("conversationID") UUID conversationID) {
+        return ResponseEntity.ok(this.conversationService.find(conversationID));
     }
 
     @GetMapping("/private/starter/{userID}")
@@ -46,7 +46,7 @@ public class ConversationController
     }
 
     @GetMapping("/private/{userID}")
-    @PreAuthorize("@permissionHandler.hasAccess(@conversationDao,#userID)")
+    @PreAuthorize("@permissionHandler.hasAccess(#userID)")
     public ResponseEntity<List<ConversationDto>> getConversations(@PathVariable("userID") UUID userID) {
         return ResponseEntity.ok(this.conversationService.getConversations(userID));
     }

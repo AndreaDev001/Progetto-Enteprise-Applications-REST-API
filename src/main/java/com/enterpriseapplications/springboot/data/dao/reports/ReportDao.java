@@ -25,6 +25,6 @@ public interface ReportDao extends JpaRepository<Report, UUID>, JpaSpecification
     Page<Report> getReportsByReason(@Param("requiredReason") ReportReason reason,Pageable pageable);
     @Query("select r from Report r where r.type = :requiredType")
     Page<Report> getReportsByType(@Param("requiredType") ReportType type,Pageable pageable);
-    @Query("select r from Report r where r.reporter.id = :reporterID or r.reported.id = :reportedID")
-    Optional<Report> getReport(@Param("reporterID") UUID reporterID,@Param("reportedID") UUID reportedID);
+    @Query("select r from Report r where r.reporter.id = :reporterID and r.reported.id = :reportedID and r.type = :requiredType")
+    Optional<Report> getReport(@Param("reporterID") UUID reporterID,@Param("reportedID") UUID reportedID,@Param("requiredType") ReportType reportType);
 }
