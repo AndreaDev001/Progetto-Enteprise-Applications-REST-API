@@ -10,7 +10,7 @@ E' possibile provare gli end-point senza utilizzare il relativo client Android u
 Gli end-point sono divisi in due categorie: /public e /private, è possibile provare i /public senza dover essere autenticati, mentre quelli privati richiedono un access token per autenticare l'utente e verificare relativi permessi.</br>
 L'applizazione utilizza un authorization server, il cui codice è disponibile nella seguente repository: [Progetto-Enteprise-Applications-Authentication](https://github.com/AndreaDev001/Progetto-Enterprise-Applications-Authentication) </br>
 
-E' disponibile un dump sql per popolare il database, se non utilizzato bisogna assicurarsi di aver disponibile uno schema con nome **enterpriseapplications** all'interno del proprio database
+E' disponibile un dump sql per popolare il database, se non utilizzato bisogna assicurarsi di aver disponibile uno schema con nome **enterpriseapplications** all'interno del proprio database </br>
 E' possibile ottenere un access token utilizzando il client android o postman:</br>
 **Auth URL**: http://enterpriseapplications.live:9000/oauth2/authorize</br>
 **Token URL**: http://enterpriseapplications.live:9000/oauth2/token</br>
