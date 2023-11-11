@@ -44,7 +44,7 @@ public class Product implements OwnableEntity {
 
     @Column(name = "DESCRIPTION",nullable = false)
     @Convert(converter = TrimConverter.class)
-    @Length(min = 10,max = 20)
+    @Length(min = 10,max = 200)
     private String description;
 
     @Column(name = "BRAND",nullable = false)

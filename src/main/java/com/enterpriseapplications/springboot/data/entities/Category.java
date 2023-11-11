@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(value = AuditingEntityListener.class)
-@Table(name = "CATEGORIES")
+@Table(name = "CATEGORIES",uniqueConstraints = {@UniqueConstraint(columnNames = {"PRIMARY_CAT","SECONDARY_CAT","TERTIARY_CAT"})})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

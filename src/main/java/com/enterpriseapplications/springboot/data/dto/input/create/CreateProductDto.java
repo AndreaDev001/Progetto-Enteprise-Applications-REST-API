@@ -27,7 +27,7 @@ public class CreateProductDto
 
     @NotNull
     @NotBlank
-    @Length(min = 10,max = 20)
+    @Length(min = 10,max = 200)
     private String description;
 
     @NotNull
