@@ -18,10 +18,10 @@ public interface CategoryDao extends JpaRepository<Category, UUID>
     @Query("select c from Category c where c.primaryCat = :requiredPrimaryCat and c.secondaryCat = :requiredSecondaryCat and c.tertiaryCat = :requiredTertiaryCat")
     Optional<Category> getCategory(@Param("requiredPrimaryCat") String primaryCat,@Param("requiredSecondaryCat") String secondaryCat,@Param("requiredTertiaryCat") String tertiaryCat);
 
-    @Query("select c.primaryCat from Category c")
+    @Query("select distinct c.primaryCat from Category c")
     List<String> getPrimaryCategories();
-    @Query("select c.secondaryCat from Category c where c.primaryCat = :requiredPrimary")
+    @Query("select distinct c.secondaryCat from Category c where c.primaryCat = :requiredPrimary")
     List<String> getCategoriesByPrimary(@Param("requiredPrimary") String primary);
-    @Query("select c.tertiaryCat from Category c where c.primaryCat = :requiredPrimary and c.secondaryCat = :requiredSecondary")
+    @Query("select distinct c.tertiaryCat from Category c where c.primaryCat = :requiredPrimary and c.secondaryCat = :requiredSecondary")
     List<String> getCategoriesBySecondary(@Param("requiredPrimary") String primary,@Param("requiredSecondary") String secondary);
 }
