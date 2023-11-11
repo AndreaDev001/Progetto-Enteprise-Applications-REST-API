@@ -8,6 +8,7 @@ import com.enterpriseapplications.springboot.data.entities.images.Image;
 import com.enterpriseapplications.springboot.data.entities.images.UserImage;
 import com.enterpriseapplications.springboot.data.entities.reports.Report;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,6 +36,7 @@ public class User
 
     @Column(name = "EMAIL",nullable = false)
     @Convert(converter = TrimConverter.class)
+    @Email
     private String email;
 
     @Column(name = "USERNAME",nullable = false)

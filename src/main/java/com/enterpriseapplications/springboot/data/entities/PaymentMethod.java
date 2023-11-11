@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Table(name = "PAYMENT_METHODS",uniqueConstraints = {@UniqueConstraint(columnNames = {"OWNER","NUMBER"})})
+@Table(name = "PAYMENT_METHODS")
 @Entity
 @EntityListeners({AuditingEntityListener.class,})
 @Data

@@ -90,6 +90,7 @@ public class BanServiceImp extends GenericServiceImp<Ban,BanDto> implements BanS
         Ban ban = new Ban();
         ban.setBanned(bannedUser);
         ban.setBanner(requiredUser);
+        ban.setDescription(createBanDto.getDescription());
         ban.setReason(createBanDto.getReason());
         ban.setExpired(false);
         ban.setExpirationDate(createBanDto.getExpirationDate());

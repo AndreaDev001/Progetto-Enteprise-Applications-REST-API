@@ -8,8 +8,10 @@ import com.enterpriseapplications.springboot.data.entities.enums.ProductVisibili
 import com.enterpriseapplications.springboot.data.entities.images.ProductImage;
 import com.enterpriseapplications.springboot.data.entities.interfaces.OwnableEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,14 +39,17 @@ public class Product implements OwnableEntity {
 
     @Column(name = "NAME",nullable = false)
     @Convert(converter = TrimConverter.class)
+    @Length(min = 3,max = 20)
     private String name;
 
     @Column(name = "DESCRIPTION",nullable = false)
     @Convert(converter = TrimConverter.class)
+    @Length(min = 10,max = 20)
     private String description;
 
     @Column(name = "BRAND",nullable = false)
     @Convert(converter = TrimConverter.class)
+    @Length(min = 5,max = 20)
     private String brand;
 
     @Column(name = "PRICE",nullable = false)

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -21,10 +22,12 @@ public class CreateProductDto
 {
     @NotNull
     @NotBlank
+    @Length(min = 3,max = 20)
     private String name;
 
     @NotNull
     @NotBlank
+    @Length(min = 10,max = 20)
     private String description;
 
     @NotNull
@@ -37,6 +40,7 @@ public class CreateProductDto
 
     @NotNull
     @NotBlank
+    @Length(min = 5,max = 20)
     private String brand;
 
     @NotNull

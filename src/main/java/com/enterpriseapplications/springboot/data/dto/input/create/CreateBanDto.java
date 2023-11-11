@@ -24,6 +24,10 @@ public class CreateBanDto {
     private UUID bannedID;
 
     @NotNull
+    @NotBlank
+    private String description;
+
+    @NotNull
     private ReportReason reason;
 
     @NotNull
